@@ -420,7 +420,7 @@
                 }
 
                 body {
-                    line-height: inherit
+                    line-height: inherit back-ground: #0000
                 }
 
                 hr {
