@@ -1546,7 +1546,7 @@
         @endif
     </header>
     <div>
-        <h1 style="color: white">Earth-112</h1>
+        <h1>Hello NaTaja</h1>
     </div>
 
     @if (Route::has('login'))
