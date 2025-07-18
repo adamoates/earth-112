@@ -26,22 +26,22 @@ jobs:
       - name: Setup SSH key
         uses: webfactory/ssh-agent@v0.9.0
         with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+          ssh-private-key: ${{ secrets.FORGE_SSH_KEY }}
 
       - name: Setup Supervisor for SSR
         run: |
           echo "Setting up Supervisor configuration for Inertia SSR..."
           # Add the server to known hosts
-          ssh-keyscan -H ${{ secrets.FORGE_SERVER_IP }} >> ~/.ssh/known_hosts
-          
+          ssh-keyscan -H ${{ secrets.FORGE_HOST }} >> ~/.ssh/known_hosts
+
           # Copy supervisor config
-          scp supervisor-inertia-ssr.conf forge@${{ secrets.FORGE_SERVER_IP }}:/home/forge/earth-112/
-          
+          scp supervisor-inertia-ssr.conf forge@${{ secrets.FORGE_HOST }}:/home/forge/earth-112/
+
           # Setup and restart supervisor
-          ssh forge@${{ secrets.FORGE_SERVER_IP }} '
-            sudo cp /home/forge/earth-112/supervisor-inertia-ssr.conf /etc/supervisor/conf.d/ && 
-            sudo supervisorctl reread && 
-            sudo supervisorctl update && 
+          ssh forge@${{ secrets.FORGE_HOST }} '
+            sudo cp /home/forge/earth-112/supervisor-inertia-ssr.conf /etc/supervisor/conf.d/ &&
+            sudo supervisorctl reread &&
+            sudo supervisorctl update &&
             cd /home/forge/earth-112 &&
             npm ci &&
             npm run build:ssr &&
