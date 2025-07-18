@@ -9,7 +9,16 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
     - name: Deploy to Laravel Forge
       uses: jbrooksuk/laravel-forge-action@v1.0.4
       with:
         trigger_url: ${{ secrets.FORGE_DEPLOY_WEBHOOK }}
+        
+    - name: Deployment Status
+      run: |
+        echo "✅ Deployment triggered successfully!"
+        echo "🚀 Check your Laravel Forge dashboard for deployment progress"
+        echo "🔗 Site: https://your-domain.com"
