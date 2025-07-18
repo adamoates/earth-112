@@ -1,58 +1,76 @@
-# GitHub Actions Deployment Secrets
+# Laravel Forge Deployment via GitHub Actions
 
-To enable automatic deployment to production, you need to configure the following secrets in your GitHub repository settings:
+This repository is configured to automatically deploy to Laravel Forge when you push to the `main` branch.
 
-## Required Secrets
+## Setup Instructions
 
-Navigate to your repository on GitHub → Settings → Secrets and variables → Actions, then add these secrets:
+### 1. Get Your Forge Deploy Webhook URL
 
-### 1. `DEPLOY_HOST`
-- **Description**: The hostname or IP address of your production server
-- **Example**: `123.45.67.89` or `example.com`
+1. Log in to [Laravel Forge](https://forge.laravel.com)
+2. Navigate to your server
+3. Select your site
+4. Go to the "Deployments" tab
+5. Find the "Deploy Webhook URL" section
+6. Copy the webhook URL (it looks like: `https://forge.laravel.com/servers/123456/sites/789012/deploy/http?token=your-token-here`)
 
-### 2. `DEPLOY_USER`
-- **Description**: The SSH username for connecting to your production server
-- **Example**: `deploy` or `ubuntu`
+### 2. Add the Webhook URL to GitHub Secrets
 
-### 3. `DEPLOY_KEY`
-- **Description**: The private SSH key for authenticating to your production server
-- **How to generate**:
-  ```bash
-  ssh-keygen -t rsa -b 4096 -C "github-actions@earth-112"
-  ```
-- **Important**: Copy the entire private key content including the BEGIN and END lines
+1. Go to your GitHub repository
+2. Click on "Settings" → "Secrets and variables" → "Actions"
+3. Click "New repository secret"
+4. Add the following secret:
+   - **Name**: `FORGE_DEPLOY_WEBHOOK`
+   - **Value**: Your Forge deployment webhook URL
 
-### 4. `DEPLOY_PORT`
-- **Description**: The SSH port for your production server
-- **Default**: `22`
-- **Example**: `22` or custom port if configured
+### 3. Configure Forge Deployment Script (Optional)
 
-### 5. `DEPLOY_PATH`
-- **Description**: The absolute path to your Laravel application on the production server
-- **Example**: `/var/www/earth-112` or `/home/deploy/sites/earth-112`
+In Laravel Forge, you can customize your deployment script. The default script usually includes:
 
-## Server Prerequisites
+```bash
+cd /home/forge/your-site.com
+git pull origin $FORGE_SITE_BRANCH
 
-Before the deployment can work, ensure your production server has:
+$FORGE_COMPOSER install --no-interaction --prefer-dist --optimize-autoloader --no-dev
 
-1. **Git installed** and configured with access to your repository
-2. **PHP 8.2+** with required extensions
-3. **Composer** installed globally
-4. **Node.js 20+** and npm installed
-5. **Proper permissions** for the deploy user to:
-   - Pull from git repository
-   - Run composer and npm commands
-   - Execute artisan commands
-   - Write to storage and cache directories
+( flock -w 10 9 || exit 1
+    echo 'Restarting FPM...'; sudo -S service $FORGE_PHP_FPM reload ) 9>/tmp/fpmlock
 
-## Additional Configuration
+if [ -f artisan ]; then
+    $FORGE_PHP artisan migrate --force
+    $FORGE_PHP artisan config:cache
+    $FORGE_PHP artisan route:cache
+    $FORGE_PHP artisan view:cache
+    $FORGE_PHP artisan queue:restart
+    $FORGE_PHP artisan optimize
+fi
 
-You may also want to add these optional secrets for enhanced deployment:
+npm ci
+npm run build
+```
 
-- `DB_CONNECTION`, `DB_HOST`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD` - If you want to run migrations
-- `APP_KEY` - Your Laravel application key for production
-- `APP_ENV` - Set to `production`
+You can modify this script in the Forge UI to fit your needs.
 
-## Testing the Deployment
+## How It Works
 
-After configuring all secrets, the deployment will automatically trigger when you push to the `main` branch.
+1. When you push to the `main` branch on GitHub
+2. GitHub Actions triggers the workflow
+3. The workflow calls the Forge deployment webhook
+4. Forge pulls the latest code and runs your deployment script
+5. Your application is deployed!
+
+## Benefits of Using Forge
+
+- Forge handles all server configuration
+- Automatic SSL certificates with Let's Encrypt
+- Built-in queue workers and scheduler
+- Easy environment variable management
+- Zero-downtime deployments
+- Automatic security updates
+
+## Troubleshooting
+
+If deployments fail:
+1. Check the Forge deployment log in the Forge dashboard
+2. Ensure your deployment script is correct
+3. Verify that your server has enough resources
+4. Check that all environment variables are set correctly in Forge
