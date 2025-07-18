@@ -39,10 +39,20 @@ jobs:
 
           # Setup and restart supervisor
           ssh forge@${{ secrets.FORGE_HOST }} '
+            # Load NVM and use proper Node version
+            export NVM_DIR="$HOME/.nvm" &&
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" &&
+            nvm use 20 &&
+
             # Install dependencies and build SSR
             cd /home/forge/earth-112 &&
             npm ci &&
             npm run build:ssr &&
+
+            # Create log directory if it doesnt exist
+            mkdir -p storage/logs &&
+            touch storage/logs/inertia-ssr.log storage/logs/inertia-ssr.error.log &&
+            sudo chown -R forge:forge storage/logs &&
 
             # Setup supervisor
             sudo cp /home/forge/earth-112/supervisor-inertia-ssr.conf /etc/supervisor/conf.d/ &&
@@ -56,9 +66,16 @@ jobs:
             # Start SSR and show status
             sudo supervisorctl start inertia-ssr &&
             sleep 5 &&
-            sudo supervisorctl status inertia-ssr &&
 
-            # Show logs for debugging
-            echo "Last 50 lines of SSR log:" &&
-            tail -n 50 /home/forge/earth-112/storage/logs/inertia-ssr.log
+            # Show process information
+            echo "Process Status:" &&
+            sudo supervisorctl status inertia-ssr &&
+            echo "\nProcess List:" &&
+            ps aux | grep "[n]ode.*ssr" &&
+
+            # Show both output and error logs
+            echo "\nOutput Log:" &&
+            tail -n 25 /home/forge/earth-112/storage/logs/inertia-ssr.log &&
+            echo "\nError Log:" &&
+            tail -n 25 /home/forge/earth-112/storage/logs/inertia-ssr.error.log
           '
