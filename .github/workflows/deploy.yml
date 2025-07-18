@@ -2,23 +2,29 @@ name: Deploy to Production via Laravel Forge
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    
+
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      
-    - name: Deploy to Laravel Forge
-      uses: jbrooksuk/laravel-forge-action@v1.0.4
-      with:
-        trigger_url: ${{ secrets.FORGE_DEPLOY_WEBHOOK }}
-        
-    - name: Deployment Status
-      run: |
-        echo "✅ Deployment triggered successfully!"
-        echo "🚀 Check your Laravel Forge dashboard for deployment progress"
-        echo "🔗 Site: https://your-domain.com"
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy to Laravel Forge
+        uses: jbrooksuk/laravel-forge-action@v1.0.4
+        with:
+          trigger_url: ${{ secrets.FORGE_DEPLOY_WEBHOOK }}
+
+      - name: Deployment Status
+        run: |
+          echo "✅ Deployment triggered successfully!"
+          echo "🚀 Check your Laravel Forge dashboard for deployment progress"
+          echo "🔗 Site: https://your-domain.com"
+
+      - name: Setup Supervisor for SSR
+        run: |
+          echo "Setting up Supervisor configuration for Inertia SSR..."
+          scp supervisor-inertia-ssr.conf forge@${{ secrets.FORGE_SERVER_IP }}:/home/forge/supervisor-configs/
+          ssh forge@${{ secrets.FORGE_SERVER_IP }} 'sudo cp /home/forge/supervisor-configs/supervisor-inertia-ssr.conf /etc/supervisor/conf.d/ && sudo supervisorctl reread && sudo supervisorctl update && sudo supervisorctl restart inertia-ssr'
