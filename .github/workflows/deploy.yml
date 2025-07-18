@@ -39,10 +39,10 @@ jobs:
 
           # Setup and restart supervisor
           ssh forge@${{ secrets.FORGE_HOST }} '
-            # Load NVM and use proper Node version
-            export NVM_DIR="$HOME/.nvm" &&
-            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" &&
-            nvm use 20 &&
+            # Check Node.js installation
+            echo "Node.js version and path:" &&
+            which node &&
+            node --version &&
 
             # Install dependencies and build SSR
             cd /home/forge/earth-112 &&
