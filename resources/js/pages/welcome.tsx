@@ -8,6 +8,7 @@ export default function Welcome() {
     return (
         <>
             <Head title="Welcome" />
+            {/* Test deployment - GitHub Actions integration */}
             <div className="min-h-screen bg-gray-50">
                 {/* Navigation */}
                 <nav className="bg-white shadow-sm">
