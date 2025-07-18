@@ -39,12 +39,26 @@ jobs:
 
           # Setup and restart supervisor
           ssh forge@${{ secrets.FORGE_HOST }} '
-            sudo cp /home/forge/earth-112/supervisor-inertia-ssr.conf /etc/supervisor/conf.d/ &&
-            sudo supervisorctl reread &&
-            sudo supervisorctl update &&
+            # Install dependencies and build SSR
             cd /home/forge/earth-112 &&
             npm ci &&
             npm run build:ssr &&
-            sudo supervisorctl restart inertia-ssr &&
-            sudo supervisorctl status inertia-ssr
+
+            # Setup supervisor
+            sudo cp /home/forge/earth-112/supervisor-inertia-ssr.conf /etc/supervisor/conf.d/ &&
+            sudo supervisorctl reread &&
+            sudo supervisorctl update &&
+
+            # Clear any existing processes
+            sudo supervisorctl stop inertia-ssr || true &&
+            sudo pkill -f "node.*ssr" || true &&
+
+            # Start SSR and show status
+            sudo supervisorctl start inertia-ssr &&
+            sleep 5 &&
+            sudo supervisorctl status inertia-ssr &&
+
+            # Show logs for debugging
+            echo "Last 50 lines of SSR log:" &&
+            tail -n 50 /home/forge/earth-112/storage/logs/inertia-ssr.log
           '
