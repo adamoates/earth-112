@@ -6,18 +6,19 @@ git pull origin main
 chmod +x disable-ssr.sh
 ./disable-ssr.sh
 
-# Additional SSR cleanup - remove any remaining SSR references
-echo "Performing additional SSR cleanup..."
-# Remove any SSR-related environment variables
-sed -i "/SSR/d" .env
-sed -i "/INERTIA_SSR/d" .env
+# Additional SSR cleanup - more targeted approach
+echo "Performing targeted SSR cleanup..."
+# Remove specific SSR-related environment variables only
+sed -i "/^INERTIA_SSR_PORT=/d" .env
+sed -i "/^SSR_URL=/d" .env
+sed -i "/^INERTIA_SSR_URL=/d" .env
+sed -i "s/^INERTIA_SSR=true/INERTIA_SSR=false/" .env
 
-# Clear all possible caches
+# Clear Laravel caches
 php artisan config:clear
 php artisan cache:clear
 php artisan view:clear
 php artisan route:clear
-php artisan optimize:clear
 
 # Install dependencies
 composer install --no-dev --optimize-autoloader --no-interaction

@@ -23,22 +23,15 @@ php artisan cache:clear
 # Disable SSR in the config
 sed -i "s/'enabled' => true/'enabled' => false/g" config/inertia.php
 
-# Update .env file - more comprehensive cleanup
-sed -i "s/INERTIA_SSR=true/INERTIA_SSR=false/" .env
-sed -i "/INERTIA_SSR_PORT/d" .env
-sed -i "/SSR_URL/d" .env
-sed -i "/INERTIA_SSR_URL/d" .env
+# Update .env file - more targeted cleanup
+sed -i "s/^INERTIA_SSR=true/INERTIA_SSR=false/" .env
+sed -i "/^INERTIA_SSR_PORT=/d" .env
+sed -i "/^SSR_URL=/d" .env
+sed -i "/^INERTIA_SSR_URL=/d" .env
 
 # Remove SSR-related files
 rm -rf bootstrap/ssr
 rm -rf storage/logs/ssr.*
-rm -rf storage/framework/cache/data/*
-rm -rf storage/framework/views/*
-
-# Clear any cached configurations
-rm -f bootstrap/cache/config.php
-rm -f bootstrap/cache/routes.php
-rm -f bootstrap/cache/views.php
 
 # Rebuild the cache
 php artisan config:cache
