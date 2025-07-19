@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 import { getCookie, setCookie } from '@/lib/utils';
 
-type Appearance = 'light' | 'dark' | 'system';
+export type Appearance = 'light' | 'dark' | 'system';
 
 export function useAppearance() {
     const [appearance, setAppearance] = useState<Appearance>('system');
