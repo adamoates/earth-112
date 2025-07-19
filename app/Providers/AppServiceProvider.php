@@ -14,11 +14,6 @@ class AppServiceProvider extends ServiceProvider
     {
         // Disable SSR completely
         Config::set('inertia.ssr.enabled', false);
-
-        // Use file cache during deployment to avoid database connection issues
-        if (app()->environment('production') && !app()->runningInConsole()) {
-            Config::set('cache.default', 'file');
-        }
     }
 
     /**
@@ -28,10 +23,5 @@ class AppServiceProvider extends ServiceProvider
     {
         // Ensure SSR remains disabled
         Config::set('inertia.ssr.enabled', false);
-
-        // Use file cache during deployment to avoid database connection issues
-        if (app()->environment('production')) {
-            Config::set('cache.default', 'file');
-        }
     }
 }
