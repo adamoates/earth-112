@@ -1,1 +1,0 @@
-import{j as o,$ as n,c as a}from"./app-BXtIj5jz.js";function i({className:e="",children:r,...t}){return o.jsx(n,{className:a("text-blue-600 underline decoration-gray-300 underline-offset-4 transition-colors duration-300 ease-out hover:decoration-current! dark:text-blue-400 dark:decoration-gray-500",e),...t,children:r})}export{i as T};
