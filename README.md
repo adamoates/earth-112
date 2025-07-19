@@ -57,3 +57,4 @@ DB_PASSWORD=your_development_password
 - `php artisan serve` - Start Laravel development server
 - `php artisan migrate` - Run database migrations # Trigger deployment
 # Test deployment with asset building
+# Trigger new deployment with latest assets
