@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Config;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,6 +20,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // Explicitly disable SSR to prevent connection attempts
+        Config::set('inertia.ssr.enabled', false);
+        Config::set('inertia.ssr.url', null);
+        Config::set('inertia.ssr.bundle', null);
+        Config::set('inertia.ssr.timeout', 0);
+        Config::set('inertia.ssr.ping_interval', 0);
     }
 }

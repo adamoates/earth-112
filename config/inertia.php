@@ -18,8 +18,9 @@ return [
     'ssr' => [
         'enabled' => false,
         'url' => null,
-        // 'bundle' => base_path('bootstrap/ssr/ssr.mjs'),
-
+        'bundle' => null,
+        'timeout' => 0,
+        'ping_interval' => 0,
     ],
 
     /*
