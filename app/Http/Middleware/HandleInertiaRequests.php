@@ -29,6 +29,22 @@ class HandleInertiaRequests extends Middleware
     }
 
     /**
+     * Override to disable SSR completely
+     */
+    protected function getSsrUrl(): ?string
+    {
+        return null;
+    }
+
+    /**
+     * Override to disable SSR completely
+     */
+    protected function isSsrEnabled(): bool
+    {
+        return false;
+    }
+
+    /**
      * Define the props that are shared by default.
      *
      * @see https://inertiajs.com/shared-data
@@ -46,7 +62,7 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $request->user(),
             ],
-            'ziggy' => fn (): array => [
+            'ziggy' => fn(): array => [
                 ...(new Ziggy)->toArray(),
                 'location' => $request->url(),
             ],
