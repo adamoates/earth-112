@@ -23,14 +23,6 @@ jobs:
       - name: Build assets
         run: npm run build
 
-      - name: Commit built assets
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add public/build/
-          git commit -m "Build assets for production" || echo "No changes to commit"
-          git push
-
       - name: Build Status
         run: |
           echo "✅ Assets built successfully!"
@@ -39,4 +31,4 @@ jobs:
           echo "⏱️ Deployment typically takes 2-5 minutes"
 
 # Note: Forge deployment is handled automatically by Forge when it detects pushes to main
-# The FORGE_DEPLOY_WEBHOOK secret needs to be configured for manual triggering
+# The built assets need to be committed manually or Forge needs to build them on the server
