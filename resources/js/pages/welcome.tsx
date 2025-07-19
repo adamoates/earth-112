@@ -1,3 +1,4 @@
+import AppearanceToggleDropdown from '@/components/appearance-dropdown';
 import { type SharedData } from '@/types';
 import { Head, Link, usePage } from '@inertiajs/react';
 import { Cloud, Lock, Zap } from 'lucide-react';
@@ -18,6 +19,7 @@ export default function Welcome() {
                                 <h1 className="text-xl font-semibold text-gray-900 dark:text-white">earth-112</h1>
                             </div>
                             <div className="flex items-center space-x-4">
+                                <AppearanceToggleDropdown />
                                 {auth.user ? (
                                     <Link
                                         href={route('dashboard')}
