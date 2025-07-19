@@ -48,4 +48,4 @@ touch /tmp/fpmlock 2>/dev/null || true
 ( flock -w 10 9 || exit 1
     echo 'Reloading PHP FPM...'; sudo -S service $FORGE_PHP_FPM reload ) 9</tmp/fpmlock
 
-echo "Deployment completed successfully!" 
+echo "Deployment completed successfully!" # Updated deployment script
