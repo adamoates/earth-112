@@ -14,6 +14,10 @@ sed -i "/^SSR_URL=/d" .env
 sed -i "/^INERTIA_SSR_URL=/d" .env
 sed -i "s/^INERTIA_SSR=true/INERTIA_SSR=false/" .env
 
+# Remove any remaining SSR references from .env
+sed -i "/SSR/d" .env
+sed -i "/inertia.*ssr/d" .env
+
 # Clear Laravel caches (skip view caching for React components)
 php artisan config:clear
 php artisan cache:clear

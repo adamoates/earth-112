@@ -28,6 +28,10 @@ sed -i "/^INERTIA_SSR_PORT=/d" .env
 sed -i "/^SSR_URL=/d" .env
 sed -i "/^INERTIA_SSR_URL=/d" .env
 
+# Remove any remaining SSR references from .env
+sed -i "/SSR/d" .env
+sed -i "/inertia.*ssr/d" .env
+
 # Remove SSR-related files
 rm -rf bootstrap/ssr
 rm -rf storage/logs/ssr.*
