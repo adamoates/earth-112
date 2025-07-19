@@ -56,3 +56,4 @@ DB_PASSWORD=your_development_password
 - `npm run dev` - Start Vite development server
 - `php artisan serve` - Start Laravel development server
 - `php artisan migrate` - Run database migrations # Trigger deployment
+# Test deployment with asset building
