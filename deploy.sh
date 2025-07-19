@@ -10,9 +10,10 @@ echo "Resetting git state..."
 git reset --hard HEAD
 git clean -fd
 
-# Pull latest changes
-echo "Pulling latest changes..."
-git pull origin $FORGE_SITE_BRANCH
+# Handle divergent branches by forcing a reset to match remote
+echo "Handling divergent branches..."
+git fetch origin $FORGE_SITE_BRANCH
+git reset --hard origin/$FORGE_SITE_BRANCH
 
 # Install PHP dependencies
 echo "Installing PHP dependencies..."
