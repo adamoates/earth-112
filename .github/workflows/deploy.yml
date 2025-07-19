@@ -21,4 +21,4 @@ jobs:
         run: |
           echo "✅ Deployment triggered successfully!"
           echo "🚀 Check your Laravel Forge dashboard for deployment progress"
-          echo "🔗 Site: https://your-domain.com"
+          echo "🔗 Site: https://earth-112.com"

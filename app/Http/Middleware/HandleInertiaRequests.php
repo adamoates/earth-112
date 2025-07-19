@@ -29,22 +29,6 @@ class HandleInertiaRequests extends Middleware
     }
 
     /**
-     * Override to disable SSR completely
-     */
-    protected function getSsrUrl(): ?string
-    {
-        return null;
-    }
-
-    /**
-     * Override to disable SSR completely
-     */
-    protected function isSsrEnabled(): bool
-    {
-        return false;
-    }
-
-    /**
      * Define the props that are shared by default.
      *
      * @see https://inertiajs.com/shared-data

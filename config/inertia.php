@@ -7,20 +7,13 @@ return [
     | Server Side Rendering
     |--------------------------------------------------------------------------
     |
-    | These options configures if and how Inertia uses Server Side Rendering
-    | to pre-render each initial request made to your application's pages
-    | so that server rendered HTML is delivered for the user's browser.
-    |
-    | See: https://inertiajs.com/server-side-rendering
+    | SSR is completely disabled for this application.
+    | All rendering happens on the client-side.
     |
     */
 
     'ssr' => [
         'enabled' => false,
-        'url' => null,
-        'bundle' => null,
-        'timeout' => 0,
-        'ping_interval' => 0,
     ],
 
     /*
