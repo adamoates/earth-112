@@ -27,5 +27,5 @@ function Input({ className, type, ...props }: React.ComponentProps<"input">) {
   )
 }
 
-// Force rebuild for production deployment - final update
+// Force rebuild for production deployment - SSR fix
 export { Input }
