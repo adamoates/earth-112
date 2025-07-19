@@ -20,7 +20,7 @@
         })();
     </script>
 
-    {{-- Inline style to set the HTML background color based on our theme in app.css --}}
+    {{-- Inline style to set the HTML and body background color based on our theme --}}
     <style>
         html {
             background-color: oklch(1 0 0);
@@ -28,6 +28,11 @@
 
         html.dark {
             background-color: oklch(0.145 0 0);
+        }
+
+        body {
+            background-color: inherit;
+            min-height: 100vh;
         }
     </style>
 
