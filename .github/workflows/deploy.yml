@@ -16,9 +16,11 @@ jobs:
         uses: jbrooksuk/laravel-forge-action@v1.0.4
         with:
           trigger_url: ${{ secrets.FORGE_DEPLOY_WEBHOOK }}
+        continue-on-error: false
 
       - name: Deployment Status
         run: |
           echo "✅ Deployment triggered successfully!"
           echo "🚀 Check your Laravel Forge dashboard for deployment progress"
           echo "🔗 Site: https://earth-112.com"
+          echo "⏱️ Deployment typically takes 2-5 minutes"
