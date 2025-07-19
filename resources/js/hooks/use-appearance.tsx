@@ -1,73 +1,58 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
-export type Appearance = 'light' | 'dark' | 'system';
+import { getCookie, setCookie } from '@/lib/utils';
 
-const prefersDark = () => {
-    if (typeof window === 'undefined') {
-        return false;
-    }
-
-    return window.matchMedia('(prefers-color-scheme: dark)').matches;
-};
-
-const setCookie = (name: string, value: string, days = 365) => {
-    if (typeof document === 'undefined') {
-        return;
-    }
-
-    const maxAge = days * 24 * 60 * 60;
-    document.cookie = `${name}=${value};path=/;max-age=${maxAge};SameSite=Lax`;
-};
-
-const applyTheme = (appearance: Appearance) => {
-    const isDark = appearance === 'dark' || (appearance === 'system' && prefersDark());
-
-    document.documentElement.classList.toggle('dark', isDark);
-};
-
-const mediaQuery = () => {
-    if (typeof window === 'undefined') {
-        return null;
-    }
-
-    return window.matchMedia('(prefers-color-scheme: dark)');
-};
-
-const handleSystemThemeChange = () => {
-    const currentAppearance = localStorage.getItem('appearance') as Appearance;
-    applyTheme(currentAppearance || 'system');
-};
-
-export function initializeTheme() {
-    const savedAppearance = (localStorage.getItem('appearance') as Appearance) || 'system';
-
-    applyTheme(savedAppearance);
-
-    // Add the event listener for system theme changes...
-    mediaQuery()?.addEventListener('change', handleSystemThemeChange);
-}
+type Appearance = 'light' | 'dark' | 'system';
 
 export function useAppearance() {
     const [appearance, setAppearance] = useState<Appearance>('system');
 
-    const updateAppearance = useCallback((mode: Appearance) => {
-        setAppearance(mode);
-
-        // Store in localStorage for client-side persistence...
-        localStorage.setItem('appearance', mode);
-
-        // Store in cookie for SSR...
-        setCookie('appearance', mode);
-
-        applyTheme(mode);
+    useEffect(() => {
+        // Get initial appearance from cookie or default to system
+        const savedAppearance = getCookie('appearance') as Appearance;
+        if (savedAppearance && ['light', 'dark', 'system'].includes(savedAppearance)) {
+            setAppearance(savedAppearance);
+        }
     }, []);
 
     useEffect(() => {
-        const savedAppearance = localStorage.getItem('appearance') as Appearance | null;
-        updateAppearance(savedAppearance || 'system');
+        const root = window.document.documentElement;
 
-        return () => mediaQuery()?.removeEventListener('change', handleSystemThemeChange);
-    }, [updateAppearance]);
+        root.classList.remove('light', 'dark');
 
-    return { appearance, updateAppearance } as const;
+        if (appearance === 'system') {
+            const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            root.classList.add(systemTheme);
+            return;
+        }
+
+        root.classList.add(appearance);
+    }, [appearance]);
+
+    const updateAppearance = (newAppearance: Appearance) => {
+        setAppearance(newAppearance);
+        // Store in cookie for persistence...
+        setCookie('appearance', newAppearance, 365);
+    };
+
+    return {
+        appearance,
+        updateAppearance,
+    };
+}
+
+export function initializeTheme() {
+    const savedAppearance = getCookie('appearance') as Appearance;
+    const appearance = savedAppearance && ['light', 'dark', 'system'].includes(savedAppearance) ? savedAppearance : 'system';
+
+    const root = window.document.documentElement;
+    root.classList.remove('light', 'dark');
+
+    if (appearance === 'system') {
+        const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        root.classList.add(systemTheme);
+        return;
+    }
+
+    root.classList.add(appearance);
 }
