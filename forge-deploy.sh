@@ -2,8 +2,9 @@ cd /home/forge/earth-112
 
 git pull origin main
 
-# Update Inertia configuration
-php update-inertia-config.php
+# Ensure SSR is completely disabled
+chmod +x disable-ssr.sh
+./disable-ssr.sh
 
 # Install dependencies
 composer install --no-dev --optimize-autoloader --no-interaction
