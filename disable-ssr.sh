@@ -1,30 +1,44 @@
 #!/bin/bash
 
-# Stop any running SSR processes
-sudo supervisorctl stop inertia-ssr || true
+# Stop any running Node SSR processes
 sudo pkill -f "node.*ssr" || true
 
-# Remove supervisor config
-sudo rm -f /etc/supervisor/conf.d/supervisor-inertia-ssr.conf
-sudo supervisorctl reread
-sudo supervisorctl update
+# Clean up Supervisor only if it exists
+if command -v supervisorctl &> /dev/null; then
+    echo "Cleaning up Supervisor configuration..."
+    sudo supervisorctl stop inertia-ssr 2>/dev/null || true
+    sudo rm -f /etc/supervisor/conf.d/supervisor-inertia-ssr.conf 2>/dev/null || true
+    sudo supervisorctl reread 2>/dev/null || true
+    sudo supervisorctl update 2>/dev/null || true
+else
+    echo "Supervisor not found, skipping Supervisor cleanup..."
+fi
 
 # Clear the Laravel cache
 php artisan config:clear
 php artisan view:clear
 php artisan route:clear
+php artisan cache:clear
 
 # Disable SSR in the config
 sed -i "s/'enabled' => true/'enabled' => false/g" config/inertia.php
 
-# Update .env file
+# Update .env file - more comprehensive cleanup
 sed -i "s/INERTIA_SSR=true/INERTIA_SSR=false/" .env
 sed -i "/INERTIA_SSR_PORT/d" .env
 sed -i "/SSR_URL/d" .env
+sed -i "/INERTIA_SSR_URL/d" .env
 
 # Remove SSR-related files
 rm -rf bootstrap/ssr
 rm -rf storage/logs/ssr.*
+rm -rf storage/framework/cache/data/*
+rm -rf storage/framework/views/*
+
+# Clear any cached configurations
+rm -f bootstrap/cache/config.php
+rm -f bootstrap/cache/routes.php
+rm -f bootstrap/cache/views.php
 
 # Rebuild the cache
 php artisan config:cache

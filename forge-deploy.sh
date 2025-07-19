@@ -6,6 +6,19 @@ git pull origin main
 chmod +x disable-ssr.sh
 ./disable-ssr.sh
 
+# Additional SSR cleanup - remove any remaining SSR references
+echo "Performing additional SSR cleanup..."
+# Remove any SSR-related environment variables
+sed -i "/SSR/d" .env
+sed -i "/INERTIA_SSR/d" .env
+
+# Clear all possible caches
+php artisan config:clear
+php artisan cache:clear
+php artisan view:clear
+php artisan route:clear
+php artisan optimize:clear
+
 # Install dependencies
 composer install --no-dev --optimize-autoloader --no-interaction
 
@@ -22,7 +35,7 @@ mkdir -p storage/logs bootstrap/cache
 sudo chown -R forge:forge storage bootstrap/cache
 sudo chmod -R 775 storage bootstrap/cache
 
-# Clear all Laravel caches
+# Clear all Laravel caches again after build
 php artisan optimize:clear
 
 # Rebuild Laravel caches
