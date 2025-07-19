@@ -1,11 +1,11 @@
-name: Deploy to Production via Laravel Forge
+name: Build Assets for Production
 
 on:
   push:
     branches: [main]
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
 
     steps:
@@ -23,15 +23,20 @@ jobs:
       - name: Build assets
         run: npm run build
 
-      - name: Deploy to Laravel Forge
-        uses: jbrooksuk/laravel-forge-action@v1.0.4
-        with:
-          trigger_url: ${{ secrets.FORGE_DEPLOY_WEBHOOK }}
-        continue-on-error: false
-
-      - name: Deployment Status
+      - name: Commit built assets
         run: |
-          echo "✅ Deployment triggered successfully!"
-          echo "🚀 Check your Laravel Forge dashboard for deployment progress"
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add public/build/
+          git commit -m "Build assets for production" || echo "No changes to commit"
+          git push
+
+      - name: Build Status
+        run: |
+          echo "✅ Assets built successfully!"
+          echo "🚀 Forge will automatically deploy when it detects the push"
           echo "🔗 Site: https://earth-112.com"
           echo "⏱️ Deployment typically takes 2-5 minutes"
+
+# Note: Forge deployment is handled automatically by Forge when it detects pushes to main
+# The FORGE_DEPLOY_WEBHOOK secret needs to be configured for manual triggering
