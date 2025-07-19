@@ -11,6 +11,33 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Fetch full history for better merge handling
+
+      - name: Configure Git and pull latest changes
+        run: |
+          # Configure for CI/CD safety
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          git config --global pull.rebase false
+
+          echo "Pulling latest changes with fallback strategies..."
+
+          # Strategy 1: Try fast-forward
+          if git pull --ff-only origin main; then
+            echo "✅ Fast-forward pull successful"
+          # Strategy 2: Try merge
+          elif git pull --no-rebase origin main; then
+            echo "✅ Merge pull successful"
+          # Strategy 3: Force reset and pull
+          else
+            echo "⚠️ Pull failed, forcing reset..."
+            git fetch origin main
+            git reset --hard origin/main
+            echo "✅ Forced reset to remote successful"
+          fi
+
+          echo "Current commit: $(git rev-parse HEAD)"
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
