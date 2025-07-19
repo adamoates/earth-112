@@ -5,19 +5,20 @@ set -e
 
 echo "Starting deployment..."
 
-# Reset any local changes and clean untracked files
+# Reset any local changes and clean untracked files to handle git conflicts
 echo "Resetting git state..."
 git reset --hard HEAD
 git clean -fd
 
 # Pull latest changes
 echo "Pulling latest changes..."
-git pull origin main
+git pull origin $FORGE_SITE_BRANCH
 
-# Install dependencies
+# Install PHP dependencies
 echo "Installing PHP dependencies..."
-composer install --no-dev --optimize-autoloader
+$FORGE_COMPOSER install --no-dev --no-interaction --prefer-dist --optimize-autoloader
 
+# Install Node.js dependencies
 echo "Installing Node.js dependencies..."
 npm ci
 
@@ -25,19 +26,25 @@ npm ci
 echo "Building assets..."
 npm run build
 
-# Clear caches
+# Clear Laravel caches
 echo "Clearing Laravel caches..."
-php artisan cache:clear
-php artisan config:clear
-php artisan route:clear
-php artisan view:clear
+$FORGE_PHP artisan cache:clear
+$FORGE_PHP artisan config:clear
+$FORGE_PHP artisan route:clear
+$FORGE_PHP artisan view:clear
 
 # Run migrations
 echo "Running migrations..."
-php artisan migrate --force
+$FORGE_PHP artisan migrate --force
 
 # Optimize for production
 echo "Optimizing for production..."
-php artisan optimize
+$FORGE_PHP artisan optimize
+
+# Prevent concurrent php-fpm reloads
+echo "Reloading PHP FPM..."
+touch /tmp/fpmlock 2>/dev/null || true
+( flock -w 10 9 || exit 1
+    echo 'Reloading PHP FPM...'; sudo -S service $FORGE_PHP_FPM reload ) 9</tmp/fpmlock
 
 echo "Deployment completed successfully!" 
