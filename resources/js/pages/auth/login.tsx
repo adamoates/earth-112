@@ -42,7 +42,9 @@ export default function Login({ status, canResetPassword }: LoginProps) {
             <form className="flex flex-col gap-6" onSubmit={submit}>
                 <div className="grid gap-6">
                     <div className="grid gap-2">
-                        <Label htmlFor="email">Email address</Label>
+                        <Label htmlFor="email" className="text-gray-900 dark:text-white">
+                            Email address
+                        </Label>
                         <Input
                             id="email"
                             type="email"
@@ -59,7 +61,9 @@ export default function Login({ status, canResetPassword }: LoginProps) {
 
                     <div className="grid gap-2">
                         <div className="flex items-center">
-                            <Label htmlFor="password">Password</Label>
+                            <Label htmlFor="password" className="text-gray-900 dark:text-white">
+                                Password
+                            </Label>
                             {canResetPassword && (
                                 <TextLink href={route('password.request')} className="ml-auto text-sm text-blue-600 hover:text-blue-700" tabIndex={5}>
                                     Forgot password?
@@ -87,18 +91,20 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                             onClick={() => setData('remember', !data.remember)}
                             tabIndex={3}
                         />
-                        <Label htmlFor="remember">Remember me</Label>
+                        <Label htmlFor="remember" className="text-gray-900 dark:text-white">
+                            Remember me
+                        </Label>
                     </div>
 
-                    <Button type="submit" className="mt-4 w-full bg-blue-600 hover:bg-blue-700 text-white" tabIndex={4} disabled={processing}>
+                    <Button type="submit" className="mt-4 w-full bg-blue-600 text-white hover:bg-blue-700" tabIndex={4} disabled={processing}>
                         {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
                         Log in
                     </Button>
                 </div>
 
-                <div className="text-center text-sm text-gray-600">
+                <div className="text-center text-sm text-gray-600 dark:text-gray-400">
                     Don't have an account?{' '}
-                    <TextLink href={route('register')} tabIndex={5} className="text-blue-600 hover:text-blue-700 font-medium">
+                    <TextLink href={route('register')} tabIndex={5} className="font-medium text-blue-600 hover:text-blue-700">
                         Sign up
                     </TextLink>
                 </div>
