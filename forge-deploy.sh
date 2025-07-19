@@ -2,6 +2,9 @@ cd /home/forge/earth-112
 
 git pull origin main
 
+# Update Inertia configuration
+php update-inertia-config.php
+
 # Install dependencies
 composer install --no-dev --optimize-autoloader --no-interaction
 
