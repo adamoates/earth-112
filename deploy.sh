@@ -10,10 +10,37 @@ echo "Resetting git state..."
 git reset --hard HEAD
 git clean -fd
 
-# Handle divergent branches by forcing a reset to match remote
+# Handle divergent branches with multiple strategies
 echo "Handling divergent branches..."
+
+# Strategy 1: Try to fetch and reset to remote
+echo "Attempting git fetch and reset..."
 git fetch origin $FORGE_SITE_BRANCH
 git reset --hard origin/$FORGE_SITE_BRANCH
+
+# If that fails, try Strategy 2: Force pull with rebase
+if [ $? -ne 0 ]; then
+    echo "Reset failed, trying git pull with rebase..."
+    git pull --rebase origin $FORGE_SITE_BRANCH
+fi
+
+# If that fails, try Strategy 3: Force pull with merge
+if [ $? -ne 0 ]; then
+    echo "Rebase failed, trying git pull with merge..."
+    git pull --no-rebase origin $FORGE_SITE_BRANCH
+fi
+
+# If all else fails, try Strategy 4: Force reset to remote
+if [ $? -ne 0 ]; then
+    echo "All pull strategies failed, forcing reset..."
+    git fetch origin $FORGE_SITE_BRANCH
+    git reset --hard origin/$FORGE_SITE_BRANCH || {
+        echo "ERROR: Unable to sync with remote branch"
+        exit 1
+    }
+fi
+
+echo "Successfully synced with remote branch"
 
 # Install PHP dependencies
 echo "Installing PHP dependencies..."
@@ -48,4 +75,4 @@ touch /tmp/fpmlock 2>/dev/null || true
 ( flock -w 10 9 || exit 1
     echo 'Reloading PHP FPM...'; sudo -S service $FORGE_PHP_FPM reload ) 9</tmp/fpmlock
 
-echo "Deployment completed successfully!" # Updated deployment script
+echo "Deployment completed successfully!"
