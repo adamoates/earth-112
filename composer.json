@@ -40,10 +40,6 @@
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump"
         ],
-        "post-install-cmd": [
-            "@php artisan config:clear --no-interaction",
-            "@php artisan cache:clear --no-interaction"
-        ],
         "post-update-cmd": [
             "@php artisan vendor:publish --tag=laravel-assets --ansi --force"
         ],
