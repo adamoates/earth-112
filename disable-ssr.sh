@@ -14,9 +14,8 @@ else
     echo "Supervisor not found, skipping Supervisor cleanup..."
 fi
 
-# Clear the Laravel cache
+# Clear the Laravel cache (skip view caching for React components)
 php artisan config:clear
-php artisan view:clear
 php artisan route:clear
 php artisan cache:clear
 
@@ -33,9 +32,8 @@ sed -i "/^INERTIA_SSR_URL=/d" .env
 rm -rf bootstrap/ssr
 rm -rf storage/logs/ssr.*
 
-# Rebuild the cache
+# Rebuild the cache (skip view caching)
 php artisan config:cache
 php artisan route:cache
-php artisan view:cache
 
 echo "SSR has been completely disabled."
