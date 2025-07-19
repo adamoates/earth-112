@@ -23,9 +23,6 @@ php artisan optimize:clear
 php artisan config:cache
 php artisan route:cache
 
-# Run migrations
-php artisan migrate --force
-
 # Reload PHP-FPM
 echo "🔄 Reloading PHP-FPM..."
 sudo systemctl reload php8.3-fpm
