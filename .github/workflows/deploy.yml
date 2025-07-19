@@ -1,18 +1,16 @@
-name: Build and Deploy to Production
+name: Build Assets for Production
 
 on:
   push:
     branches: [main]
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -25,17 +23,12 @@ jobs:
       - name: Build assets
         run: npm run build
 
-      - name: Commit and push built assets
+      - name: Build Status
         run: |
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-          git add -f public/build/
-          git commit -m "Build assets for production" || echo "No changes to commit"
-          git push
-
-      - name: Deploy Status
-        run: |
-          echo "✅ Assets built and committed!"
-          echo "🚀 Forge should automatically deploy the new assets"
+          echo "✅ Assets built successfully!"
+          echo "🚀 Forge will deploy the latest code"
           echo "🔗 Site: https://earth-112.com"
           echo "⏱️ Check Forge dashboard for deployment progress"
+
+# Note: Forge handles deployment automatically when it detects pushes to main
+# The built assets need to be built on the server or committed to the repository
