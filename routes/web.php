@@ -13,6 +13,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return Inertia::render('dashboard');
     })->name('dashboard');
 
+    Route::get('security', function () {
+        return Inertia::render('security');
+    })->name('security');
+
+    Route::get('analytics', function () {
+        return Inertia::render('analytics');
+    })->name('analytics');
+
     // Admin-only routes
     Route::middleware(['role:admin'])->group(function () {
         Route::resource('users', UserController::class);
