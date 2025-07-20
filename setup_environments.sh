@@ -8,7 +8,7 @@ mkdir -p config/environments
 
 # Local Environment Setup
 echo "🔧 Setting up LOCAL environment..."
-cat > config/environments/local.env << 'EOF'
+cat > config/environments/.env.local << 'EOF'
 APP_NAME=earth-112
 APP_ENV=local
 APP_KEY=base64:bQOPevBUR9aYNA7M9t+Ac9Z1sAUprSw51AXIrcEF0xc=
@@ -31,7 +31,7 @@ EOF
 
 # Staging Environment Setup
 echo "🔧 Setting up STAGING environment..."
-cat > config/environments/staging.env << 'EOF'
+cat > config/environments/.env.staging << 'EOF'
 APP_NAME=earth-112
 APP_ENV=staging
 APP_KEY=base64:bQOPevBUR9aYNA7M9t+Ac9Z1sAUprSw51AXIrcEF0xc=
@@ -54,7 +54,7 @@ EOF
 
 # Production Environment Setup
 echo "🔧 Setting up PRODUCTION environment..."
-cat > config/environments/production.env << 'EOF'
+cat > config/environments/.env.production << 'EOF'
 APP_NAME=earth-112
 APP_ENV=production
 APP_KEY=base64:bQOPevBUR9aYNA7M9t+Ac9Z1sAUprSw51AXIrcEF0xc=
@@ -78,13 +78,13 @@ EOF
 echo "✅ Environment configurations created!"
 echo ""
 echo "📁 Environment files:"
-echo "  - config/environments/local.env"
-echo "  - config/environments/staging.env"
-echo "  - config/environments/production.env"
+echo "  - config/environments/.env.local"
+echo "  - config/environments/.env.staging"
+echo "  - config/environments/.env.production"
 echo ""
 echo "⚠️  IMPORTANT: Update staging and production passwords in the config files!"
 echo ""
 echo "To switch environments:"
-echo "  cp config/environments/local.env .env      # Local development"
-echo "  cp config/environments/staging.env .env    # Staging"
-echo "  cp config/environments/production.env .env  # Production" 
+echo "  cp config/environments/.env.local .env      # Local development"
+echo "  cp config/environments/.env.staging .env    # Staging"
+echo "  cp config/environments/.env.production .env  # Production" 

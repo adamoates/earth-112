@@ -70,19 +70,19 @@ php artisan serve
 - **Database**: `earth_112_dev` (live data)
 - **Host**: `127.0.0.1:3307`
 - **User**: `forge`
-- **Password**: Update in `config/environments/staging.env`
+- **Password**: Update in `config/environments/.env.staging`
 
 ### Production Environment
 - **Database**: `earth_112_dev` (live data)
 - **Host**: `127.0.0.1:3307`
 - **User**: `forge`
-- **Password**: Update in `config/environments/production.env`
+- **Password**: Update in `config/environments/.env.production`
 
 ## 🔧 Environment Files
 
-- `config/environments/local.env` - Local development configuration
-- `config/environments/staging.env` - Staging configuration
-- `config/environments/production.env` - Production configuration
+- `config/environments/.env.local` - Local development configuration
+- `config/environments/.env.staging` - Staging configuration
+- `config/environments/.env.production` - Production configuration
 
 ## ⚠️ Important Notes
 

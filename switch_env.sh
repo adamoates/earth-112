@@ -6,40 +6,40 @@ echo "================================="
 case "$1" in
     "local")
         echo "🔄 Switching to LOCAL environment..."
-        cp config/environments/local.env .env
+        cp config/environments/.env.local .env
         echo "✅ Now using local MySQL database"
         echo "📊 Database: earth_112_local"
         echo "🚀 Run: php artisan serve"
         ;;
     "staging")
         echo "🔄 Switching to STAGING environment..."
-        cp config/environments/staging.env .env
+        cp config/environments/.env.staging .env
         echo "✅ Now using staging database (live data)"
         echo "⚠️  Be careful - you're connected to live data!"
         echo "🚀 Run: php artisan serve"
         ;;
     "production")
         echo "🔄 Switching to PRODUCTION environment..."
-        cp config/environments/production.env .env
+        cp config/environments/.env.production .env
         echo "✅ Now using production configuration"
         echo "⚠️  EXTREME CARE - Production environment!"
         ;;
     "develop")
         echo "🔄 Switching to DEVELOP branch..."
         git checkout develop
-        cp config/environments/local.env .env
+        cp config/environments/.env.local .env
         echo "✅ Now on develop branch with local database"
         ;;
     "staging-branch")
         echo "🔄 Switching to STAGING branch..."
         git checkout staging
-        cp config/environments/staging.env .env
+        cp config/environments/.env.staging .env
         echo "✅ Now on staging branch with staging database"
         ;;
     "main")
         echo "🔄 Switching to MAIN branch..."
         git checkout main
-        cp config/environments/production.env .env
+        cp config/environments/.env.production .env
         echo "✅ Now on main branch with production config"
         ;;
     *)
