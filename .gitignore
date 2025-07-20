@@ -7,6 +7,7 @@
 .env
 .env.backup
 .env.production
+.env.production.backup
 .phpunit.result.cache
 Homestead.json
 Homestead.yaml
@@ -15,3 +16,6 @@ npm-debug.log
 yarn-error.log
 /.fleet
 /.idea
+setup_local_dev.sh
+switch_db.sh
+database/database.sqlite
