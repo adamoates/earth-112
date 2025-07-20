@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\InvitationController;
 
 Route::get('/', function () {
     return Inertia::render('welcome');
@@ -24,6 +25,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Admin-only routes
     Route::middleware(['role:admin'])->group(function () {
         Route::resource('users', UserController::class);
+        Route::resource('invitations', InvitationController::class);
+        Route::get('settings', function () {
+            return Inertia::render('settings/index');
+        })->name('settings');
     });
 });
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\Invitation;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -32,15 +33,36 @@ class RegisteredUserController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
+            'email' => 'required|string|lowercase|email|max:255|unique:' . User::class,
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'invitation_code' => 'required|string|exists:invitations,code',
         ]);
+
+        // Find and validate the invitation
+        $invitation = Invitation::where('code', $request->invitation_code)->first();
+
+        if (!$invitation || !$invitation->isValid()) {
+            return back()->withErrors([
+                'invitation_code' => 'Invalid or expired invitation code.',
+            ]);
+        }
+
+        // Check if invitation is for specific email
+        if ($invitation->email && $invitation->email !== $request->email) {
+            return back()->withErrors([
+                'invitation_code' => 'This invitation is for a different email address.',
+            ]);
+        }
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'role' => $invitation->role,
         ]);
+
+        // Mark invitation as used
+        $invitation->markAsUsed($user->id);
 
         event(new Registered($user));
 

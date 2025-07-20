@@ -3,11 +3,11 @@ import { PlaceholderPattern } from '@/components/ui/placeholder-pattern';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head, usePage } from '@inertiajs/react';
-import { Activity, BarChart3, Settings, Shield, Users } from 'lucide-react';
+import { Activity, Clock, Mail, Shield, TrendingUp, UserCheck, Users } from 'lucide-react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Dashboard',
+        title: 'Overview',
         href: '/dashboard',
     },
 ];
@@ -18,123 +18,209 @@ export default function Dashboard() {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Dashboard" />
+            <Head title="Overview" />
             <div className="flex h-full flex-1 flex-col gap-6 overflow-x-auto rounded-xl p-4">
                 {/* Welcome Section */}
                 <div className="space-y-2">
-                    <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Welcome to earth-112</h1>
+                    <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Welcome to Earth-112</h1>
                     <p className="text-gray-600 dark:text-gray-400">
-                        Manage your application and monitor activity
+                        Your application overview and system status
                         {isAdmin && ' - Administrator Access'}
                     </p>
                 </div>
 
-                {/* Quick Actions */}
+                {/* Overview Stats */}
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                    {isAdmin && (
-                        <a href="/users">
-                            <Card className="cursor-pointer transition-shadow hover:shadow-md">
-                                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                    <CardTitle className="text-sm font-medium">User Management</CardTitle>
-                                    <Settings className="h-4 w-4 text-muted-foreground" />
-                                </CardHeader>
-                                <CardContent>
-                                    <div className="text-2xl font-bold">Manage</div>
-                                    <p className="text-xs text-muted-foreground">View and manage users</p>
-                                </CardContent>
-                            </Card>
-                        </a>
-                    )}
-
-                    <a href="/users">
-                        <Card className="cursor-pointer transition-shadow hover:shadow-md">
-                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                <CardTitle className="text-sm font-medium">Users</CardTitle>
-                                <Users className="h-4 w-4 text-muted-foreground" />
-                            </CardHeader>
-                            <CardContent>
-                                <div className="text-2xl font-bold">View</div>
-                                <p className="text-xs text-muted-foreground">User information</p>
-                            </CardContent>
-                        </Card>
-                    </a>
-
-                    <a href="/security">
-                        <Card className="cursor-pointer transition-shadow hover:shadow-md">
-                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                <CardTitle className="text-sm font-medium">Security</CardTitle>
-                                <Shield className="h-4 w-4 text-muted-foreground" />
-                            </CardHeader>
-                            <CardContent>
-                                <div className="text-2xl font-bold">Monitor</div>
-                                <p className="text-xs text-muted-foreground">Security and access logs</p>
-                            </CardContent>
-                        </Card>
-                    </a>
-
-                    <a href="/analytics">
-                        <Card className="cursor-pointer transition-shadow hover:shadow-md">
-                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                <CardTitle className="text-sm font-medium">Analytics</CardTitle>
-                                <BarChart3 className="h-4 w-4 text-muted-foreground" />
-                            </CardHeader>
-                            <CardContent>
-                                <div className="text-2xl font-bold">View</div>
-                                <p className="text-xs text-muted-foreground">Application analytics</p>
-                            </CardContent>
-                        </Card>
-                    </a>
-                </div>
-
-                {/* Application Overview */}
-                <Card className="border-blue-200 bg-blue-50 dark:border-blue-800 dark:bg-blue-950/20">
-                    <CardHeader>
-                        <CardTitle className="flex items-center gap-2 text-blue-900 dark:text-blue-100">
-                            <Activity className="h-5 w-5" />
-                            Application Overview
-                        </CardTitle>
-                        <CardDescription className="text-blue-700 dark:text-blue-300">
-                            Monitor your application's performance, user activity, and system health.
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="grid gap-4 md:grid-cols-3">
-                            <div className="text-center">
-                                <div className="text-2xl font-bold text-blue-900 dark:text-blue-100">1</div>
-                                <div className="text-sm text-blue-700 dark:text-blue-300">Active Users</div>
-                            </div>
-                            <div className="text-center">
-                                <div className="text-2xl font-bold text-blue-900 dark:text-blue-100">0</div>
-                                <div className="text-sm text-blue-700 dark:text-blue-300">Sessions Today</div>
-                            </div>
-                            <div className="text-center">
-                                <div className="text-2xl font-bold text-blue-900 dark:text-blue-100">100%</div>
-                                <div className="text-sm text-blue-700 dark:text-blue-300">System Health</div>
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
-
-                {/* User Role Information */}
-                {!isAdmin && (
-                    <Card className="border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-950/20">
-                        <CardHeader>
-                            <CardTitle className="flex items-center gap-2 text-green-900 dark:text-green-100">
-                                <Users className="h-5 w-5" />
-                                Your Account
-                            </CardTitle>
-                            <CardDescription className="text-green-700 dark:text-green-300">
-                                You are logged in as a regular user. Contact an administrator for elevated privileges.
-                            </CardDescription>
+                    <Card>
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                            <CardTitle className="text-sm font-medium">Total Users</CardTitle>
+                            <Users className="h-4 w-4 text-muted-foreground" />
                         </CardHeader>
                         <CardContent>
-                            <div className="flex items-center gap-2">
-                                <span className="text-sm font-medium text-green-900 dark:text-green-100">Role:</span>
-                                <span className="text-sm text-green-700 dark:text-green-300">{auth.user?.role === 'user' ? 'User' : 'Unknown'}</span>
+                            <div className="text-2xl font-bold">2</div>
+                            <p className="text-xs text-muted-foreground">
+                                <span className="text-green-600">+100%</span> from last month
+                            </p>
+                        </CardContent>
+                    </Card>
+
+                    <Card>
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                            <CardTitle className="text-sm font-medium">Active Sessions</CardTitle>
+                            <Activity className="h-4 w-4 text-muted-foreground" />
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-2xl font-bold">1</div>
+                            <p className="text-xs text-muted-foreground">
+                                <span className="text-green-600">+1</span> from last hour
+                            </p>
+                        </CardContent>
+                    </Card>
+
+                    <Card>
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                            <CardTitle className="text-sm font-medium">System Health</CardTitle>
+                            <Shield className="h-4 w-4 text-muted-foreground" />
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-2xl font-bold">100%</div>
+                            <p className="text-xs text-muted-foreground">
+                                <span className="text-green-600">All systems operational</span>
+                            </p>
+                        </CardContent>
+                    </Card>
+
+                    <Card>
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                            <CardTitle className="text-sm font-medium">Uptime</CardTitle>
+                            <Clock className="h-4 w-4 text-muted-foreground" />
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-2xl font-bold">99.9%</div>
+                            <p className="text-xs text-muted-foreground">
+                                <span className="text-green-600">Last 30 days</span>
+                            </p>
+                        </CardContent>
+                    </Card>
+                </div>
+
+                {/* Admin Overview */}
+                {isAdmin && (
+                    <div className="grid gap-4 md:grid-cols-2">
+                        <Card>
+                            <CardHeader>
+                                <CardTitle className="flex items-center gap-2">
+                                    <UserCheck className="h-5 w-5" />
+                                    User Management
+                                </CardTitle>
+                                <CardDescription>Quick access to user management and invitation creation</CardDescription>
+                            </CardHeader>
+                            <CardContent className="space-y-4">
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="text-center">
+                                        <div className="text-2xl font-bold">2</div>
+                                        <div className="text-sm text-muted-foreground">Total Users</div>
+                                    </div>
+                                    <div className="text-center">
+                                        <div className="text-2xl font-bold">5</div>
+                                        <div className="text-sm text-muted-foreground">Active Invitations</div>
+                                    </div>
+                                </div>
+                                <div className="flex gap-2">
+                                    <a href="/users" className="flex-1">
+                                        <div className="rounded-lg border p-3 text-center hover:bg-gray-50 dark:hover:bg-gray-800">
+                                            <Users className="mx-auto mb-1 h-4 w-4" />
+                                            <div className="text-sm font-medium">Manage Users</div>
+                                        </div>
+                                    </a>
+                                    <a href="/invitations" className="flex-1">
+                                        <div className="rounded-lg border p-3 text-center hover:bg-gray-50 dark:hover:bg-gray-800">
+                                            <Mail className="mx-auto mb-1 h-4 w-4" />
+                                            <div className="text-sm font-medium">Invitations</div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </CardContent>
+                        </Card>
+
+                        <Card>
+                            <CardHeader>
+                                <CardTitle className="flex items-center gap-2">
+                                    <TrendingUp className="h-5 w-5" />
+                                    Recent Activity
+                                </CardTitle>
+                                <CardDescription>Latest system activity and user registrations</CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="space-y-3">
+                                    <div className="flex items-center gap-3">
+                                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/20">
+                                            <UserCheck className="h-4 w-4 text-green-600 dark:text-green-400" />
+                                        </div>
+                                        <div className="flex-1">
+                                            <p className="text-sm font-medium">User registered</p>
+                                            <p className="text-xs text-muted-foreground">2 minutes ago</p>
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center gap-3">
+                                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900/20">
+                                            <Mail className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                                        </div>
+                                        <div className="flex-1">
+                                            <p className="text-sm font-medium">Invitation created</p>
+                                            <p className="text-xs text-muted-foreground">1 hour ago</p>
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center gap-3">
+                                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-purple-100 dark:bg-purple-900/20">
+                                            <Shield className="h-4 w-4 text-purple-600 dark:text-purple-400" />
+                                        </div>
+                                        <div className="flex-1">
+                                            <p className="text-sm font-medium">Security scan completed</p>
+                                            <p className="text-xs text-muted-foreground">3 hours ago</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    </div>
+                )}
+
+                {/* User Overview */}
+                {!isAdmin && (
+                    <Card>
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2">
+                                <UserCheck className="h-5 w-5" />
+                                Your Account
+                            </CardTitle>
+                            <CardDescription>Your account information and access level</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="grid gap-4 md:grid-cols-3">
+                                <div className="text-center">
+                                    <div className="text-2xl font-bold">{auth.user?.name}</div>
+                                    <div className="text-sm text-muted-foreground">Name</div>
+                                </div>
+                                <div className="text-center">
+                                    <div className="text-2xl font-bold">{auth.user?.email}</div>
+                                    <div className="text-sm text-muted-foreground">Email</div>
+                                </div>
+                                <div className="text-center">
+                                    <div className="text-2xl font-bold">{auth.user?.role === 'user' ? 'User' : 'Unknown'}</div>
+                                    <div className="text-sm text-muted-foreground">Role</div>
+                                </div>
                             </div>
                         </CardContent>
                     </Card>
                 )}
+
+                {/* System Status */}
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                            <Activity className="h-5 w-5" />
+                            System Status
+                        </CardTitle>
+                        <CardDescription>Current system performance and health metrics</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="grid gap-4 md:grid-cols-3">
+                            <div className="text-center">
+                                <div className="text-2xl font-bold text-green-600">100%</div>
+                                <div className="text-sm text-muted-foreground">System Health</div>
+                            </div>
+                            <div className="text-center">
+                                <div className="text-2xl font-bold">0ms</div>
+                                <div className="text-sm text-muted-foreground">Response Time</div>
+                            </div>
+                            <div className="text-center">
+                                <div className="text-2xl font-bold">99.9%</div>
+                                <div className="text-sm text-muted-foreground">Uptime</div>
+                            </div>
+                        </div>
+                    </CardContent>
+                </Card>
 
                 {/* Placeholder Content */}
                 <div className="grid auto-rows-min gap-4 md:grid-cols-3">

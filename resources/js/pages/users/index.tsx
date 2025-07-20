@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link } from '@inertiajs/react';
-import { Edit, Trash2, Users } from 'lucide-react';
+import { Edit, Mail, Shield, Trash2, UserPlus, Users } from 'lucide-react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -12,7 +12,7 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: '/dashboard',
     },
     {
-        title: 'Users',
+        title: 'User Management',
         href: '/users',
     },
 ];
@@ -31,20 +31,74 @@ interface Props {
 }
 
 export default function UsersIndex({ users }: Props) {
+    const adminCount = users.filter((user) => user.role === 'admin').length;
+    const userCount = users.filter((user) => user.role === 'user').length;
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Users" />
+            <Head title="User Management" />
             <div className="flex h-full flex-1 flex-col gap-6 overflow-x-auto rounded-xl p-4">
                 {/* Header */}
                 <div className="flex items-center justify-between">
                     <div className="space-y-1">
-                        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Users</h1>
-                        <p className="text-gray-600 dark:text-gray-400">Manage user accounts and roles</p>
+                        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">User Management</h1>
+                        <p className="text-gray-600 dark:text-gray-400">Manage user accounts, roles, and access</p>
                     </div>
                     <div className="flex items-center gap-2">
-                        <Users className="h-5 w-5 text-gray-400" />
-                        <span className="text-sm text-gray-500">{users.length} users</span>
+                        <Button asChild>
+                            <Link href="/invitations/create">
+                                <UserPlus className="mr-2 h-4 w-4" />
+                                Create Invitation
+                            </Link>
+                        </Button>
                     </div>
+                </div>
+
+                {/* Stats */}
+                <div className="grid gap-4 md:grid-cols-4">
+                    <Card>
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                            <CardTitle className="text-sm font-medium">Total Users</CardTitle>
+                            <Users className="h-4 w-4 text-muted-foreground" />
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-2xl font-bold">{users.length}</div>
+                            <p className="text-xs text-muted-foreground">All users</p>
+                        </CardContent>
+                    </Card>
+
+                    <Card>
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                            <CardTitle className="text-sm font-medium">Administrators</CardTitle>
+                            <Shield className="h-4 w-4 text-muted-foreground" />
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-2xl font-bold">{adminCount}</div>
+                            <p className="text-xs text-muted-foreground">Admin users</p>
+                        </CardContent>
+                    </Card>
+
+                    <Card>
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                            <CardTitle className="text-sm font-medium">Regular Users</CardTitle>
+                            <Users className="h-4 w-4 text-muted-foreground" />
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-2xl font-bold">{userCount}</div>
+                            <p className="text-xs text-muted-foreground">Standard users</p>
+                        </CardContent>
+                    </Card>
+
+                    <Card>
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                            <CardTitle className="text-sm font-medium">Invitations</CardTitle>
+                            <Mail className="h-4 w-4 text-muted-foreground" />
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-2xl font-bold">-</div>
+                            <p className="text-xs text-muted-foreground">Active codes</p>
+                        </CardContent>
+                    </Card>
                 </div>
 
                 {/* Users List */}
@@ -60,12 +114,18 @@ export default function UsersIndex({ users }: Props) {
                                             </span>
                                         </div>
                                         <div>
-                                            <CardTitle className="text-lg">{user.name}</CardTitle>
+                                            <CardTitle className="flex items-center gap-2 text-lg">
+                                                {user.name}
+                                                <Badge variant={user.role === 'admin' ? 'default' : 'secondary'}>{user.role_display}</Badge>
+                                            </CardTitle>
                                             <CardDescription className="text-sm">{user.email}</CardDescription>
                                         </div>
                                     </div>
                                     <div className="flex items-center gap-2">
-                                        <Badge variant={user.role === 'admin' ? 'default' : 'secondary'}>{user.role_display}</Badge>
+                                        <div className="text-right">
+                                            <div className="text-xs text-gray-500">Member since</div>
+                                            <div className="text-sm font-medium">{new Date(user.created_at).toLocaleDateString()}</div>
+                                        </div>
                                         <div className="flex gap-1">
                                             <Button variant="ghost" size="icon" asChild>
                                                 <Link href={`/users/${user.id}/edit`}>
@@ -79,9 +139,6 @@ export default function UsersIndex({ users }: Props) {
                                     </div>
                                 </div>
                             </CardHeader>
-                            <CardContent className="pt-0">
-                                <div className="text-xs text-gray-500">Created: {new Date(user.created_at).toLocaleDateString()}</div>
-                            </CardContent>
                         </Card>
                     ))}
                 </div>
@@ -91,7 +148,13 @@ export default function UsersIndex({ users }: Props) {
                         <CardContent className="flex flex-col items-center justify-center py-8">
                             <Users className="mb-4 h-12 w-12 text-gray-400" />
                             <h3 className="mb-2 text-lg font-medium text-gray-900 dark:text-white">No users found</h3>
-                            <p className="text-center text-gray-600 dark:text-gray-400">There are no users in the system yet.</p>
+                            <p className="text-center text-gray-600 dark:text-gray-400">Create your first invitation to add users to the system.</p>
+                            <Button asChild className="mt-4">
+                                <Link href="/invitations/create">
+                                    <UserPlus className="mr-2 h-4 w-4" />
+                                    Create Invitation
+                                </Link>
+                            </Button>
                         </CardContent>
                     </Card>
                 )}
