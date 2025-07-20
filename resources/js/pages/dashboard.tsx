@@ -13,7 +13,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function Dashboard() {
-    const { auth } = usePage().props as any;
+    const { auth } = usePage().props as unknown as { auth: { user?: { name?: string; email?: string; role?: string } } };
     const isAdmin = auth.user?.role === 'admin';
 
     return (

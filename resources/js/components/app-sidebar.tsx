@@ -6,7 +6,7 @@ import { Link, usePage } from '@inertiajs/react';
 import { BarChart3, LayoutGrid, Shield, Users } from 'lucide-react';
 
 export function AppSidebar() {
-    const { auth } = usePage().props as any;
+    const { auth } = usePage().props as unknown as { auth: { user?: { role?: string } } };
     const isAdmin = auth.user?.role === 'admin';
 
     const mainNavItems: NavItem[] = [
