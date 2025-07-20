@@ -2,7 +2,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Head, Link } from '@inertiajs/react';
-import { Key, Lock, Mail, Shield, Users } from 'lucide-react';
+import { Lock, Mail, Shield, Users } from 'lucide-react';
 
 export default function Welcome() {
     return (
@@ -17,17 +17,12 @@ export default function Welcome() {
                         <p className="mt-6 text-lg leading-8 text-gray-600 dark:text-gray-300">
                             A secure, invite-only platform for collaboration and management.
                         </p>
-                        <div className="mt-10 flex items-center justify-center gap-x-6">
+                        <div className="mt-10 flex items-center justify-center">
                             <Button asChild size="lg">
                                 <Link href={route('login')}>Sign in</Link>
                             </Button>
-                            <Button variant="outline" size="lg" asChild>
-                                <Link href={route('register')}>
-                                    <Key className="mr-2 h-4 w-4" />I Have an Invitation
-                                </Link>
-                            </Button>
                         </div>
-                        <p className="mt-4 text-sm text-gray-500 dark:text-gray-400">New users need an invitation code from an administrator.</p>
+                        <p className="mt-4 text-sm text-gray-500 dark:text-gray-400">Access is restricted to invited users only.</p>
                     </div>
                 </div>
 
@@ -95,6 +90,7 @@ export default function Welcome() {
                                 <p>• Invitation codes are unique and single-use</p>
                                 <p>• Codes can be email-specific or open</p>
                                 <p>• Role assignment is determined by invitation</p>
+                                <p>• Registration is only available via invitation links</p>
                             </div>
                         </CardContent>
                     </Card>

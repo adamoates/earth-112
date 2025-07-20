@@ -1,36 +1,23 @@
-import { Badge } from '@/components/ui/badge';
+import { Head, useForm } from '@inertiajs/react';
+import { Mail, Plus, Trash2 } from 'lucide-react';
+import { FormEventHandler } from 'react';
+
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import AppLayout from '@/layouts/app-layout';
-import { type BreadcrumbItem } from '@/types';
-import { Head, Link } from '@inertiajs/react';
-import { Copy, Mail, Plus, Trash2, Users } from 'lucide-react';
-
-const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: 'Dashboard',
-        href: '/dashboard',
-    },
-    {
-        title: 'Invitations',
-        href: '/invitations',
-    },
-];
 
 interface Invitation {
     id: number;
     code: string;
-    email: string | null;
-    name: string | null;
+    email: string;
+    name?: string;
     role: string;
-    role_display: string;
-    is_used: boolean;
-    expires_at: string | null;
+    used: boolean;
+    expires_at?: string;
     created_at: string;
-    used_at: string | null;
-    creator_name: string | null;
-    used_by_name: string | null;
-    is_valid: boolean;
 }
 
 interface Props {
@@ -38,148 +25,155 @@ interface Props {
 }
 
 export default function InvitationsIndex({ invitations }: Props) {
-    const copyToClipboard = (code: string) => {
-        navigator.clipboard.writeText(code);
+    const { data, setData, post, processing, errors, reset } = useForm({
+        email: '',
+        name: '',
+        role: 'user',
+        expires_at: '',
+    });
+
+    const submit: FormEventHandler = (e) => {
+        e.preventDefault();
+        post(route('invitations.store'), {
+            onSuccess: () => reset(),
+        });
     };
 
     return (
-        <AppLayout breadcrumbs={breadcrumbs}>
+        <AppLayout>
             <Head title="Invitations" />
-            <div className="flex h-full flex-1 flex-col gap-6 overflow-x-auto rounded-xl p-4">
-                {/* Header */}
-                <div className="flex items-center justify-between">
-                    <div className="space-y-1">
-                        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Invitations</h1>
-                        <p className="text-gray-600 dark:text-gray-400">Manage user invitations and access codes</p>
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <Button asChild>
-                            <Link href="/invitations/create">
-                                <Plus className="mr-2 h-4 w-4" />
-                                Create Invitation
-                            </Link>
-                        </Button>
-                    </div>
+
+            <div className="space-y-6">
+                <div>
+                    <h1 className="text-2xl font-bold">Invitations</h1>
+                    <p className="text-gray-600 dark:text-gray-400">Send invitations to new users</p>
                 </div>
 
-                {/* Stats */}
-                <div className="grid gap-4 md:grid-cols-3">
-                    <Card>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">Total Invitations</CardTitle>
-                            <Users className="h-4 w-4 text-muted-foreground" />
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-2xl font-bold">{invitations.length}</div>
-                            <p className="text-xs text-muted-foreground">All time</p>
-                        </CardContent>
-                    </Card>
+                {/* Create Invitation Form */}
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                            <Mail className="h-5 w-5" />
+                            Send New Invitation
+                        </CardTitle>
+                        <CardDescription>
+                            Create and send an invitation to a new user. They will receive an email with a registration link.
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <form onSubmit={submit} className="space-y-4">
+                            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                                <div>
+                                    <Label htmlFor="email">Email Address *</Label>
+                                    <Input
+                                        id="email"
+                                        type="email"
+                                        value={data.email}
+                                        onChange={(e) => setData('email', e.target.value)}
+                                        placeholder="user@example.com"
+                                        required
+                                    />
+                                    {errors.email && <p className="mt-1 text-sm text-red-500">{errors.email}</p>}
+                                </div>
 
-                    <Card>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">Active Invitations</CardTitle>
-                            <Mail className="h-4 w-4 text-muted-foreground" />
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-2xl font-bold">{invitations.filter((inv) => inv.is_valid && !inv.is_used).length}</div>
-                            <p className="text-xs text-muted-foreground">Available</p>
-                        </CardContent>
-                    </Card>
+                                <div>
+                                    <Label htmlFor="name">Name (Optional)</Label>
+                                    <Input
+                                        id="name"
+                                        type="text"
+                                        value={data.name}
+                                        onChange={(e) => setData('name', e.target.value)}
+                                        placeholder="Full name"
+                                    />
+                                    {errors.name && <p className="mt-1 text-sm text-red-500">{errors.name}</p>}
+                                </div>
+                            </div>
 
-                    <Card>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">Used Invitations</CardTitle>
-                            <Users className="h-4 w-4 text-muted-foreground" />
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-2xl font-bold">{invitations.filter((inv) => inv.is_used).length}</div>
-                            <p className="text-xs text-muted-foreground">Redeemed</p>
-                        </CardContent>
-                    </Card>
-                </div>
+                            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                                <div>
+                                    <Label htmlFor="role">Role</Label>
+                                    <Select value={data.role} onValueChange={(value) => setData('role', value)}>
+                                        <SelectTrigger>
+                                            <SelectValue />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="user">User</SelectItem>
+                                            <SelectItem value="admin">Administrator</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                    {errors.role && <p className="mt-1 text-sm text-red-500">{errors.role}</p>}
+                                </div>
+
+                                <div>
+                                    <Label htmlFor="expires_at">Expires At (Optional)</Label>
+                                    <Input
+                                        id="expires_at"
+                                        type="datetime-local"
+                                        value={data.expires_at}
+                                        onChange={(e) => setData('expires_at', e.target.value)}
+                                    />
+                                    {errors.expires_at && <p className="mt-1 text-sm text-red-500">{errors.expires_at}</p>}
+                                </div>
+                            </div>
+
+                            <Button type="submit" disabled={processing} className="flex items-center gap-2">
+                                <Plus className="h-4 w-4" />
+                                Send Invitation
+                            </Button>
+                        </form>
+                    </CardContent>
+                </Card>
 
                 {/* Invitations List */}
-                <div className="grid gap-4">
-                    {invitations.map((invitation) => (
-                        <Card key={invitation.id} className="transition-shadow hover:shadow-md">
-                            <CardHeader className="pb-3">
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-3">
-                                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900/20">
-                                            <Mail className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Recent Invitations</CardTitle>
+                        <CardDescription>Track the status of sent invitations</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        {invitations.length === 0 ? (
+                            <p className="py-8 text-center text-gray-500">No invitations sent yet.</p>
+                        ) : (
+                            <div className="space-y-4">
+                                {invitations.map((invitation) => (
+                                    <div key={invitation.id} className="flex items-center justify-between rounded-lg border p-4">
+                                        <div className="flex-1">
+                                            <div className="flex items-center gap-2">
+                                                <span className="font-medium">{invitation.email}</span>
+                                                {invitation.name && <span className="text-gray-500">({invitation.name})</span>}
+                                            </div>
+                                            <div className="mt-1 flex items-center gap-4 text-sm text-gray-500">
+                                                <span>
+                                                    Code: <code className="rounded bg-gray-100 px-1">{invitation.code}</code>
+                                                </span>
+                                                <span>Role: {invitation.role}</span>
+                                                <span className={invitation.used ? 'text-green-600' : 'text-orange-600'}>
+                                                    {invitation.used ? 'Used' : 'Pending'}
+                                                </span>
+                                                {invitation.expires_at && (
+                                                    <span>Expires: {new Date(invitation.expires_at).toLocaleDateString()}</span>
+                                                )}
+                                            </div>
                                         </div>
-                                        <div>
-                                            <CardTitle className="flex items-center gap-2 text-lg">
-                                                {invitation.code}
-                                                <Badge variant={invitation.is_used ? 'secondary' : 'default'}>
-                                                    {invitation.is_used ? 'Used' : 'Active'}
-                                                </Badge>
-                                            </CardTitle>
-                                            <CardDescription className="text-sm">
-                                                {invitation.email || 'No email specified'} • {invitation.role_display}
-                                            </CardDescription>
-                                        </div>
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                        {!invitation.is_used && invitation.is_valid && (
+                                        {!invitation.used && (
                                             <Button
-                                                variant="ghost"
-                                                size="icon"
-                                                onClick={() => copyToClipboard(invitation.code)}
-                                                title="Copy invitation code"
+                                                variant="outline"
+                                                size="sm"
+                                                onClick={() => {
+                                                    if (confirm('Delete this invitation?')) {
+                                                        // Handle delete
+                                                    }
+                                                }}
                                             >
-                                                <Copy className="h-4 w-4" />
-                                            </Button>
-                                        )}
-                                        {!invitation.is_used && (
-                                            <Button variant="ghost" size="icon" asChild>
-                                                <Link href={`/invitations/${invitation.id}/edit`}>
-                                                    <Trash2 className="h-4 w-4" />
-                                                </Link>
+                                                <Trash2 className="h-4 w-4" />
                                             </Button>
                                         )}
                                     </div>
-                                </div>
-                            </CardHeader>
-                            <CardContent className="pt-0">
-                                <div className="grid grid-cols-2 gap-4 text-sm">
-                                    <div>
-                                        <span className="font-medium">Created:</span>
-                                        <p className="text-gray-500">{new Date(invitation.created_at).toLocaleDateString()}</p>
-                                    </div>
-                                    {invitation.expires_at && (
-                                        <div>
-                                            <span className="font-medium">Expires:</span>
-                                            <p className="text-gray-500">{new Date(invitation.expires_at).toLocaleDateString()}</p>
-                                        </div>
-                                    )}
-                                    {invitation.is_used && invitation.used_at && (
-                                        <div>
-                                            <span className="font-medium">Used:</span>
-                                            <p className="text-gray-500">{new Date(invitation.used_at).toLocaleDateString()}</p>
-                                        </div>
-                                    )}
-                                    {invitation.used_by_name && (
-                                        <div>
-                                            <span className="font-medium">Used by:</span>
-                                            <p className="text-gray-500">{invitation.used_by_name}</p>
-                                        </div>
-                                    )}
-                                </div>
-                            </CardContent>
-                        </Card>
-                    ))}
-                </div>
-
-                {invitations.length === 0 && (
-                    <Card className="border-dashed">
-                        <CardContent className="flex flex-col items-center justify-center py-8">
-                            <Mail className="mb-4 h-12 w-12 text-gray-400" />
-                            <h3 className="mb-2 text-lg font-medium text-gray-900 dark:text-white">No invitations found</h3>
-                            <p className="text-center text-gray-600 dark:text-gray-400">Create your first invitation to start inviting users.</p>
-                        </CardContent>
-                    </Card>
-                )}
+                                ))}
+                            </div>
+                        )}
+                    </CardContent>
+                </Card>
             </div>
         </AppLayout>
     );

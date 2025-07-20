@@ -1,6 +1,6 @@
-import { Head, useForm } from '@inertiajs/react';
+import { Head, useForm, usePage } from '@inertiajs/react';
 import { LoaderCircle } from 'lucide-react';
-import { FormEventHandler } from 'react';
+import { FormEventHandler, useEffect } from 'react';
 
 import InputError from '@/components/input-error';
 import TextLink from '@/components/text-link';
@@ -18,13 +18,24 @@ type RegisterForm = {
 };
 
 export default function Register() {
+    const { url } = usePage();
+    const urlParams = new URLSearchParams(url.split('?')[1]);
+    const urlCode = urlParams.get('code');
+
     const { data, setData, post, processing, errors, reset } = useForm<Required<RegisterForm>>({
         name: '',
         email: '',
         password: '',
         password_confirmation: '',
-        invitation_code: '',
+        invitation_code: urlCode || '',
     });
+
+    // Set invitation code from URL if present
+    useEffect(() => {
+        if (urlCode) {
+            setData('invitation_code', urlCode.toUpperCase());
+        }
+    }, [urlCode, setData]);
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
@@ -46,7 +57,7 @@ export default function Register() {
                             id="invitation_code"
                             type="text"
                             required
-                            autoFocus
+                            autoFocus={!urlCode}
                             tabIndex={1}
                             autoComplete="off"
                             value={data.invitation_code}
@@ -55,6 +66,7 @@ export default function Register() {
                             placeholder="Enter your invitation code"
                         />
                         <InputError message={errors.invitation_code} className="mt-2" />
+                        {urlCode && <p className="text-sm text-green-600 dark:text-green-400">✓ Invitation code loaded from email link</p>}
                     </div>
 
                     <div className="grid gap-2">
