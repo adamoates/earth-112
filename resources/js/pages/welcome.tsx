@@ -2,7 +2,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Head, Link } from '@inertiajs/react';
-import { Lock, Shield, Users } from 'lucide-react';
+import { Key, Lock, Mail, Shield, Users } from 'lucide-react';
 
 export default function Welcome() {
     return (
@@ -22,9 +22,12 @@ export default function Welcome() {
                                 <Link href={route('login')}>Sign in</Link>
                             </Button>
                             <Button variant="outline" size="lg" asChild>
-                                <Link href={route('register')}>Create account</Link>
+                                <Link href={route('register')}>
+                                    <Key className="mr-2 h-4 w-4" />I Have an Invitation
+                                </Link>
                             </Button>
                         </div>
+                        <p className="mt-4 text-sm text-gray-500 dark:text-gray-400">New users need an invitation code from an administrator.</p>
                     </div>
                 </div>
 
@@ -73,7 +76,10 @@ export default function Welcome() {
                 <div className="mx-auto max-w-7xl px-6 pb-32 lg:px-8">
                     <Card className="mx-auto max-w-2xl">
                         <CardHeader className="text-center">
-                            <CardTitle className="text-2xl">Need Access?</CardTitle>
+                            <CardTitle className="flex items-center justify-center gap-2 text-2xl">
+                                <Mail className="h-6 w-6" />
+                                Need Access?
+                            </CardTitle>
                             <CardDescription>Contact an administrator to receive an invitation code for this platform.</CardDescription>
                         </CardHeader>
                         <CardContent className="text-center">
@@ -82,9 +88,14 @@ export default function Welcome() {
                                 <Badge variant="outline">Secure</Badge>
                                 <Badge variant="outline">Controlled</Badge>
                             </div>
-                            <p className="text-sm text-gray-600 dark:text-gray-400">
+                            <p className="mb-4 text-sm text-gray-600 dark:text-gray-400">
                                 This platform requires an invitation code to register. Please contact your administrator for access.
                             </p>
+                            <div className="text-xs text-gray-500 dark:text-gray-500">
+                                <p>• Invitation codes are unique and single-use</p>
+                                <p>• Codes can be email-specific or open</p>
+                                <p>• Role assignment is determined by invitation</p>
+                            </div>
                         </CardContent>
                     </Card>
                 </div>
