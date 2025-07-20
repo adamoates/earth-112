@@ -1,61 +1,53 @@
 # Earth-112
 
-A Laravel application with React frontend.
+A Laravel-based invite-only application with modern UI and comprehensive environment management.
 
-## Database Configuration
+## 🚀 Quick Start
 
-### Development Environment
-- **Database**: `earth_112_dev`
-- **Host**: `127.0.0.1` (Forge MySQL via SSH tunnel)
-- **Connection**: MySQL
+For detailed setup instructions, development workflow, and environment management, see the comprehensive guide in `.cursorrules`.
 
-### Production Environment
-- **Database**: `earth_112`
-- **Host**: `198.58.114.92` (Forge MySQL server)
-- **Connection**: MySQL
+### Basic Setup
+```bash
+# Clone the repository
+git clone https://github.com/adamoates/earth-112.git
+cd earth-112
 
-## Deployment
+# Install dependencies
+composer install
+npm install
 
-### Production Environment Variables
-Ensure the production server's `.env` file has the correct database configuration:
+# Set up local environment
+./switch_env.sh local
 
-```env
-DB_CONNECTION=mysql
-DB_HOST=198.58.114.92
-DB_PORT=3306
-DB_DATABASE=earth_112
-DB_USERNAME=forge
-DB_PASSWORD=your_production_password
+# Start MySQL
+mysql.server start
+
+# Run migrations
+php artisan migrate:fresh
+
+# Start development server
+php artisan serve
 ```
 
-### Development Environment Variables
-Local `.env` file should be configured for development:
+## 📚 Documentation
 
-```env
-DB_CONNECTION=mysql
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_DATABASE=earth_112_dev
-DB_USERNAME=forge
-DB_PASSWORD=your_development_password
-```
+- **Complete Development Guide**: See `.cursorrules` for comprehensive documentation
+- **Environment Setup**: Detailed environment management instructions
+- **Development Workflow**: Step-by-step development process
+- **Troubleshooting**: Common issues and solutions
 
-## Setup
+## 🏗️ Project Structure
 
-1. Clone the repository
-2. Copy `.env.example` to `.env`
-3. Configure database settings for your environment
-4. Run `composer install`
-5. Run `npm install`
-6. Run `npm run build`
-7. Run `php artisan key:generate`
-8. Run `php artisan migrate`
+- **`main`** - Production branch
+- **`staging`** - Staging branch  
+- **`develop`** - Development branch
 
-## Development
+## 🔧 Available Scripts
 
-- `npm run dev` - Start Vite development server
-- `php artisan serve` - Start Laravel development server
-- `php artisan migrate` - Run database migrations # Trigger deployment
-# Test deployment with asset building
-# Trigger new deployment with latest assets
-# Sat Jul 19 08:54:56 CDT 2025
+- `./switch_env.sh` - Environment switching
+- `./setup_environments.sh` - Environment setup
+- `./setup_database.sh` - Database setup
+
+## 📖 More Information
+
+For complete documentation including environment setup, development workflow, troubleshooting, and best practices, please refer to the `.cursorrules` file in the project root.
