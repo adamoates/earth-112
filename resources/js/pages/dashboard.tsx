@@ -46,38 +46,44 @@ export default function Dashboard() {
                         </a>
                     )}
 
-                    <Card className="cursor-pointer transition-shadow hover:shadow-md">
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">Users</CardTitle>
-                            <Users className="h-4 w-4 text-muted-foreground" />
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-2xl font-bold">View</div>
-                            <p className="text-xs text-muted-foreground">User information</p>
-                        </CardContent>
-                    </Card>
+                    <a href="/users">
+                        <Card className="cursor-pointer transition-shadow hover:shadow-md">
+                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                                <CardTitle className="text-sm font-medium">Users</CardTitle>
+                                <Users className="h-4 w-4 text-muted-foreground" />
+                            </CardHeader>
+                            <CardContent>
+                                <div className="text-2xl font-bold">View</div>
+                                <p className="text-xs text-muted-foreground">User information</p>
+                            </CardContent>
+                        </Card>
+                    </a>
 
-                    <Card className="cursor-pointer transition-shadow hover:shadow-md">
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">Security</CardTitle>
-                            <Shield className="h-4 w-4 text-muted-foreground" />
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-2xl font-bold">Monitor</div>
-                            <p className="text-xs text-muted-foreground">Security and access logs</p>
-                        </CardContent>
-                    </Card>
+                    <a href="/security">
+                        <Card className="cursor-pointer transition-shadow hover:shadow-md">
+                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                                <CardTitle className="text-sm font-medium">Security</CardTitle>
+                                <Shield className="h-4 w-4 text-muted-foreground" />
+                            </CardHeader>
+                            <CardContent>
+                                <div className="text-2xl font-bold">Monitor</div>
+                                <p className="text-xs text-muted-foreground">Security and access logs</p>
+                            </CardContent>
+                        </Card>
+                    </a>
 
-                    <Card className="cursor-pointer transition-shadow hover:shadow-md">
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">Analytics</CardTitle>
-                            <BarChart3 className="h-4 w-4 text-muted-foreground" />
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-2xl font-bold">View</div>
-                            <p className="text-xs text-muted-foreground">Application analytics</p>
-                        </CardContent>
-                    </Card>
+                    <a href="/analytics">
+                        <Card className="cursor-pointer transition-shadow hover:shadow-md">
+                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                                <CardTitle className="text-sm font-medium">Analytics</CardTitle>
+                                <BarChart3 className="h-4 w-4 text-muted-foreground" />
+                            </CardHeader>
+                            <CardContent>
+                                <div className="text-2xl font-bold">View</div>
+                                <p className="text-xs text-muted-foreground">Application analytics</p>
+                            </CardContent>
+                        </Card>
+                    </a>
                 </div>
 
                 {/* Application Overview */}
