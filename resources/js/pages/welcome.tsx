@@ -15,7 +15,7 @@ export default function Welcome() {
                     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                         <div className="flex h-16 items-center justify-between">
                             <div className="flex items-center">
-                                <h1 className="text-xl font-semibold text-gray-900 dark:text-white">earth-112</h1>
+                                <h1 className="text-xl font-semibold text-gray-900 dark:text-white">Earth-112</h1>
                             </div>
                             <div className="flex items-center space-x-4">
                                 {auth.user ? (
@@ -50,9 +50,9 @@ export default function Welcome() {
                 <section className="bg-white dark:bg-gray-800">
                     <div className="mx-auto max-w-7xl px-4 py-24 sm:px-6 sm:py-32 lg:px-8">
                         <div className="text-center">
-                            <h2 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl dark:text-white">Welcome to earth-112</h2>
+                            <h2 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl dark:text-white">Welcome to Earth-112</h2>
                             <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-gray-600 dark:text-gray-400">
-                                Build amazing web applications with Laravel. Fast, secure, and scalable.
+                                A modern web application platform built with Laravel and React. Fast, secure, and scalable.
                             </p>
                             <div className="mt-10 flex items-center justify-center gap-x-6">
                                 {auth.user ? (
@@ -84,7 +84,7 @@ export default function Welcome() {
                 <section className="bg-gray-50 py-24 sm:py-32 dark:bg-gray-900">
                     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                         <div className="mb-12 text-center">
-                            <h3 className="text-3xl font-bold text-gray-900 dark:text-white">Why Choose Laravel?</h3>
+                            <h3 className="text-3xl font-bold text-gray-900 dark:text-white">Why Choose Earth-112?</h3>
                             <p className="mt-4 text-lg text-gray-600 dark:text-gray-400">Everything you need to build modern web applications</p>
                         </div>
                         <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
@@ -112,7 +112,7 @@ export default function Welcome() {
                                 </div>
                                 <h4 className="mb-2 text-xl font-semibold text-gray-900 dark:text-white">Scalable Architecture</h4>
                                 <p className="text-gray-600 dark:text-gray-400">
-                                    From small projects to enterprise applications, Laravel scales with your needs.
+                                    From small projects to enterprise applications, Earth-112 scales with your needs.
                                 </p>
                             </div>
                         </div>
@@ -123,7 +123,7 @@ export default function Welcome() {
                 <section className="bg-blue-600 py-16">
                     <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
                         <h3 className="mb-4 text-3xl font-bold text-white">Ready to Get Started?</h3>
-                        <p className="mb-8 text-xl text-blue-100">Join thousands of developers building with Laravel</p>
+                        <p className="mb-8 text-xl text-blue-100">Join the Earth-112 community</p>
                         {!auth.user ? (
                             <Link
                                 href={route('register')}
@@ -146,7 +146,7 @@ export default function Welcome() {
                 <footer className="bg-gray-900 py-12 text-gray-400">
                     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                         <div className="text-center">
-                            <p>&copy; {new Date().getFullYear()} earth-112. All rights reserved.</p>
+                            <p>&copy; {new Date().getFullYear()} Earth-112. All rights reserved.</p>
                             <div className="mt-4 space-x-6">
                                 <a href="#" className="hover:text-white">
                                     Privacy Policy
