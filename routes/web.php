@@ -78,6 +78,7 @@ Route::middleware('auth')->group(function () {
         Route::post('invitations', [InvitationController::class, 'store'])->name('invitations.store');
         Route::get('invitations/{invitation}', [InvitationController::class, 'show'])->name('invitations.show');
         Route::post('invitations/{invitation}/resend', [InvitationController::class, 'resend'])->name('invitations.resend');
+        Route::delete('invitations/{invitation}', [InvitationController::class, 'destroy'])->name('invitations.destroy');
     });
 
     // Editor and admin routes (access requests)
