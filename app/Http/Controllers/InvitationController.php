@@ -26,7 +26,7 @@ class InvitationController extends Controller
             ->paginate(20);
 
         return Inertia::render('invitations/index', [
-            'invitations' => $invitations,
+            'invitations' => $invitations->items(), // Pass as array
         ]);
     }
 
@@ -44,26 +44,49 @@ class InvitationController extends Controller
     public function store(InviteUserRequest $request)
     {
         try {
-            // Generate a secure token
-            $token = Hash::make(Str::random(64));
-
-            // Create invitation with 48-hour expiry
+            // Create invitation with secure token
             $invitation = Invitation::create([
                 'email' => $request->email,
-                'token' => $token,
+                'token' => Invitation::generateToken(),
                 'role' => $request->role,
                 'expires_at' => $request->expires_at ?? now()->addHours(48),
                 'created_by' => $request->user()->id,
             ]);
 
             // Send invitation email
-            $invitation->notify(new InviteUserNotification($invitation));
+            try {
+                $invitation->notify(new InviteUserNotification($invitation));
+            } catch (\Exception $mailException) {
+                // Log the mail error but don't delete the invitation
+                Log::error('Failed to send invitation email', [
+                    'invitation_id' => $invitation->id,
+                    'email' => $invitation->email,
+                    'error' => $mailException->getMessage(),
+                    'trace' => $mailException->getTraceAsString()
+                ]);
+
+                // Delete the invitation since email couldn't be sent
+                $invitation->delete();
+
+                return back()->withErrors(['email' => 'Failed to send invitation email. Please check mail configuration.']);
+            }
 
             return redirect()->route('invitations.index')
                 ->with('success', 'Invitation sent successfully to ' . $request->email);
+        } catch (\Illuminate\Database\QueryException $e) {
+            Log::error('Database error creating invitation', [
+                'email' => $request->email,
+                'error' => $e->getMessage(),
+                'code' => $e->getCode()
+            ]);
+            return back()->withErrors(['email' => 'Database error occurred. Please try again.']);
         } catch (\Exception $e) {
-            Log::error('Invitation send failed: ' . $e->getMessage());
-            return back()->withErrors(['email' => 'Failed to send invitation. Please try again or contact support.']);
+            Log::error('Unexpected error creating invitation', [
+                'email' => $request->email,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            return back()->withErrors(['email' => 'An unexpected error occurred. Please contact support.']);
         }
     }
 
@@ -191,12 +214,32 @@ class InvitationController extends Controller
      */
     public function resend(Invitation $invitation)
     {
+        // Ensure the user can resend this invitation
+        if (!auth()->user()->can('create invitations')) {
+            abort(403, 'Unauthorized to resend invitations.');
+        }
+
         if (!$invitation->isValid()) {
             return back()->with('error', 'Cannot resend expired or used invitation.');
         }
 
-        $invitation->notify(new InviteUserNotification($invitation));
+        try {
+            $invitation->notify(new InviteUserNotification($invitation));
 
-        return back()->with('success', 'Invitation email resent successfully.');
+            Log::info('Invitation resent', [
+                'invitation_id' => $invitation->id,
+                'email' => $invitation->email,
+                'resent_by' => auth()->id()
+            ]);
+
+            return back()->with('success', 'Invitation email resent successfully.');
+        } catch (\Exception $e) {
+            Log::error('Failed to resend invitation', [
+                'invitation_id' => $invitation->id,
+                'error' => $e->getMessage()
+            ]);
+
+            return back()->with('error', 'Failed to resend invitation. Please try again.');
+        }
     }
 }
