@@ -47,19 +47,15 @@ Route::middleware('auth')->group(function () {
         Route::get('admin/create', [AdminController::class, 'createAdmin'])->name('admin.create');
         Route::post('admin/create', [AdminController::class, 'storeAdmin'])->name('admin.store');
 
-        // Access request management routes
-        Route::get('access-requests', [AccessRequestController::class, 'index'])->name('access-requests.index');
-        Route::get('access-requests/{accessRequest}', [AccessRequestController::class, 'show'])->name('access-requests.show');
-        Route::patch('access-requests/{accessRequest}/approve', [AccessRequestController::class, 'approve'])->name('access-requests.approve');
-        Route::patch('access-requests/{accessRequest}/reject', [AccessRequestController::class, 'reject'])->name('access-requests.reject');
-
-        // Essential invitation routes (create and resend only)
+        // Invitation management routes
+        Route::get('invitations', [InvitationController::class, 'index'])->name('invitations.index');
         Route::get('invitations/create', [InvitationController::class, 'create'])->name('invitations.create');
         Route::post('invitations', [InvitationController::class, 'store'])->name('invitations.store');
+        Route::get('invitations/{invitation}', [InvitationController::class, 'show'])->name('invitations.show');
         Route::post('invitations/{invitation}/resend', [InvitationController::class, 'resend'])->name('invitations.resend');
     });
 
-    // Editor and admin routes
+    // Editor and admin routes (access requests)
     Route::middleware(['role:admin|editor'])->group(function () {
         Route::get('access-requests', [AccessRequestController::class, 'index'])->name('access-requests.index');
         Route::get('access-requests/{accessRequest}', [AccessRequestController::class, 'show'])->name('access-requests.show');
