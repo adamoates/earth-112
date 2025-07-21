@@ -65,8 +65,13 @@ export default function InvitationsIndex({ invitations = [] }: Props) {
                                                 <Link href={`/invitations/${invitation.id}`}>View</Link>
                                             </Button>
                                             <Button asChild size="sm" variant="ghost">
-                                                <Link href={`/invitations/${invitation.id}/resend`} method="post">
+                                                <Link href={`/invitations/${invitation.id}/resend`} method="post" as="button">
                                                     Resend
+                                                </Link>
+                                            </Button>
+                                            <Button asChild size="sm" variant="destructive">
+                                                <Link href={`/invitations/${invitation.id}`} method="delete" as="button">
+                                                    Cancel
                                                 </Link>
                                             </Button>
                                         </div>
