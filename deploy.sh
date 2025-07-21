@@ -15,32 +15,37 @@ echo "Handling divergent branches..."
 
 # Strategy 1: Try to fetch and reset to remote
 echo "Attempting git fetch and reset..."
-git fetch origin $FORGE_SITE_BRANCH
-git reset --hard origin/$FORGE_SITE_BRANCH
+git fetch origin main
+git reset --hard origin/main
 
 # If that fails, try Strategy 2: Force pull with rebase
 if [ $? -ne 0 ]; then
     echo "Reset failed, trying git pull with rebase..."
-    git pull --rebase origin $FORGE_SITE_BRANCH
+    git pull --rebase origin main
 fi
 
 # If that fails, try Strategy 3: Force pull with merge
 if [ $? -ne 0 ]; then
     echo "Rebase failed, trying git pull with merge..."
-    git pull --no-rebase origin $FORGE_SITE_BRANCH
+    git pull --no-rebase origin main
 fi
 
 # If all else fails, try Strategy 4: Force reset to remote
 if [ $? -ne 0 ]; then
     echo "All pull strategies failed, forcing reset..."
-    git fetch origin $FORGE_SITE_BRANCH
-    git reset --hard origin/$FORGE_SITE_BRANCH || {
+    git fetch origin main
+    git reset --hard origin/main || {
         echo "ERROR: Unable to sync with remote branch"
         exit 1
     }
 fi
 
 echo "Successfully synced with remote branch"
+
+# Set defaults for Forge variables if not set
+FORGE_COMPOSER=${FORGE_COMPOSER:-composer}
+FORGE_PHP=${FORGE_PHP:-php}
+FORGE_PHP_FPM=${FORGE_PHP_FPM:-php8.2-fpm}
 
 # Install PHP dependencies
 echo "Installing PHP dependencies..."
