@@ -13,8 +13,9 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function Dashboard() {
-    const { auth } = usePage().props as unknown as { auth: { user?: { name?: string; email?: string; role?: string } } };
-    const isAdmin = auth.user?.role === 'admin';
+    const { auth } = usePage().props as unknown as { auth: { user?: { name?: string; email?: string; roles?: Array<{ name: string }> } } };
+    const userRoles = auth.user?.roles?.map((role) => role.name) || [];
+    const isAdmin = userRoles.includes('admin');
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -187,7 +188,15 @@ export default function Dashboard() {
                                     <div className="text-sm text-muted-foreground">Email</div>
                                 </div>
                                 <div className="text-center">
-                                    <div className="text-2xl font-bold">{auth.user?.role === 'user' ? 'User' : 'Unknown'}</div>
+                                    <div className="text-2xl font-bold">
+                                        {userRoles.includes('admin')
+                                            ? 'Administrator'
+                                            : userRoles.includes('editor')
+                                              ? 'Editor'
+                                              : userRoles.includes('viewer')
+                                                ? 'Viewer'
+                                                : 'Unknown'}
+                                    </div>
                                     <div className="text-sm text-muted-foreground">Role</div>
                                 </div>
                             </div>
