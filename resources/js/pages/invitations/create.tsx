@@ -1,6 +1,6 @@
 import { Head, useForm } from '@inertiajs/react';
 import { ArrowLeft, Mail, Shield } from 'lucide-react';
-import { FormEventHandler } from 'react';
+import { FormEventHandler, useState } from 'react';
 
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
@@ -32,10 +32,18 @@ export default function CreateInvitation() {
         role: 'viewer',
         expires_at: '',
     });
+    const [formError, setFormError] = useState<string | null>(null);
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        post(route('invitations.store'));
+        setFormError(null);
+        post(route('invitations.store'), {
+            onError: (err) => {
+                if (!err.email && !err.role && !err.expires_at) {
+                    setFormError('An unexpected error occurred. Please try again or contact support.');
+                }
+            },
+        });
     };
 
     return (
@@ -67,6 +75,7 @@ export default function CreateInvitation() {
                     </CardHeader>
                     <CardContent>
                         <form onSubmit={submit} className="space-y-4">
+                            {formError && <div className="mb-4 text-center text-sm font-medium text-red-600">{formError}</div>}
                             <div>
                                 <Label htmlFor="email">Email Address *</Label>
                                 <Input

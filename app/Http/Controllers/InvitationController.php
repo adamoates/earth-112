@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
+use Illuminate\Support\Facades\Log;
 
 class InvitationController extends Controller
 {
@@ -42,23 +43,28 @@ class InvitationController extends Controller
      */
     public function store(InviteUserRequest $request)
     {
-        // Generate a secure token
-        $token = Hash::make(Str::random(64));
+        try {
+            // Generate a secure token
+            $token = Hash::make(Str::random(64));
 
-        // Create invitation with 48-hour expiry
-        $invitation = Invitation::create([
-            'email' => $request->email,
-            'token' => $token,
-            'role' => $request->role,
-            'expires_at' => $request->expires_at ?? now()->addHours(48),
-            'created_by' => $request->user()->id,
-        ]);
+            // Create invitation with 48-hour expiry
+            $invitation = Invitation::create([
+                'email' => $request->email,
+                'token' => $token,
+                'role' => $request->role,
+                'expires_at' => $request->expires_at ?? now()->addHours(48),
+                'created_by' => $request->user()->id,
+            ]);
 
-        // Send invitation email
-        $invitation->notify(new InviteUserNotification($invitation));
+            // Send invitation email
+            $invitation->notify(new InviteUserNotification($invitation));
 
-        return redirect()->route('invitations.index')
-            ->with('success', 'Invitation sent successfully to ' . $request->email);
+            return redirect()->route('invitations.index')
+                ->with('success', 'Invitation sent successfully to ' . $request->email);
+        } catch (\Exception $e) {
+            Log::error('Invitation send failed: ' . $e->getMessage());
+            return back()->withErrors(['email' => 'Failed to send invitation. Please try again or contact support.']);
+        }
     }
 
     /**
