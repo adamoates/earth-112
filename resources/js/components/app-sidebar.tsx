@@ -3,7 +3,7 @@ import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { BarChart3, LayoutGrid, Shield, Users } from 'lucide-react';
+import { BarChart3, LayoutGrid, Mail, Shield, Users } from 'lucide-react';
 
 export function AppSidebar() {
     const { auth } = usePage().props as unknown as { auth: { user?: { role?: string } } };
@@ -21,6 +21,11 @@ export function AppSidebar() {
                       title: 'User Management',
                       href: '/users',
                       icon: Users,
+                  },
+                  {
+                      title: 'Access Requests',
+                      href: '/access-requests',
+                      icon: Mail,
                   },
               ]
             : []),

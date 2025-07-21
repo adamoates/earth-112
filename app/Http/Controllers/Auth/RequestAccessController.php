@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\AccessRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
@@ -34,8 +35,14 @@ class RequestAccessController extends Controller
             'reason' => 'required|string|max:1000',
         ]);
 
-        // Store the access request (you can create a model for this)
-        // For now, we'll just send an email notification
+        // Store the access request in database
+        $accessRequest = AccessRequest::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'company' => $request->company,
+            'reason' => $request->reason,
+            'status' => 'pending',
+        ]);
 
         try {
             // Send email notification to administrators
