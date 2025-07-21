@@ -4,7 +4,7 @@ import { DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSep
 import { UserInfo } from '@/components/user-info';
 import { useMobileNavigation } from '@/hooks/use-mobile-navigation';
 import { type User } from '@/types';
-import { Link, router } from '@inertiajs/react';
+import { Link } from '@inertiajs/react';
 import { LogOut, Settings } from 'lucide-react';
 
 interface UserMenuContentProps {
@@ -16,7 +16,8 @@ export function UserMenuContent({ user }: UserMenuContentProps) {
 
     const handleLogout = () => {
         cleanup();
-        router.flushAll();
+        // Let the logout process handle the cleanup naturally
+        // router.flushAll() is called too early and causes modal to close abruptly
     };
 
     return (
@@ -52,7 +53,7 @@ export function UserMenuContent({ user }: UserMenuContentProps) {
                     </DialogHeader>
                     <DialogFooter>
                         <Button variant="outline" asChild>
-                            <button>Cancel</button>
+                            <button type="button">Cancel</button>
                         </Button>
                         <Button variant="destructive" asChild>
                             <Link method="post" href={route('logout')} as="button" onClick={handleLogout}>

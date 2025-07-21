@@ -89,9 +89,7 @@ class DatabaseSeeder extends Seeder
             );
         }
 
-        // Seed test users for local development
-        if (app()->environment('local')) {
-            $this->call(TestUsersSeeder::class);
-        }
+        // Seed test users (controlled by SEED_TEST_USERS environment variable)
+        $this->call(RoleTestUsersSeeder::class);
     }
 }

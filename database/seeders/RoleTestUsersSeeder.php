@@ -12,9 +12,9 @@ class RoleTestUsersSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create test users for each role (only in non-production environments)
-        if (app()->environment('production')) {
-            $this->command->warn('Skipping test user creation in production environment.');
+        // Create test users for local development only
+        if (!app()->environment('local')) {
+            $this->command->info('Skipping test users - only created in local environment.');
             return;
         }
 
