@@ -17,6 +17,11 @@ class AdminDashboardController extends Controller
      */
     public function getStats(Request $request): JsonResponse
     {
+        // Check if user is authenticated and has admin role
+        if (!$request->user() || !$request->user()->hasRole('admin')) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
         $cacheKey = 'admin_dashboard_stats';
 
         $data = Cache::remember($cacheKey, 60, function () {

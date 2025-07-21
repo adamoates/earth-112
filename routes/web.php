@@ -6,6 +6,7 @@ use App\Http\Controllers\InvitationController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AccessRequestController;
 use App\Http\Controllers\UserDashboardController;
+use App\Http\Controllers\AdminDashboardController;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -13,6 +14,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Models\User;
+use App\Models\Invitation;
 use Spatie\Permission\Models\Role;
 
 /*
@@ -46,7 +48,7 @@ Route::middleware('auth')->group(function () {
                 'icon' => 'user-plus',
             ],
         ];
-        
+
         if ($user->email_verified_at) {
             $activities[] = [
                 'id' => 'email-verified',
@@ -106,6 +108,9 @@ Route::middleware('auth')->group(function () {
         Route::get('invitations/{invitation}', [InvitationController::class, 'show'])->name('invitations.show');
         Route::post('invitations/{invitation}/resend', [InvitationController::class, 'resend'])->name('invitations.resend');
         Route::delete('invitations/{invitation}', [InvitationController::class, 'destroy'])->name('invitations.destroy');
+
+        // Admin Dashboard API
+        Route::get('api/admin/dashboard-stats', [AdminDashboardController::class, 'getStats']);
     });
 
     // Editor and admin routes (access requests)
@@ -119,7 +124,7 @@ Route::middleware('auth')->group(function () {
         Route::get('team', function () {
             $users = User::with('roles')->get();
             $invitations = Invitation::orderBy('created_at', 'desc')->get();
-            
+
             $stats = [
                 'total_users' => $users->count(),
                 'active_invitations' => $invitations->whereNull('used_at')->count(),
