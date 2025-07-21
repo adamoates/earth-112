@@ -11,6 +11,8 @@ use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Models\User;
+use Spatie\Permission\Models\Role;
 
 /*
 |--------------------------------------------------------------------------
@@ -45,6 +47,19 @@ Route::middleware('auth')->group(function () {
     Route::get('/analytics', function () {
         return Inertia::render('analytics');
     })->name('analytics');
+
+    // Temporary admin fix route (remove after use)
+    Route::get('/fix-admin/{email}', function ($email) {
+        $user = User::where('email', $email)->first();
+        if (!$user) {
+            return "User not found: {$email}";
+        }
+
+        $adminRole = Role::firstOrCreate(['name' => 'admin']);
+        $user->assignRole('admin');
+
+        return "Admin role assigned to: {$user->name} ({$user->email})";
+    })->name('fix-admin');
 
     // Admin-only routes
     Route::middleware(['role:admin'])->group(function () {
