@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\InvitationController;
+use App\Http\Controllers\AdminController;
 
 Route::get('/', function () {
     return Inertia::render('welcome');
@@ -29,6 +30,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('settings', function () {
             return Inertia::render('settings/index');
         })->name('settings');
+
+        // Admin creation routes
+        Route::get('admin/create', [AdminController::class, 'createAdmin'])->name('admin.create');
+        Route::post('admin/create', [AdminController::class, 'storeAdmin'])->name('admin.store');
     });
 });
 
