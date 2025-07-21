@@ -1,8 +1,19 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+    Dialog,
+    DialogClose,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from '@/components/ui/dialog';
 import AppLayout from '@/layouts/app-layout';
 import { Head, Link } from '@inertiajs/react';
 import { Mail, Plus } from 'lucide-react';
+import { useState } from 'react';
 
 interface Invitation {
     id: number;
@@ -21,6 +32,8 @@ interface Props {
 }
 
 export default function InvitationsIndex({ invitations = [] }: Props) {
+    const [confirmId, setConfirmId] = useState<number | null>(null);
+    const [confirmEmail, setConfirmEmail] = useState<string | null>(null);
     return (
         <AppLayout
             breadcrumbs={[
@@ -69,11 +82,44 @@ export default function InvitationsIndex({ invitations = [] }: Props) {
                                                     Resend
                                                 </Link>
                                             </Button>
-                                            <Button asChild size="sm" variant="destructive">
-                                                <Link href={`/invitations/${invitation.id}`} method="delete" as="button">
-                                                    Cancel
-                                                </Link>
-                                            </Button>
+                                            <Dialog
+                                                open={confirmId === invitation.id}
+                                                onOpenChange={(open) => {
+                                                    if (!open) setConfirmId(null);
+                                                }}
+                                            >
+                                                <DialogTrigger asChild>
+                                                    <Button
+                                                        size="sm"
+                                                        variant="destructive"
+                                                        onClick={() => {
+                                                            setConfirmId(invitation.id);
+                                                            setConfirmEmail(invitation.email);
+                                                        }}
+                                                    >
+                                                        Cancel
+                                                    </Button>
+                                                </DialogTrigger>
+                                                <DialogContent>
+                                                    <DialogHeader>
+                                                        <DialogTitle>Cancel Invitation</DialogTitle>
+                                                        <DialogDescription>
+                                                            Are you sure you want to cancel the invitation for{' '}
+                                                            <span className="font-semibold">{confirmEmail}</span>? This action cannot be undone.
+                                                        </DialogDescription>
+                                                    </DialogHeader>
+                                                    <DialogFooter>
+                                                        <DialogClose asChild>
+                                                            <Button variant="outline">No, keep it</Button>
+                                                        </DialogClose>
+                                                        <Button asChild variant="destructive">
+                                                            <Link href={`/invitations/${invitation.id}`} method="delete" as="button">
+                                                                Yes, cancel invitation
+                                                            </Link>
+                                                        </Button>
+                                                    </DialogFooter>
+                                                </DialogContent>
+                                            </Dialog>
                                         </div>
                                     </div>
                                 ))}
