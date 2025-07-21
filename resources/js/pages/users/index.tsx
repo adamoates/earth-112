@@ -6,7 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link } from '@inertiajs/react';
-import { Clock, Edit, Mail, Plus, Search, Shield, Trash2, UserPlus, Users } from 'lucide-react';
+import { Clock, Edit, Mail, Plus, Search, Shield, UserPlus, Users } from 'lucide-react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -28,8 +28,21 @@ interface User {
     created_at: string;
 }
 
+interface Invitation {
+    id: number;
+    email: string;
+    role: string;
+    expires_at?: string;
+    used_at?: string;
+    created_at: string;
+    creator?: {
+        name: string;
+    };
+}
+
 interface Props {
     users: User[];
+    invitations?: Invitation[];
     stats?: {
         total_users: number;
         admin_users: number;
@@ -39,9 +52,39 @@ interface Props {
     };
 }
 
-export default function UsersIndex({ users, stats }: Props) {
+export default function UsersIndex({ users, invitations = [], stats }: Props) {
     const adminCount = users.filter((user) => user.role === 'admin').length;
     const userCount = users.filter((user) => user.role === 'user').length;
+
+    const getInvitationStatusBadge = (invitation: Invitation) => {
+        if (invitation.used_at) {
+            return (
+                <Badge variant="secondary" className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                    Used
+                </Badge>
+            );
+        }
+
+        if (invitation.expires_at && new Date(invitation.expires_at) < new Date()) {
+            return <Badge variant="destructive">Expired</Badge>;
+        }
+
+        return (
+            <Badge variant="default" className="bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+                Active
+            </Badge>
+        );
+    };
+
+    const getRoleDisplayName = (role: string) => {
+        return (
+            {
+                admin: 'Administrator',
+                editor: 'Editor',
+                viewer: 'Viewer',
+            }[role] || role
+        );
+    };
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -63,7 +106,7 @@ export default function UsersIndex({ users, stats }: Props) {
                         <Button asChild>
                             <Link href="/invitations/create">
                                 <UserPlus className="mr-2 h-4 w-4" />
-                                Create Invitation
+                                Send Invitation
                             </Link>
                         </Button>
                     </div>
@@ -110,8 +153,10 @@ export default function UsersIndex({ users, stats }: Props) {
                             <Mail className="h-4 w-4 text-muted-foreground" />
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold">{stats?.active_invitations || 0}</div>
-                            <p className="text-xs text-muted-foreground">Available codes</p>
+                            <div className="text-2xl font-bold">
+                                {invitations.filter((i) => !i.used_at && (!i.expires_at || new Date(i.expires_at) > new Date())).length}
+                            </div>
+                            <p className="text-xs text-muted-foreground">Available invitations</p>
                         </CardContent>
                     </Card>
 
@@ -156,43 +201,90 @@ export default function UsersIndex({ users, stats }: Props) {
                                     <UserPlus className="h-5 w-5 text-green-600 dark:text-green-400" />
                                 </div>
                                 <div className="flex-1">
-                                    <h3 className="font-medium">Create Invitation</h3>
-                                    <p className="text-sm text-gray-600 dark:text-gray-400">Send invitation to new user</p>
+                                    <h3 className="font-medium">Send Invitation</h3>
+                                    <p className="text-sm text-gray-600 dark:text-gray-400">Invite new users to the platform</p>
                                 </div>
                                 <Button asChild size="sm">
-                                    <Link href="/invitations/create">Create</Link>
+                                    <Link href="/invitations/create">Invite</Link>
                                 </Button>
                             </div>
 
                             <div className="flex items-center gap-3 rounded-lg border p-4 transition-colors hover:bg-gray-50 dark:hover:bg-gray-800">
                                 <div className="flex h-10 w-10 items-center justify-center rounded-full bg-purple-100 dark:bg-purple-900">
-                                    <Shield className="h-5 w-5 text-purple-600 dark:text-purple-400" />
+                                    <Users className="h-5 w-5 text-purple-600 dark:text-purple-400" />
                                 </div>
                                 <div className="flex-1">
-                                    <h3 className="font-medium">Manage Invitations</h3>
-                                    <p className="text-sm text-gray-600 dark:text-gray-400">View and manage all invitations</p>
+                                    <h3 className="font-medium">Create User</h3>
+                                    <p className="text-sm text-gray-600 dark:text-gray-400">Manually create a new user account</p>
                                 </div>
                                 <Button asChild size="sm">
-                                    <Link href="/invitations">Manage</Link>
+                                    <Link href="/admin/create">Create</Link>
                                 </Button>
                             </div>
                         </div>
                     </CardContent>
                 </Card>
 
-                {/* Search and Filter */}
+                {/* Recent Invitations */}
+                {invitations.length > 0 && (
+                    <Card>
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2">
+                                <Mail className="h-5 w-5" />
+                                Recent Invitations
+                            </CardTitle>
+                            <CardDescription>Track the status of sent invitations</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="space-y-3">
+                                {invitations.slice(0, 5).map((invitation) => (
+                                    <div key={invitation.id} className="flex items-center justify-between rounded-lg border p-4">
+                                        <div className="flex items-center gap-4">
+                                            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900">
+                                                <Mail className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                                            </div>
+                                            <div>
+                                                <p className="font-medium text-gray-900 dark:text-white">{invitation.email}</p>
+                                                <p className="text-sm text-gray-500 dark:text-gray-400">
+                                                    Role: {getRoleDisplayName(invitation.role)} • Created:{' '}
+                                                    {new Date(invitation.created_at).toLocaleDateString()}
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            {getInvitationStatusBadge(invitation)}
+                                            <Button variant="ghost" size="sm" asChild>
+                                                <Link href={`/invitations/${invitation.id}`}>View Details</Link>
+                                            </Button>
+                                        </div>
+                                    </div>
+                                ))}
+                                {invitations.length > 5 && (
+                                    <div className="pt-4 text-center">
+                                        <Button variant="outline" asChild>
+                                            <Link href="/invitations">View All Invitations</Link>
+                                        </Button>
+                                    </div>
+                                )}
+                            </div>
+                        </CardContent>
+                    </Card>
+                )}
+
+                {/* Users List */}
                 <Card>
                     <CardHeader>
-                        <CardTitle>Users</CardTitle>
-                        <CardDescription>Search and manage user accounts</CardDescription>
+                        <CardTitle className="flex items-center gap-2">
+                            <Users className="h-5 w-5" />
+                            Users
+                        </CardTitle>
+                        <CardDescription>Manage user accounts and permissions</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <div className="mb-4 flex items-center gap-4">
-                            <div className="flex-1">
-                                <div className="relative">
-                                    <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
-                                    <Input placeholder="Search users..." className="pl-10" />
-                                </div>
+                        <div className="mb-4 flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                                <Search className="h-4 w-4 text-gray-400" />
+                                <Input placeholder="Search users..." className="w-64" />
                             </div>
                             <Select defaultValue="all">
                                 <SelectTrigger className="w-48">
@@ -207,73 +299,29 @@ export default function UsersIndex({ users, stats }: Props) {
                             </Select>
                         </div>
 
-                        {/* Users List */}
-                        <div className="grid gap-4">
+                        <div className="space-y-3">
                             {users.map((user) => (
-                                <Card key={user.id} className="transition-shadow hover:shadow-md">
-                                    <CardHeader className="pb-3">
-                                        <div className="flex items-center justify-between">
-                                            <div className="flex items-center gap-3">
-                                                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800">
-                                                    <span className="text-sm font-medium text-gray-600 dark:text-gray-300">
-                                                        {user.name.charAt(0).toUpperCase()}
-                                                    </span>
-                                                </div>
-                                                <div>
-                                                    <CardTitle className="flex items-center gap-2 text-lg">
-                                                        {user.name}
-                                                        <Badge variant={user.role === 'admin' ? 'default' : 'secondary'}>{user.role_display}</Badge>
-                                                    </CardTitle>
-                                                    <CardDescription className="text-sm">{user.email}</CardDescription>
-                                                </div>
-                                            </div>
-                                            <div className="flex items-center gap-2">
-                                                <div className="text-right">
-                                                    <div className="text-xs text-gray-500">Member since</div>
-                                                    <div className="text-sm font-medium">{new Date(user.created_at).toLocaleDateString()}</div>
-                                                </div>
-                                                <div className="flex gap-1">
-                                                    <Button variant="ghost" size="icon" asChild>
-                                                        <Link href={`/users/${user.id}/edit`}>
-                                                            <Edit className="h-4 w-4" />
-                                                        </Link>
-                                                    </Button>
-                                                    <Button variant="ghost" size="icon" disabled={user.role === 'admin'}>
-                                                        <Trash2 className="h-4 w-4" />
-                                                    </Button>
-                                                </div>
-                                            </div>
+                                <div key={user.id} className="flex items-center justify-between rounded-lg border p-4">
+                                    <div className="flex items-center gap-4">
+                                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800">
+                                            <Users className="h-5 w-5 text-gray-600 dark:text-gray-400" />
                                         </div>
-                                    </CardHeader>
-                                </Card>
-                            ))}
-                        </div>
-
-                        {users.length === 0 && (
-                            <Card className="border-dashed">
-                                <CardContent className="flex flex-col items-center justify-center py-8">
-                                    <Users className="mb-4 h-12 w-12 text-gray-400" />
-                                    <h3 className="mb-2 text-lg font-medium text-gray-900 dark:text-white">No users found</h3>
-                                    <p className="text-center text-gray-600 dark:text-gray-400">
-                                        Create your first invitation to add users to the system.
-                                    </p>
-                                    <div className="mt-4 flex gap-2">
-                                        <Button asChild>
-                                            <Link href="/invitations/create">
-                                                <UserPlus className="mr-2 h-4 w-4" />
-                                                Create Invitation
-                                            </Link>
-                                        </Button>
-                                        <Button asChild variant="outline">
-                                            <Link href="/access-requests">
-                                                <Clock className="mr-2 h-4 w-4" />
-                                                Review Requests
+                                        <div>
+                                            <p className="font-medium text-gray-900 dark:text-white">{user.name}</p>
+                                            <p className="text-sm text-gray-500 dark:text-gray-400">{user.email}</p>
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <Badge variant="outline">{user.role_display}</Badge>
+                                        <Button variant="ghost" size="sm" asChild>
+                                            <Link href={`/users/${user.id}/edit`}>
+                                                <Edit className="h-4 w-4" />
                                             </Link>
                                         </Button>
                                     </div>
-                                </CardContent>
-                            </Card>
-                        )}
+                                </div>
+                            ))}
+                        </div>
                     </CardContent>
                 </Card>
             </div>

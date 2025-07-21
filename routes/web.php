@@ -52,20 +52,10 @@ Route::middleware('auth')->group(function () {
         Route::get('access-requests/{accessRequest}', [AccessRequestController::class, 'show'])->name('access-requests.show');
         Route::patch('access-requests/{accessRequest}/approve', [AccessRequestController::class, 'approve'])->name('access-requests.approve');
         Route::patch('access-requests/{accessRequest}/reject', [AccessRequestController::class, 'reject'])->name('access-requests.reject');
-    });
 
-    // Invitation routes with proper authorization
-    Route::middleware(['can:view-invitations'])->group(function () {
-        Route::get('invitations', [InvitationController::class, 'index'])->name('invitations.index');
-        Route::get('invitations/{invitation}', [InvitationController::class, 'show'])->name('invitations.show');
-    });
-
-    Route::middleware(['can:manage-invitations'])->group(function () {
+        // Essential invitation routes (create and resend only)
         Route::get('invitations/create', [InvitationController::class, 'create'])->name('invitations.create');
         Route::post('invitations', [InvitationController::class, 'store'])->name('invitations.store');
-        Route::get('invitations/{invitation}/edit', [InvitationController::class, 'edit'])->name('invitations.edit');
-        Route::put('invitations/{invitation}', [InvitationController::class, 'update'])->name('invitations.update');
-        Route::delete('invitations/{invitation}', [InvitationController::class, 'destroy'])->name('invitations.destroy');
         Route::post('invitations/{invitation}/resend', [InvitationController::class, 'resend'])->name('invitations.resend');
     });
 

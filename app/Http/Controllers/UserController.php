@@ -26,17 +26,41 @@ class UserController extends Controller
             ];
         });
 
+        // Get recent invitations
+        $invitations = Invitation::with('creator')
+            ->orderBy('created_at', 'desc')
+            ->limit(10)
+            ->get()
+            ->map(function ($invitation) {
+                return [
+                    'id' => $invitation->id,
+                    'email' => $invitation->email,
+                    'role' => $invitation->role,
+                    'expires_at' => $invitation->expires_at?->toISOString(),
+                    'used_at' => $invitation->used_at?->toISOString(),
+                    'created_at' => $invitation->created_at->toISOString(),
+                    'creator' => $invitation->creator ? [
+                        'name' => $invitation->creator->name,
+                    ] : null,
+                ];
+            });
+
         // Get enhanced stats
         $stats = [
             'total_users' => User::count(),
             'admin_users' => User::role('admin')->count(),
             'regular_users' => User::role(['editor', 'viewer'])->count(),
-            'active_invitations' => Invitation::where('is_used', false)->count(),
+            'active_invitations' => Invitation::whereNull('used_at')
+                ->where(function ($query) {
+                    $query->whereNull('expires_at')
+                        ->orWhere('expires_at', '>', now());
+                })->count(),
             'pending_requests' => AccessRequest::where('status', 'pending')->count(),
         ];
 
         return Inertia::render('users/index', [
             'users' => $users,
+            'invitations' => $invitations,
             'stats' => $stats,
         ]);
     }
