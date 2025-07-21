@@ -31,7 +31,7 @@ export default function AuthSimpleLayout({ children, title, description }: Props
 
             {/* Auth Form Container */}
             <div className="flex min-h-[calc(100vh-4rem)] flex-col items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
-                <div className="w-full max-w-md">
+                <div className="w-full max-w-lg">
                     <div className="rounded-lg bg-white px-4 py-8 shadow-sm sm:px-10 dark:bg-gray-800 dark:shadow-gray-900/20">
                         <div className="mb-6 sm:mx-auto sm:w-full sm:max-w-md">
                             <h2 className="text-center text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{title}</h2>
