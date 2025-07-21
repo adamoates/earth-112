@@ -91,7 +91,8 @@ export default function EditUser({ user }: Props) {
                                         <SelectValue placeholder="Select a role" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="user">User</SelectItem>
+                                        <SelectItem value="viewer">Viewer</SelectItem>
+                                        <SelectItem value="editor">Editor</SelectItem>
                                         <SelectItem value="admin">Administrator</SelectItem>
                                     </SelectContent>
                                 </Select>

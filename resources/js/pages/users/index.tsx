@@ -201,7 +201,8 @@ export default function UsersIndex({ users, stats }: Props) {
                                 <SelectContent>
                                     <SelectItem value="all">All Users</SelectItem>
                                     <SelectItem value="admin">Administrators</SelectItem>
-                                    <SelectItem value="user">Regular Users</SelectItem>
+                                    <SelectItem value="editor">Editors</SelectItem>
+                                    <SelectItem value="viewer">Viewers</SelectItem>
                                 </SelectContent>
                             </Select>
                         </div>

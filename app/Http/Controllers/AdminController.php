@@ -4,13 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
-use Inertia\Response;
 
 class AdminController extends Controller
 {
-    public function createAdmin(): Response
+    public function createAdmin()
     {
         return Inertia::render('admin/create-admin');
     }
@@ -21,16 +19,19 @@ class AdminController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
+            'role' => 'required|in:admin,editor,viewer',
         ]);
 
-        User::create([
+        $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => Hash::make($request->password),
+            'password' => bcrypt($request->password),
             'email_verified_at' => now(),
-            'role' => 'admin',
         ]);
 
-        return redirect()->back()->with('success', 'Admin user created successfully!');
+        // Assign role
+        $user->assignRole($request->role);
+
+        return redirect()->route('users.index')->with('success', 'User created successfully.');
     }
 }

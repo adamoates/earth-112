@@ -6,8 +6,12 @@ import { Link, usePage } from '@inertiajs/react';
 import { BarChart3, LayoutGrid, Mail, Shield, Users } from 'lucide-react';
 
 export function AppSidebar() {
-    const { auth } = usePage().props as unknown as { auth: { user?: { role?: string } } };
-    const isAdmin = auth.user?.role === 'admin';
+    const { auth } = usePage().props as unknown as { auth: { user?: { roles?: Array<{ name: string }> } } };
+    const userRoles = auth.user?.roles?.map((role) => role.name) || [];
+    const isAdmin = userRoles.includes('admin');
+    const isEditor = userRoles.includes('editor') || isAdmin;
+    const canViewUsers = isAdmin;
+    const canViewAccessRequests = isEditor;
 
     const mainNavItems: NavItem[] = [
         {
@@ -15,13 +19,17 @@ export function AppSidebar() {
             href: '/dashboard',
             icon: LayoutGrid,
         },
-        ...(isAdmin
+        ...(canViewUsers
             ? [
                   {
                       title: 'User Management',
                       href: '/users',
                       icon: Users,
                   },
+              ]
+            : []),
+        ...(canViewAccessRequests
+            ? [
                   {
                       title: 'Access Requests',
                       href: '/access-requests',

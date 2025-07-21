@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 
 class DatabaseSeeder extends Seeder
 {
@@ -13,11 +13,55 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        // Create permissions
+        $permissions = [
+            'view users',
+            'create users',
+            'edit users',
+            'delete users',
+            'view access requests',
+            'approve access requests',
+            'reject access requests',
+            'create invitations',
+            'view invitations',
+            'delete invitations',
+            'view analytics',
+            'manage settings',
+        ];
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        foreach ($permissions as $permission) {
+            Permission::create(['name' => $permission]);
+        }
+
+        // Create roles
+        $adminRole = Role::create(['name' => 'admin']);
+        $editorRole = Role::create(['name' => 'editor']);
+        $viewerRole = Role::create(['name' => 'viewer']);
+
+        // Assign permissions to roles
+        $adminRole->givePermissionTo(Permission::all());
+
+        $editorRole->givePermissionTo([
+            'view users',
+            'view access requests',
+            'approve access requests',
+            'reject access requests',
+            'create invitations',
+            'view invitations',
+            'view analytics',
         ]);
+
+        $viewerRole->givePermissionTo([
+            'view analytics',
+        ]);
+
+        // Create a default admin user
+        $admin = \App\Models\User::create([
+            'name' => 'Admin User',
+            'email' => 'admin@earth-112.com',
+            'password' => bcrypt('password'),
+            'email_verified_at' => now(),
+        ]);
+        $admin->assignRole('admin');
     }
 }

@@ -15,13 +15,13 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::all()->map(function ($user) {
+        $users = User::with('roles')->get()->map(function ($user) {
             return [
                 'id' => $user->id,
                 'name' => $user->name,
                 'email' => $user->email,
-                'role' => $user->role,
-                'role_display' => $user->getRoleDisplayName(),
+                'role' => $user->roles->first()?->name ?? 'viewer',
+                'role_display' => $user->roles->first()?->name ?? 'Viewer',
                 'created_at' => $user->created_at->format('Y-m-d H:i:s'),
             ];
         });
@@ -29,8 +29,8 @@ class UserController extends Controller
         // Get enhanced stats
         $stats = [
             'total_users' => User::count(),
-            'admin_users' => User::where('role', 'admin')->count(),
-            'regular_users' => User::where('role', 'user')->count(),
+            'admin_users' => User::role('admin')->count(),
+            'regular_users' => User::role(['editor', 'viewer'])->count(),
             'active_invitations' => Invitation::where('is_used', false)->count(),
             'pending_requests' => AccessRequest::where('status', 'pending')->count(),
         ];
@@ -51,8 +51,8 @@ class UserController extends Controller
                 'id' => $user->id,
                 'name' => $user->name,
                 'email' => $user->email,
-                'role' => $user->role,
-                'role_display' => $user->getRoleDisplayName(),
+                'role' => $user->roles->first()?->name ?? 'viewer',
+                'role_display' => $user->roles->first()?->name ?? 'Viewer',
             ],
         ]);
     }
@@ -65,14 +65,16 @@ class UserController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $user->id,
-            'role' => 'required|in:admin,user',
+            'role' => 'required|in:admin,editor,viewer',
         ]);
 
         $user->update([
             'name' => $request->name,
             'email' => $request->email,
-            'role' => $request->role,
         ]);
+
+        // Update role
+        $user->syncRoles([$request->role]);
 
         return redirect()->route('users.index')->with('success', 'User updated successfully.');
     }

@@ -37,8 +37,38 @@ class UserFactory extends Factory
      */
     public function unverified(): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn(array $attributes) => [
             'email_verified_at' => null,
         ]);
+    }
+
+    /**
+     * Create a user with admin role.
+     */
+    public function admin(): static
+    {
+        return $this->afterCreating(function ($user) {
+            $user->assignRole('admin');
+        });
+    }
+
+    /**
+     * Create a user with editor role.
+     */
+    public function editor(): static
+    {
+        return $this->afterCreating(function ($user) {
+            $user->assignRole('editor');
+        });
+    }
+
+    /**
+     * Create a user with viewer role.
+     */
+    public function viewer(): static
+    {
+        return $this->afterCreating(function ($user) {
+            $user->assignRole('viewer');
+        });
     }
 }
