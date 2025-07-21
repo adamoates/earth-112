@@ -5,8 +5,8 @@ namespace Database\Seeders;
 use App\Models\Invitation;
 use App\Models\User;
 use Illuminate\Database\Seeder;
-use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class DatabaseSeeder extends Seeder
 {
@@ -17,66 +17,65 @@ class DatabaseSeeder extends Seeder
     {
         // Seed admin users first
         $this->call(AdminUserSeeder::class);
-        
-        // Create test users for different roles (non-production only)
-        $this->call(RoleTestUsersSeeder::class);
 
-        // Create permissions (only if they don't exist)
+        // Create permissions
         $permissions = [
             'view users',
             'create users',
             'edit users',
             'delete users',
+            'view invitations',
+            'create invitations',
+            'edit invitations',
+            'delete invitations',
             'view access requests',
             'approve access requests',
             'reject access requests',
-            'create invitations',
-            'view invitations',
-            'delete invitations',
-            'view analytics',
-            'manage settings',
         ];
 
         foreach ($permissions as $permission) {
             Permission::firstOrCreate(['name' => $permission]);
         }
 
-        // Create roles (only if they don't exist)
+        // Create roles and assign permissions
         $adminRole = Role::firstOrCreate(['name' => 'admin']);
-        $editorRole = Role::firstOrCreate(['name' => 'editor']);
-        $viewerRole = Role::firstOrCreate(['name' => 'viewer']);
-
-        // Assign permissions to roles
         $adminRole->givePermissionTo(Permission::all());
 
+        $editorRole = Role::firstOrCreate(['name' => 'editor']);
         $editorRole->givePermissionTo([
             'view users',
+            'view invitations',
+            'create invitations',
             'view access requests',
             'approve access requests',
             'reject access requests',
-            'create invitations',
-            'view invitations',
-            'view analytics',
         ]);
 
+        $viewerRole = Role::firstOrCreate(['name' => 'viewer']);
         $viewerRole->givePermissionTo([
-            'view analytics',
+            'view users',
+            'view invitations',
         ]);
 
         // Fetch the admin user for use in invitations
         $admin = User::where('email', 'admin@earth-112.com')->first();
 
-        // Create sample invitations (only if they don't exist)
+        // Create sample invitations
         $invitations = [
             [
-                'email' => 'editor@example.com',
+                'email' => 'test1@example.com',
                 'role' => 'editor',
                 'expires_at' => now()->addDays(7),
             ],
             [
-                'email' => 'viewer@example.com',
+                'email' => 'test2@example.com',
                 'role' => 'viewer',
                 'expires_at' => now()->addDays(14),
+            ],
+            [
+                'email' => 'test3@example.com',
+                'role' => 'admin',
+                'expires_at' => now()->addDays(30),
             ],
         ];
 
@@ -85,9 +84,14 @@ class DatabaseSeeder extends Seeder
                 ['email' => $invitationData['email']],
                 array_merge($invitationData, [
                     'token' => Invitation::generateToken(),
-                    'created_by' => $admin ? $admin->id : null,
+                    'created_by' => $admin ? $admin->id : null, // Ensure $admin is not null
                 ])
             );
+        }
+
+        // Seed test users for local development
+        if (app()->environment('local')) {
+            $this->call(TestUsersSeeder::class);
         }
     }
 }
