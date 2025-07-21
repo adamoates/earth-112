@@ -31,7 +31,7 @@ class UserController extends Controller
             'total_users' => User::count(),
             'admin_users' => User::where('role', 'admin')->count(),
             'regular_users' => User::where('role', 'user')->count(),
-            'active_invitations' => Invitation::where('used', false)->count(),
+            'active_invitations' => Invitation::where('is_used', false)->count(),
             'pending_requests' => AccessRequest::where('status', 'pending')->count(),
         ];
 
