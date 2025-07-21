@@ -3,15 +3,13 @@ import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { BarChart3, LayoutGrid, Mail, Shield, Users } from 'lucide-react';
+import { BarChart3, LayoutGrid, Shield, Users } from 'lucide-react';
 
 export function AppSidebar() {
     const { auth } = usePage().props as unknown as { auth: { user?: { roles?: Array<{ name: string }> } } };
     const userRoles = auth.user?.roles?.map((role) => role.name) || [];
     const isAdmin = userRoles.includes('admin');
-    const isEditor = userRoles.includes('editor') || isAdmin;
     const canViewUsers = isAdmin;
-    const canViewAccessRequests = isEditor;
 
     const mainNavItems: NavItem[] = [
         {
@@ -25,15 +23,6 @@ export function AppSidebar() {
                       title: 'User Management',
                       href: '/users',
                       icon: Users,
-                  },
-              ]
-            : []),
-        ...(canViewAccessRequests
-            ? [
-                  {
-                      title: 'Access Requests',
-                      href: '/access-requests',
-                      icon: Mail,
                   },
               ]
             : []),

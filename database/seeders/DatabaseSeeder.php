@@ -57,33 +57,7 @@ class DatabaseSeeder extends Seeder
             'view analytics',
         ]);
 
-        // Create a default admin user (only if it doesn't exist)
-        $admin = User::firstOrCreate(
-            ['email' => 'admin@earth-112.com'],
-            [
-                'name' => 'Admin User',
-                'password' => bcrypt('Welcome#1'),
-                'email_verified_at' => now(),
-            ]
-        );
 
-        if (! $admin->hasRole('admin')) {
-            $admin->assignRole('admin');
-        }
-
-        // Add a second default admin user (apmo1984@gmail.com)
-        $admin2 = User::firstOrCreate(
-            ['email' => 'apmo1984@gmail.com'],
-            [
-                'name' => 'Adam Oates',
-                'password' => bcrypt('ZoeOates@2014!'),
-                'email_verified_at' => now(),
-            ]
-        );
-
-        if (! $admin2->hasRole('admin')) {
-            $admin2->assignRole('admin');
-        }
 
         // Create sample invitations (only if they don't exist)
         $invitations = [

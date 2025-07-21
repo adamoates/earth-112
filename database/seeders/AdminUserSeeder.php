@@ -13,17 +13,32 @@ class AdminUserSeeder extends Seeder
      */
     public function run(): void
     {
-        // Update existing user to admin role
-        User::where('email', 'apmo1984@gmail.com')->update(['role' => 'admin']);
+        // Create a default admin user (only if it doesn't exist)
+        $admin = User::firstOrCreate(
+            ['email' => 'admin@earth-112.com'],
+            [
+                'name' => 'Adam Oates',
+                'password' => bcrypt('Welcome#1'),
+                'email_verified_at' => now(),
+            ]
+        );
 
-        // Create additional admin user if needed
-        if (!User::where('email', 'admin@earth-112.com')->exists()) {
-            User::create([
-                'name' => 'Admin User',
-                'email' => 'admin@earth-112.com',
-                'password' => Hash::make('password'),
-                'role' => 'admin',
-            ]);
+        if (! $admin->hasRole('admin')) {
+            $admin->assignRole('admin');
+        }
+
+        // Add a second default admin user (apmo1984@gmail.com)
+        $admin2 = User::firstOrCreate(
+            ['email' => 'apmo1984@gmail.com'],
+            [
+                'name' => 'Adam Oates',
+                'password' => bcrypt('ZoeOates@2014!'),
+                'email_verified_at' => now(),
+            ]
+        );
+
+        if (! $admin2->hasRole('admin')) {
+            $admin2->assignRole('admin');
         }
     }
 }
