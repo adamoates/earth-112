@@ -36,6 +36,16 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+    // Security page (accessible to all authenticated users)
+    Route::get('/security', function () {
+        return Inertia::render('security');
+    })->name('security');
+
+    // Analytics page (accessible to all authenticated users)
+    Route::get('/analytics', function () {
+        return Inertia::render('analytics');
+    })->name('analytics');
+
     // Admin-only routes
     Route::middleware(['role:admin'])->group(function () {
         Route::resource('users', UserController::class);
