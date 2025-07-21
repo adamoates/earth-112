@@ -5,6 +5,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\InvitationController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AccessRequestController;
+use App\Http\Controllers\UserDashboardController;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -29,11 +30,37 @@ Route::get('/', function () {
     return Inertia::render('welcome');
 })->name('home');
 
-Route::get('/dashboard', function () {
-    return Inertia::render('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', [App\Http\Controllers\UserDashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
+    // User activity page
+    Route::get('/activity', function () {
+        $user = request()->user();
+        // For now, return the same activities as dashboard
+        $activities = [
+            [
+                'id' => 'account-created',
+                'type' => 'account',
+                'description' => 'Account created',
+                'date' => $user->created_at,
+                'icon' => 'user-plus',
+            ],
+        ];
+        
+        if ($user->email_verified_at) {
+            $activities[] = [
+                'id' => 'email-verified',
+                'type' => 'security',
+                'description' => 'Email address verified',
+                'date' => $user->email_verified_at,
+                'icon' => 'mail-check',
+            ];
+        }
+
+        return Inertia::render('activity', [
+            'activities' => $activities,
+        ]);
+    })->name('activity');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -87,6 +114,24 @@ Route::middleware('auth')->group(function () {
         Route::get('access-requests/{accessRequest}', [AccessRequestController::class, 'show'])->name('access-requests.show');
         Route::patch('access-requests/{accessRequest}/approve', [AccessRequestController::class, 'approve'])->name('access-requests.approve');
         Route::patch('access-requests/{accessRequest}/reject', [AccessRequestController::class, 'reject'])->name('access-requests.reject');
+
+        // Team overview for editors
+        Route::get('team', function () {
+            $users = User::with('roles')->get();
+            $invitations = Invitation::orderBy('created_at', 'desc')->get();
+            
+            $stats = [
+                'total_users' => $users->count(),
+                'active_invitations' => $invitations->whereNull('used_at')->count(),
+                'recent_registrations' => $users->where('created_at', '>', now()->subMonth())->count(),
+            ];
+
+            return Inertia::render('team', [
+                'users' => $users,
+                'invitations' => $invitations,
+                'stats' => $stats,
+            ]);
+        })->name('team');
     });
 });
 
