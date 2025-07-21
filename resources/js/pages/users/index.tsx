@@ -97,12 +97,6 @@ export default function UsersIndex({ users, invitations = [], stats }: Props) {
                         <p className="text-gray-600 dark:text-gray-400">Manage users, invitations, and access requests</p>
                     </div>
                     <div className="flex items-center gap-2">
-                        <Button asChild variant="outline">
-                            <Link href="/access-requests">
-                                <Clock className="mr-2 h-4 w-4" />
-                                Review Requests
-                            </Link>
-                        </Button>
                         <Button asChild>
                             <Link href="/invitations/create">
                                 <UserPlus className="mr-2 h-4 w-4" />
