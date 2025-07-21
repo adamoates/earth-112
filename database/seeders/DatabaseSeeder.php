@@ -62,7 +62,7 @@ class DatabaseSeeder extends Seeder
             ['email' => 'admin@earth-112.com'],
             [
                 'name' => 'Admin User',
-                'password' => bcrypt('password'),
+                'password' => bcrypt('Welcome#1'),
                 'email_verified_at' => now(),
             ]
         );
