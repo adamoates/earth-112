@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\Invitation;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
@@ -13,7 +15,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create permissions
+        // Create permissions (only if they don't exist)
         $permissions = [
             'view users',
             'create users',
@@ -30,13 +32,13 @@ class DatabaseSeeder extends Seeder
         ];
 
         foreach ($permissions as $permission) {
-            Permission::create(['name' => $permission]);
+            Permission::firstOrCreate(['name' => $permission]);
         }
 
-        // Create roles
-        $adminRole = Role::create(['name' => 'admin']);
-        $editorRole = Role::create(['name' => 'editor']);
-        $viewerRole = Role::create(['name' => 'viewer']);
+        // Create roles (only if they don't exist)
+        $adminRole = Role::firstOrCreate(['name' => 'admin']);
+        $editorRole = Role::firstOrCreate(['name' => 'editor']);
+        $viewerRole = Role::firstOrCreate(['name' => 'viewer']);
 
         // Assign permissions to roles
         $adminRole->givePermissionTo(Permission::all());
@@ -55,13 +57,42 @@ class DatabaseSeeder extends Seeder
             'view analytics',
         ]);
 
-        // Create a default admin user
-        $admin = \App\Models\User::create([
-            'name' => 'Admin User',
-            'email' => 'admin@earth-112.com',
-            'password' => bcrypt('password'),
-            'email_verified_at' => now(),
-        ]);
-        $admin->assignRole('admin');
+        // Create a default admin user (only if it doesn't exist)
+        $admin = User::firstOrCreate(
+            ['email' => 'admin@earth-112.com'],
+            [
+                'name' => 'Admin User',
+                'password' => bcrypt('password'),
+                'email_verified_at' => now(),
+            ]
+        );
+
+        if (!$admin->hasRole('admin')) {
+            $admin->assignRole('admin');
+        }
+
+        // Create sample invitations (only if they don't exist)
+        $invitations = [
+            [
+                'email' => 'editor@example.com',
+                'role' => 'editor',
+                'expires_at' => now()->addDays(7),
+            ],
+            [
+                'email' => 'viewer@example.com',
+                'role' => 'viewer',
+                'expires_at' => now()->addDays(14),
+            ],
+        ];
+
+        foreach ($invitations as $invitationData) {
+            Invitation::firstOrCreate(
+                ['email' => $invitationData['email']],
+                array_merge($invitationData, [
+                    'token' => Invitation::generateToken(),
+                    'created_by' => $admin->id,
+                ])
+            );
+        }
     }
 }

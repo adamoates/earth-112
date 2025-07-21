@@ -39,7 +39,6 @@ Route::middleware('auth')->group(function () {
     // Admin-only routes
     Route::middleware(['role:admin'])->group(function () {
         Route::resource('users', UserController::class);
-        Route::resource('invitations', InvitationController::class);
         Route::get('settings', function () {
             return Inertia::render('settings/index');
         })->name('settings');
@@ -55,6 +54,21 @@ Route::middleware('auth')->group(function () {
         Route::patch('access-requests/{accessRequest}/reject', [AccessRequestController::class, 'reject'])->name('access-requests.reject');
     });
 
+    // Invitation routes with proper authorization
+    Route::middleware(['can:view-invitations'])->group(function () {
+        Route::get('invitations', [InvitationController::class, 'index'])->name('invitations.index');
+        Route::get('invitations/{invitation}', [InvitationController::class, 'show'])->name('invitations.show');
+    });
+
+    Route::middleware(['can:manage-invitations'])->group(function () {
+        Route::get('invitations/create', [InvitationController::class, 'create'])->name('invitations.create');
+        Route::post('invitations', [InvitationController::class, 'store'])->name('invitations.store');
+        Route::get('invitations/{invitation}/edit', [InvitationController::class, 'edit'])->name('invitations.edit');
+        Route::put('invitations/{invitation}', [InvitationController::class, 'update'])->name('invitations.update');
+        Route::delete('invitations/{invitation}', [InvitationController::class, 'destroy'])->name('invitations.destroy');
+        Route::post('invitations/{invitation}/resend', [InvitationController::class, 'resend'])->name('invitations.resend');
+    });
+
     // Editor and admin routes
     Route::middleware(['role:admin|editor'])->group(function () {
         Route::get('access-requests', [AccessRequestController::class, 'index'])->name('access-requests.index');
@@ -63,5 +77,9 @@ Route::middleware('auth')->group(function () {
         Route::patch('access-requests/{accessRequest}/reject', [AccessRequestController::class, 'reject'])->name('access-requests.reject');
     });
 });
+
+// Public invitation routes (no auth required)
+Route::get('invitations/{token}/accept', [InvitationController::class, 'accept'])->name('invitations.accept');
+Route::post('invitations/register', [InvitationController::class, 'register'])->name('invitations.register');
 
 require __DIR__ . '/auth.php';

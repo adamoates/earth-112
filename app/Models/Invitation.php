@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
 class Invitation extends Model
@@ -11,33 +12,25 @@ class Invitation extends Model
     use HasFactory;
 
     protected $fillable = [
-        'code',
         'email',
-        'name',
+        'token',
         'role',
-        'is_used',
         'expires_at',
-        'created_by',
-        'used_by',
         'used_at',
+        'created_by',
     ];
 
     protected $casts = [
-        'is_used' => 'boolean',
         'expires_at' => 'datetime',
         'used_at' => 'datetime',
     ];
 
     /**
-     * Generate a unique invitation code.
+     * Generate a secure invitation token.
      */
-    public static function generateCode(): string
+    public static function generateToken(): string
     {
-        do {
-            $code = strtoupper(Str::random(8));
-        } while (static::where('code', $code)->exists());
-
-        return $code;
+        return Hash::make(Str::random(64));
     }
 
     /**
@@ -46,9 +39,9 @@ class Invitation extends Model
     public static function createInvitation(array $data = []): self
     {
         return static::create(array_merge([
-            'code' => static::generateCode(),
-            'role' => 'user',
-            'is_used' => false,
+            'token' => static::generateToken(),
+            'role' => 'viewer',
+            'expires_at' => now()->addHours(48),
         ], $data));
     }
 
@@ -57,20 +50,31 @@ class Invitation extends Model
      */
     public function isValid(): bool
     {
-        return !$this->is_used &&
-            ($this->expires_at === null || $this->expires_at->isFuture());
+        return !$this->isUsed() && !$this->isExpired();
+    }
+
+    /**
+     * Check if the invitation has been used.
+     */
+    public function isUsed(): bool
+    {
+        return $this->used_at !== null;
+    }
+
+    /**
+     * Check if the invitation has expired.
+     */
+    public function isExpired(): bool
+    {
+        return $this->expires_at && $this->expires_at->isPast();
     }
 
     /**
      * Mark the invitation as used.
      */
-    public function markAsUsed(int $userId): void
+    public function markAsUsed(): void
     {
-        $this->update([
-            'is_used' => true,
-            'used_by' => $userId,
-            'used_at' => now(),
-        ]);
+        $this->update(['used_at' => now()]);
     }
 
     /**
@@ -82,19 +86,11 @@ class Invitation extends Model
     }
 
     /**
-     * Get the user who used this invitation.
-     */
-    public function usedBy()
-    {
-        return $this->belongsTo(User::class, 'used_by');
-    }
-
-    /**
      * Scope to get only valid invitations.
      */
     public function scopeValid($query)
     {
-        return $query->where('is_used', false)
+        return $query->whereNull('used_at')
             ->where(function ($q) {
                 $q->whereNull('expires_at')
                     ->orWhere('expires_at', '>', now());
@@ -106,7 +102,7 @@ class Invitation extends Model
      */
     public function scopeUnused($query)
     {
-        return $query->where('is_used', false);
+        return $query->whereNull('used_at');
     }
 
     /**
@@ -115,5 +111,13 @@ class Invitation extends Model
     public function scopeExpired($query)
     {
         return $query->where('expires_at', '<', now());
+    }
+
+    /**
+     * Scope to get only used invitations.
+     */
+    public function scopeUsed($query)
+    {
+        return $query->whereNotNull('used_at');
     }
 }
