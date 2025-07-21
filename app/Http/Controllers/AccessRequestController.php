@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\AccessRequest;
+use App\Models\Invitation;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -42,7 +43,16 @@ class AccessRequestController extends Controller
             'reviewed_by' => $request->user()->id,
         ]);
 
-        return back()->with('success', 'Access request approved successfully.');
+        // Create invitation for approved request
+        Invitation::create([
+            'code' => Invitation::generateCode(),
+            'email' => $accessRequest->email,
+            'name' => $accessRequest->name,
+            'role' => 'user', // Default to user role
+            'created_by' => $request->user()->id,
+        ]);
+
+        return back()->with('success', 'Access request approved and invitation created successfully.');
     }
 
     public function reject(Request $request, AccessRequest $accessRequest)

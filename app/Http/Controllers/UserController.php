@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Invitation;
+use App\Models\AccessRequest;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -24,8 +26,18 @@ class UserController extends Controller
             ];
         });
 
+        // Get enhanced stats
+        $stats = [
+            'total_users' => User::count(),
+            'admin_users' => User::where('role', 'admin')->count(),
+            'regular_users' => User::where('role', 'user')->count(),
+            'active_invitations' => Invitation::where('used', false)->count(),
+            'pending_requests' => AccessRequest::where('status', 'pending')->count(),
+        ];
+
         return Inertia::render('users/index', [
             'users' => $users,
+            'stats' => $stats,
         ]);
     }
 
@@ -68,9 +80,9 @@ class UserController extends Controller
     /**
      * Remove the specified user (admin only).
      */
-    public function destroy(User $user)
+    public function destroy(Request $request, User $user)
     {
-        if ($user->id === auth()->id()) {
+        if ($user->id === $request->user()->id) {
             return back()->with('error', 'You cannot delete your own account.');
         }
 
