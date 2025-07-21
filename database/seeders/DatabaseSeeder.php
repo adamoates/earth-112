@@ -15,6 +15,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        // Seed admin users first
+        $this->call(AdminUserSeeder::class);
+
         // Create permissions (only if they don't exist)
         $permissions = [
             'view users',
@@ -57,7 +60,8 @@ class DatabaseSeeder extends Seeder
             'view analytics',
         ]);
 
-
+        // Fetch the admin user for use in invitations
+        $admin = User::where('email', 'admin@earth-112.com')->first();
 
         // Create sample invitations (only if they don't exist)
         $invitations = [
@@ -78,7 +82,7 @@ class DatabaseSeeder extends Seeder
                 ['email' => $invitationData['email']],
                 array_merge($invitationData, [
                     'token' => Invitation::generateToken(),
-                    'created_by' => $admin->id,
+                    'created_by' => $admin ? $admin->id : null,
                 ])
             );
         }
