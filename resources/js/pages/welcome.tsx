@@ -17,9 +17,12 @@ export default function Welcome() {
                         <p className="mt-6 text-lg leading-8 text-gray-600 dark:text-gray-300">
                             A secure, invite-only platform for collaboration and management.
                         </p>
-                        <div className="mt-10 flex items-center justify-center">
+                        <div className="mt-10 flex items-center justify-center gap-4">
                             <Button asChild size="lg">
                                 <Link href={route('login')}>Sign in</Link>
+                            </Button>
+                            <Button asChild variant="outline" size="lg">
+                                <Link href={route('request-access')}>Request Access</Link>
                             </Button>
                         </div>
                         <p className="mt-4 text-sm text-gray-500 dark:text-gray-400">Access is restricted to invited users only.</p>

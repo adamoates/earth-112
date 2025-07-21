@@ -103,9 +103,9 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                 </div>
 
                 <div className="text-center text-sm text-gray-600 dark:text-gray-400">
-                    Don't have an account?{' '}
-                    <TextLink href={route('register')} tabIndex={5} className="font-medium text-blue-600 hover:text-blue-700">
-                        Sign up
+                    Need access to this platform?{' '}
+                    <TextLink href={route('request-access')} tabIndex={5} className="font-medium text-blue-600 hover:text-blue-700">
+                        Request Access
                     </TextLink>
                 </div>
             </form>
