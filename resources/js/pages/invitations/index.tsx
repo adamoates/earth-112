@@ -1,15 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import {
-    Dialog,
-    DialogClose,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import AppLayout from '@/layouts/app-layout';
 import { Head, Link } from '@inertiajs/react';
 import { Mail, Plus } from 'lucide-react';
@@ -34,6 +25,9 @@ interface Props {
 export default function InvitationsIndex({ invitations = [] }: Props) {
     const [confirmId, setConfirmId] = useState<number | null>(null);
     const [confirmEmail, setConfirmEmail] = useState<string | null>(null);
+    const [resendId, setResendId] = useState<number | null>(null);
+    const [resendEmail, setResendEmail] = useState<string | null>(null);
+
     return (
         <AppLayout
             breadcrumbs={[
@@ -77,10 +71,15 @@ export default function InvitationsIndex({ invitations = [] }: Props) {
                                             <Button asChild size="sm" variant="outline">
                                                 <Link href={`/invitations/${invitation.id}`}>View</Link>
                                             </Button>
-                                            <Button asChild size="sm" variant="ghost">
-                                                <Link href={`/invitations/${invitation.id}/resend`} method="post" as="button">
-                                                    Resend
-                                                </Link>
+                                            <Button
+                                                size="sm"
+                                                variant="ghost"
+                                                onClick={() => {
+                                                    setResendId(invitation.id);
+                                                    setResendEmail(invitation.email);
+                                                }}
+                                            >
+                                                Resend
                                             </Button>
                                             <Dialog
                                                 open={confirmId === invitation.id}
@@ -109,9 +108,9 @@ export default function InvitationsIndex({ invitations = [] }: Props) {
                                                         </DialogDescription>
                                                     </DialogHeader>
                                                     <DialogFooter>
-                                                        <DialogClose asChild>
-                                                            <Button variant="outline">No, keep it</Button>
-                                                        </DialogClose>
+                                                        <Button variant="outline" onClick={() => setConfirmId(null)}>
+                                                            No, keep it
+                                                        </Button>
                                                         <Button asChild variant="destructive">
                                                             <Link href={`/invitations/${invitation.id}`} method="delete" as="button">
                                                                 Yes, cancel invitation
@@ -127,6 +126,36 @@ export default function InvitationsIndex({ invitations = [] }: Props) {
                         )}
                     </CardContent>
                 </Card>
+
+                {/* Resend Confirmation Dialog */}
+                <Dialog
+                    open={resendId !== null}
+                    onOpenChange={(open) => {
+                        if (!open) setResendId(null);
+                    }}
+                >
+                    <DialogContent>
+                        <DialogHeader>
+                            <DialogTitle>Confirm Resend Invitation</DialogTitle>
+                            <DialogDescription>
+                                Are you sure you want to resend the invitation to <span className="font-semibold">{resendEmail}</span>?
+                                <br />
+                                <br />
+                                This will send a new invitation email to the recipient with the same invitation link.
+                            </DialogDescription>
+                        </DialogHeader>
+                        <DialogFooter>
+                            <Button variant="outline" onClick={() => setResendId(null)}>
+                                Cancel
+                            </Button>
+                            <Button asChild variant="default">
+                                <Link href={`/invitations/${resendId}/resend`} method="post" as="button">
+                                    Yes, resend invitation
+                                </Link>
+                            </Button>
+                        </DialogFooter>
+                    </DialogContent>
+                </Dialog>
             </div>
         </AppLayout>
     );

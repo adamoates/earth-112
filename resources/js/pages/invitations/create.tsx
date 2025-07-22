@@ -5,6 +5,7 @@ import { FormEventHandler, useState } from 'react';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -33,10 +34,16 @@ export default function CreateInvitation() {
         expires_at: '',
     });
     const [formError, setFormError] = useState<string | null>(null);
+    const [showConfirmDialog, setShowConfirmDialog] = useState(false);
 
-    const submit: FormEventHandler = (e) => {
+    const handleSubmit: FormEventHandler = (e) => {
         e.preventDefault();
         setFormError(null);
+        setShowConfirmDialog(true);
+    };
+
+    const confirmSendInvitation = () => {
+        setShowConfirmDialog(false);
         post(route('invitations.store'), {
             onError: (err) => {
                 if (!err.email && !err.role && !err.expires_at) {
@@ -74,7 +81,7 @@ export default function CreateInvitation() {
                         <CardDescription>Send an invitation email to a new user with appropriate role and permissions.</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <form onSubmit={submit} className="space-y-4">
+                        <form onSubmit={handleSubmit} className="space-y-4">
                             {formError && <div className="mb-4 text-center text-sm font-medium text-red-600">{formError}</div>}
                             <div>
                                 <Label htmlFor="email">Email Address *</Label>
@@ -148,6 +155,31 @@ export default function CreateInvitation() {
                         </form>
                     </CardContent>
                 </Card>
+
+                {/* Confirmation Dialog */}
+                <Dialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
+                    <DialogContent>
+                        <DialogHeader>
+                            <DialogTitle>Confirm Send Invitation</DialogTitle>
+                            <DialogDescription>
+                                Are you sure you want to send an invitation to <span className="font-semibold">{data.email}</span> with the{' '}
+                                <span className="font-semibold">{data.role}</span> role?
+                                <br />
+                                <br />
+                                This will send an email to the recipient with an invitation link to join Earth-112.
+                            </DialogDescription>
+                        </DialogHeader>
+                        <DialogFooter>
+                            <Button variant="outline" onClick={() => setShowConfirmDialog(false)}>
+                                Cancel
+                            </Button>
+                            <Button onClick={confirmSendInvitation} disabled={processing}>
+                                <Mail className="mr-2 h-4 w-4" />
+                                {processing ? 'Sending...' : 'Yes, Send Invitation'}
+                            </Button>
+                        </DialogFooter>
+                    </DialogContent>
+                </Dialog>
             </div>
         </AppLayout>
     );
