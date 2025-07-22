@@ -4,12 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
 class Invitation extends Model
 {
-    use HasFactory;
+    use HasFactory, Notifiable;
 
     protected $fillable = [
         'email',
@@ -119,5 +120,13 @@ class Invitation extends Model
     public function scopeUsed($query)
     {
         return $query->whereNotNull('used_at');
+    }
+
+    /**
+     * Get the email address for mail notifications.
+     */
+    public function routeNotificationForMail($notification)
+    {
+        return $this->email;
     }
 }
