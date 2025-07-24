@@ -39,11 +39,11 @@ export default function Login({ status, canResetPassword }: LoginProps) {
         <AuthLayout title="Welcome back" description="Sign in to your account">
             <Head title="Log in" />
 
-            <div className="mx-auto w-full max-w-4xl">
-                <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
+            <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
+                <div className="grid grid-cols-1 gap-6 lg:gap-8 xl:grid-cols-2">
                     {/* Left Side - Social Login */}
-                    <div className="rounded-lg border bg-card p-8 shadow-sm">
-                        <div className="mb-8 text-center">
+                    <div className="rounded-lg border bg-card p-6 shadow-sm sm:p-8">
+                        <div className="mb-6 text-center sm:mb-8">
                             <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900/20">
                                 <Shield className="h-8 w-8 text-blue-600 dark:text-blue-400" />
                             </div>
@@ -54,9 +54,9 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                         <div className="space-y-4">
                             <a
                                 href={route('social.login', 'google')}
-                                className="flex w-full items-center justify-center rounded-lg border border-gray-300 bg-white px-6 py-4 text-gray-700 transition-colors hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+                                className="flex w-full items-center justify-center rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-700 transition-colors hover:bg-gray-50 sm:px-6 sm:py-4 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
                             >
-                                <svg className="mr-3 h-6 w-6" viewBox="0 0 24 24">
+                                <svg className="mr-3 h-5 w-5 sm:h-6 sm:w-6" viewBox="0 0 24 24">
                                     <path
                                         fill="#4285F4"
                                         d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -82,7 +82,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                             </div>
                         </div>
 
-                        <div className="mt-8 border-t border-gray-200 pt-6 dark:border-gray-700">
+                        <div className="mt-6 border-t border-gray-200 pt-4 sm:mt-8 sm:pt-6 dark:border-gray-700">
                             <p className="text-center text-sm text-gray-600 dark:text-gray-400">
                                 Need access to this platform?{' '}
                                 <TextLink
@@ -96,7 +96,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                     </div>
 
                     {/* Right Side - Email/Password Form */}
-                    <div className="rounded-lg border bg-card p-8 shadow-sm">
+                    <div className="rounded-lg border bg-card p-6 shadow-sm sm:p-8">
                         <div className="mb-6 text-center">
                             <h2 className="mb-2 text-xl font-semibold text-gray-900 dark:text-gray-100">Sign in with Email</h2>
                             <p className="text-sm text-gray-600 dark:text-gray-400">Use your email and password to access your account</p>
