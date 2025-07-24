@@ -66,4 +66,27 @@ class User extends Authenticatable
     {
         return $this->social_provider ? ucfirst($this->social_provider) : null;
     }
+
+    /**
+     * Check if user can use email/password login.
+     * Social users with actual passwords can still use email/password.
+     */
+    public function canUseEmailPassword(): bool
+    {
+        // If not a social user, they can definitely use email/password
+        if (!$this->isSocialUser()) {
+            return true;
+        }
+
+        // If they're a social user but have a real password (not random 64-char), they can use email/password
+        return strlen($this->password) <= 60;
+    }
+
+    /**
+     * Check if user is a pure social user (no email/password access).
+     */
+    public function isPureSocialUser(): bool
+    {
+        return $this->isSocialUser() && !$this->canUseEmailPassword();
+    }
 }

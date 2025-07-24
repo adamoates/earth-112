@@ -53,12 +53,12 @@ class LoginRequest extends FormRequest
             ]);
         }
 
-        // Check if this is a social login user
-        if ($user->isSocialUser()) {
+        // Check if this is a social login user with no password set
+        if ($user->isPureSocialUser()) {
             RateLimiter::hit($this->throttleKey());
             $providerName = $user->getSocialProviderName() ?: 'Google';
             throw ValidationException::withMessages([
-                'email' => "This account was created with {$providerName} login. Please use the \"Sign in with {$providerName}\" button instead.",
+                'email' => "This account was created with {$providerName} login and has no password set. Please use the \"Sign in with {$providerName}\" button instead.",
             ]);
         }
 
