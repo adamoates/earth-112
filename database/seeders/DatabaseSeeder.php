@@ -15,10 +15,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Seed admin users first
-        $this->call(AdminUserSeeder::class);
-
-        // Create permissions
+        // Create permissions first
         $permissions = [
             'view users',
             'create users',
@@ -56,6 +53,9 @@ class DatabaseSeeder extends Seeder
             'view users',
             'view invitations',
         ]);
+
+        // Now seed admin users after roles are created
+        $this->call(AdminUserSeeder::class);
 
         // Fetch the admin user for use in invitations
         $admin = User::where('email', 'admin@earth-112.com')->first();

@@ -46,5 +46,17 @@ jobs:
       - name: Generate Application Key
         run: php artisan key:generate
 
+      - name: Setup Database
+        run: |
+          php artisan migrate:fresh --seed
+        env:
+          ADMIN_PASSWORD: test-admin-password-123
+          ADMIN_EMAIL: admin@test.earth-112.com
+          ADMIN_NAME: Test Admin User
+
       - name: Tests
         run: ./vendor/bin/phpunit
+        env:
+          ADMIN_PASSWORD: test-admin-password-123
+          ADMIN_EMAIL: admin@test.earth-112.com
+          ADMIN_NAME: Test Admin User
