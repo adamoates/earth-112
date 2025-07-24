@@ -81,7 +81,7 @@ class UserDashboardController extends Controller
     private function getPersonalStats(User $user, bool $isEditor): array
     {
         $stats = [
-            'account_age_days' => $user->created_at->diffInDays(now()),
+            'account_age_days' => round($user->created_at->diffInDays(now())),
             'profile_completion' => $this->calculateProfileCompletion($user),
             'last_login' => $user->updated_at, // Would be better with login tracking
         ];
