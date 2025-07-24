@@ -30,15 +30,13 @@ export default function AuthSimpleLayout({ children, title, description }: Props
             </nav>
 
             {/* Auth Form Container */}
-            <div className="flex min-h-[calc(100vh-4rem)] flex-col items-center justify-center px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
-                <div className="w-full max-w-lg">
-                    <div className="rounded-lg bg-white px-4 py-6 shadow-sm sm:px-10 sm:py-8 dark:bg-gray-800 dark:shadow-gray-900/20">
-                        <div className="mb-6 sm:mx-auto sm:w-full sm:max-w-md">
-                            <h2 className="text-center text-xl font-bold tracking-tight text-gray-900 sm:text-2xl dark:text-white">{title}</h2>
-                            {description && <p className="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">{description}</p>}
-                        </div>
-                        {children}
+            <div className="flex min-h-[calc(100vh-4rem)] flex-col items-center justify-center px-4 py-8 sm:px-10 sm:py-12">
+                <div className="mx-auto w-full max-w-4xl px-4 sm:px-6 lg:px-8">
+                    <div className="mb-6 sm:mx-auto sm:w-full">
+                        <h2 className="text-center text-xl font-bold tracking-tight text-gray-900 sm:text-2xl dark:text-white">{title}</h2>
+                        {description && <p className="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">{description}</p>}
                     </div>
+                    {children}
                 </div>
             </div>
         </div>
