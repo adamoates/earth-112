@@ -154,17 +154,18 @@ class SocialiteTest extends TestCase
 
     public function test_google_callback_logs_in_existing_user()
     {
-        // Create a user
+        // Create a user with an already-used invitation (simulating production scenario)
         $user = User::factory()->create([
             'email' => 'john@example.com',
         ]);
+        $user->assignRole('editor'); // Assign the role that matches the invitation
 
-        // Create a valid invitation
+        // Create a used invitation (simulating that user was created via invitation)
         $invitation = Invitation::factory()->create([
             'email' => 'john@example.com',
             'role' => 'editor',
             'expires_at' => now()->addDays(7),
-            'used_at' => null,
+            'used_at' => now()->subMinutes(10), // Used 10 minutes ago
         ]);
 
         // Mock Socialite to return a user
@@ -193,10 +194,11 @@ class SocialiteTest extends TestCase
             'is_social_user' => true,
         ]);
 
-        // Check that invitation was marked as used
+        // For existing users, invitation should remain as it was (not marked as used again)
         $this->assertDatabaseHas('invitations', [
             'id' => $invitation->id,
         ]);
+        // The invitation was already used when the user was created, so it should still be used
         $this->assertNotNull($invitation->fresh()->used_at);
 
         // Check that user has the correct role

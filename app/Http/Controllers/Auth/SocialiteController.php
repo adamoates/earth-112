@@ -30,51 +30,50 @@ class SocialiteController extends Controller
         try {
             $socialUser = Socialite::driver($provider)->user();
 
-            Log::info('Google OAuth callback started', [
+            Log::info('Google OAuth callback initiated', [
                 'provider' => $provider,
-                'email' => $socialUser->getEmail(),
-                'name' => $socialUser->getName(),
-                'id' => $socialUser->getId(),
+                'social_email' => $socialUser->getEmail(),
+                'social_id' => $socialUser->getId(),
             ]);
 
-            // Check if there's a valid, unused invitation for this email
-            $invitation = Invitation::where('email', $socialUser->getEmail())
-                ->where('expires_at', '>', now())
-                ->whereNull('used_at')
-                ->first();
-
-            if (!$invitation) {
-                Log::warning('Google OAuth login attempted without valid invitation', [
-                    'email' => $socialUser->getEmail(),
-                    'provider' => $provider,
-                    'available_invitations' => Invitation::where('email', $socialUser->getEmail())->get()->map(function ($inv) {
-                        return [
-                            'id' => $inv->id,
-                            'expires_at' => $inv->expires_at,
-                            'used_at' => $inv->used_at,
-                            'role' => $inv->role,
-                        ];
-                    })
-                ]);
-
-                return redirect()->route('social.status', [
-                    'status' => 'error',
-                    'message' => 'You need a valid invitation to access this application. Please contact an administrator.',
-                    'provider' => ucfirst($provider)
-                ]);
-            }
-
-            Log::info('Valid invitation found', [
-                'invitation_id' => $invitation->id,
-                'role' => $invitation->role,
-                'expires_at' => $invitation->expires_at,
-            ]);
-
-            // Check if user already exists
+            // Check if user already exists first
             $user = User::where('email', $socialUser->getEmail())->first();
             $isNewUser = !$user;
 
-            if (!$user) {
+            if ($isNewUser) {
+                // For new users, we need a valid unused invitation
+                $invitation = Invitation::where('email', $socialUser->getEmail())
+                    ->where('expires_at', '>', now())
+                    ->whereNull('used_at')
+                    ->first();
+
+                if (!$invitation) {
+                    Log::warning('No valid invitation found for new social user', [
+                        'email' => $socialUser->getEmail(),
+                        'provider' => $provider,
+                        'available_invitations' => Invitation::where('email', $socialUser->getEmail())->get()->map(function ($inv) {
+                            return [
+                                'id' => $inv->id,
+                                'expires_at' => $inv->expires_at,
+                                'used_at' => $inv->used_at,
+                                'role' => $inv->role,
+                            ];
+                        })
+                    ]);
+
+                    return redirect()->route('social.status', [
+                        'status' => 'error',
+                        'message' => 'You need a valid invitation to access this application. Please contact an administrator.',
+                        'provider' => ucfirst($provider)
+                    ]);
+                }
+
+                Log::info('Valid invitation found for new user', [
+                    'invitation_id' => $invitation->id,
+                    'role' => $invitation->role,
+                    'expires_at' => $invitation->expires_at,
+                ]);
+
                 // Create new user
                 $user = User::create([
                     'name' => $socialUser->getName(),
@@ -92,8 +91,20 @@ class SocialiteController extends Controller
                     'invitation_id' => $invitation->id,
                     'provider' => $provider
                 ]);
+
+                // Assign role from invitation
+                if (!$user->hasRole($invitation->role)) {
+                    $user->assignRole($invitation->role);
+                    Log::info('Assigned role to new user', ['role' => $invitation->role]);
+                }
+
+                // Mark invitation as used
+                $invitation->update([
+                    'used_at' => now(),
+                ]);
             } else {
-                Log::info('Existing user found', [
+                // For existing users, just log them in
+                Log::info('Existing user found for social login', [
                     'user_id' => $user->id,
                     'email' => $user->email,
                     'is_social_user' => $user->isSocialUser(),
@@ -108,26 +119,21 @@ class SocialiteController extends Controller
                     ]);
                     Log::info('Updated existing user with social info');
                 }
-            }
 
-            // Assign role from invitation
-            if (!$user->hasRole($invitation->role)) {
-                $user->assignRole($invitation->role);
-                Log::info('Assigned role to user', ['role' => $invitation->role]);
+                // Get their current role for display
+                $userRole = $user->roles->first()?->name ?? 'No role assigned';
             }
-
-            // Mark invitation as used
-            $invitation->update([
-                'used_at' => now(),
-            ]);
 
             // Log in the user
             Auth::login($user);
 
+            // Get the role for display (either from invitation for new users or current role for existing users)
+            $displayRole = $isNewUser ? $invitation->role : ($user->roles->first()?->name ?? 'No role assigned');
+
             Log::info('User logged in via Google OAuth', [
                 'user_id' => $user->id,
                 'email' => $user->email,
-                'role' => $invitation->role,
+                'role' => $displayRole,
                 'provider' => $provider
             ]);
 
@@ -140,7 +146,7 @@ class SocialiteController extends Controller
                 'user' => [
                     'name' => $user->name,
                     'email' => $user->email,
-                    'role' => $invitation->role
+                    'role' => $displayRole
                 ],
                 'isNewUser' => $isNewUser,
                 'provider' => ucfirst($provider)
