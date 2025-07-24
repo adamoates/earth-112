@@ -23,15 +23,15 @@ export default function SettingsPage() {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Settings" />
-            <div className="flex h-full flex-1 flex-col gap-6 overflow-x-auto rounded-xl p-4">
+            <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4 sm:gap-6">
                 {/* Header */}
-                <div className="space-y-1">
-                    <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Settings</h1>
-                    <p className="text-gray-600 dark:text-gray-400">Configure application settings and preferences</p>
+                <div className="space-y-2">
+                    <h1 className="text-xl font-bold text-gray-900 sm:text-2xl dark:text-white">Settings</h1>
+                    <p className="text-sm text-gray-600 sm:text-base dark:text-gray-400">Configure application settings and preferences</p>
                 </div>
 
                 {/* Settings Sections */}
-                <div className="grid gap-6 md:grid-cols-2">
+                <div className="grid gap-6 sm:grid-cols-2">
                     {/* General Settings */}
                     <Card>
                         <CardHeader>

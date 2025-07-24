@@ -1,4 +1,3 @@
-import React from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -7,18 +6,8 @@ import AppLayout from '@/layouts/app-layout';
 import { type UserDashboardData } from '@/types/user-dashboard';
 import { formatRelativeTime } from '@/utils/date';
 import { Head, Link } from '@inertiajs/react';
-import { 
-    User, 
-    Calendar, 
-    CheckCircle, 
-    Clock, 
-    TrendingUp,
-    Bell,
-    ArrowRight,
-    Users,
-    Shield,
-    Mail
-} from 'lucide-react';
+import { ArrowRight, Bell, Calendar, CheckCircle, Clock, Mail, Shield, TrendingUp, User, Users } from 'lucide-react';
+import React from 'react';
 
 interface Props {
     user: UserDashboardData['user'];
@@ -33,9 +22,9 @@ const iconMap = {
     'user-plus': User,
     'mail-check': Mail,
     'shield-check': Shield,
-    'user': User,
-    'lock': CheckCircle,
-    'users': Users,
+    user: User,
+    lock: CheckCircle,
+    users: Users,
 };
 
 const colorMap = {
@@ -47,40 +36,29 @@ const colorMap = {
     gray: 'bg-gray-500 hover:bg-gray-600',
 };
 
-export default function UserDashboard({ 
-    user, 
-    stats, 
-    recentActivity = [], 
-    quickActions = [], 
-    announcements = [],
-    teamStats 
-}: Props) {
+export default function UserDashboard({ user, stats, recentActivity = [], quickActions = [], announcements = [], teamStats }: Props) {
     const isEditor = user.roles.includes('editor');
 
     return (
         <AppLayout>
             <Head title="Dashboard" />
-            
-            <div className="flex flex-1 flex-col gap-6 p-6">
+
+            <div className="flex flex-1 flex-col gap-4 p-4 sm:gap-6 sm:p-6">
                 {/* Welcome Header */}
                 <div className="space-y-2">
-                    <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                        Welcome back, {user.name}!
-                    </h1>
-                    <p className="text-gray-600 dark:text-gray-400">
-                        Here's what's happening with your account today.
-                    </p>
+                    <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl dark:text-white">Welcome back, {user.name}!</h1>
+                    <p className="text-sm text-gray-600 sm:text-base dark:text-gray-400">Here's what's happening with your account today.</p>
                 </div>
 
                 {/* Quick Stats */}
-                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                     <Card>
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                             <CardTitle className="text-sm font-medium">Account Age</CardTitle>
                             <Calendar className="h-4 w-4 text-muted-foreground" />
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold">{stats.account_age_days}</div>
+                            <div className="text-xl font-bold sm:text-2xl">{stats.account_age_days}</div>
                             <p className="text-xs text-muted-foreground">days active</p>
                         </CardContent>
                     </Card>
@@ -91,7 +69,7 @@ export default function UserDashboard({
                             <User className="h-4 w-4 text-muted-foreground" />
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold">{stats.profile_completion}%</div>
+                            <div className="text-xl font-bold sm:text-2xl">{stats.profile_completion}%</div>
                             <Progress value={stats.profile_completion} className="mt-2" />
                         </CardContent>
                     </Card>
@@ -103,7 +81,7 @@ export default function UserDashboard({
                                 <Mail className="h-4 w-4 text-muted-foreground" />
                             </CardHeader>
                             <CardContent>
-                                <div className="text-2xl font-bold">{stats.invitations_sent}</div>
+                                <div className="text-xl font-bold sm:text-2xl">{stats.invitations_sent}</div>
                                 <p className="text-xs text-muted-foreground">total invites</p>
                             </CardContent>
                         </Card>
@@ -116,7 +94,7 @@ export default function UserDashboard({
                                 <Users className="h-4 w-4 text-muted-foreground" />
                             </CardHeader>
                             <CardContent>
-                                <div className="text-2xl font-bold">{teamStats.total_users}</div>
+                                <div className="text-xl font-bold sm:text-2xl">{teamStats.total_users}</div>
                                 <p className="text-xs text-muted-foreground">team members</p>
                             </CardContent>
                         </Card>
@@ -143,11 +121,10 @@ export default function UserDashboard({
                                     >
                                         <div className="flex items-center gap-3">
                                             <div className={`rounded-md p-2 text-white ${colorMap[action.color]}`}>
-                                                {iconMap[action.icon as keyof typeof iconMap] && 
+                                                {iconMap[action.icon as keyof typeof iconMap] &&
                                                     React.createElement(iconMap[action.icon as keyof typeof iconMap], {
-                                                        className: "h-4 w-4"
-                                                    })
-                                                }
+                                                        className: 'h-4 w-4',
+                                                    })}
                                             </div>
                                             <div>
                                                 <p className="font-medium">{action.title}</p>
@@ -172,8 +149,8 @@ export default function UserDashboard({
                         </CardHeader>
                         <CardContent>
                             {recentActivity.length === 0 ? (
-                                <div className="text-center py-8 text-muted-foreground">
-                                    <Clock className="h-12 w-12 mx-auto mb-4 text-muted-foreground/50" />
+                                <div className="py-8 text-center text-muted-foreground">
+                                    <Clock className="mx-auto mb-4 h-12 w-12 text-muted-foreground/50" />
                                     <p>No recent activity to show</p>
                                 </div>
                             ) : (
@@ -181,17 +158,14 @@ export default function UserDashboard({
                                     {recentActivity.slice(0, 5).map((activity) => (
                                         <div key={activity.id} className="flex items-center gap-3">
                                             <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted">
-                                                {iconMap[activity.icon as keyof typeof iconMap] && 
+                                                {iconMap[activity.icon as keyof typeof iconMap] &&
                                                     React.createElement(iconMap[activity.icon as keyof typeof iconMap], {
-                                                        className: "h-4 w-4"
-                                                    })
-                                                }
+                                                        className: 'h-4 w-4',
+                                                    })}
                                             </div>
                                             <div className="flex-1">
                                                 <p className="text-sm font-medium">{activity.description}</p>
-                                                <p className="text-xs text-muted-foreground">
-                                                    {formatRelativeTime(activity.date)}
-                                                </p>
+                                                <p className="text-xs text-muted-foreground">{formatRelativeTime(activity.date)}</p>
                                             </div>
                                             <Badge variant="outline" className="text-xs">
                                                 {activity.type}
@@ -223,16 +197,11 @@ export default function UserDashboard({
                                                 <h4 className="font-medium">{announcement.title}</h4>
                                                 <p className="text-sm text-muted-foreground">{announcement.message}</p>
                                             </div>
-                                            <Badge 
-                                                variant={announcement.type === 'info' ? 'default' : 'outline'}
-                                                className="shrink-0"
-                                            >
+                                            <Badge variant={announcement.type === 'info' ? 'default' : 'outline'} className="shrink-0">
                                                 {announcement.type}
                                             </Badge>
                                         </div>
-                                        <p className="mt-2 text-xs text-muted-foreground">
-                                            {formatRelativeTime(announcement.created_at)}
-                                        </p>
+                                        <p className="mt-2 text-xs text-muted-foreground">{formatRelativeTime(announcement.created_at)}</p>
                                     </div>
                                 ))}
                             </div>

@@ -92,7 +92,7 @@ export default function UsersIndex({ users, invitations = [], stats }: Props) {
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4 sm:gap-6">
                 {/* Header */}
                 <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
-                    <div className="space-y-1">
+                    <div className="space-y-2">
                         <h1 className="text-xl font-bold text-gray-900 sm:text-2xl dark:text-white">User Management</h1>
                         <p className="text-sm text-gray-600 sm:text-base dark:text-gray-400">Manage users, invitations, and access requests</p>
                     </div>
@@ -107,7 +107,7 @@ export default function UsersIndex({ users, invitations = [], stats }: Props) {
                 </div>
 
                 {/* Enhanced Stats */}
-                <div className="grid gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-5">
+                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
                     <Card>
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                             <CardTitle className="text-sm font-medium">Total Users</CardTitle>
