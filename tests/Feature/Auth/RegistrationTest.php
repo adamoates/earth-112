@@ -4,12 +4,21 @@ namespace Tests\Feature\Auth;
 
 use App\Models\Invitation;
 use App\Models\User;
+use Database\Seeders\DatabaseSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class RegistrationTest extends TestCase
 {
     use RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        // Run the database seeder to create roles and permissions
+        $this->seed(DatabaseSeeder::class);
+    }
 
     public function test_registration_screen_can_be_rendered(): void
     {
@@ -68,8 +77,12 @@ class RegistrationTest extends TestCase
             'token' => $invitation->token,
         ]);
 
-        $this->assertAuthenticated();
         $response->assertRedirect(route('dashboard', absolute: false));
+
+        // Follow the redirect to check authentication
+        $this->followRedirects($response);
+
+        $this->assertAuthenticated();
 
         // Verify user was created and invitation was marked as used
         $this->assertDatabaseHas('users', ['email' => 'test@example.com']);

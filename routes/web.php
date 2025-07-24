@@ -145,3 +145,4 @@ Route::get('invitations/{token}/accept', [InvitationController::class, 'accept']
 Route::post('invitations/register', [InvitationController::class, 'register'])->name('invitations.register');
 
 require __DIR__ . '/auth.php';
+require __DIR__ . '/settings.php';
