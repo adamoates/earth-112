@@ -28,9 +28,46 @@ class SocialiteController extends Controller
     public function callback(string $provider): RedirectResponse
     {
         try {
-            $socialUser = Socialite::driver($provider)->user();
+            // Add better error handling for Socialite
+            try {
+                $socialUser = Socialite::driver($provider)->user();
+            } catch (\Laravel\Socialite\Two\InvalidStateException $e) {
+                Log::error('Socialite InvalidStateException', [
+                    'provider' => $provider,
+                    'error' => $e->getMessage(),
+                    'trace' => $e->getTraceAsString()
+                ]);
+                return redirect()->route('social.status', [
+                    'status' => 'error',
+                    'message' => 'OAuth state validation failed. Please try again.',
+                    'provider' => ucfirst($provider)
+                ]);
+            } catch (\GuzzleHttp\Exception\ClientException $e) {
+                Log::error('Socialite ClientException', [
+                    'provider' => $provider,
+                    'error' => $e->getMessage(),
+                    'response' => $e->getResponse()->getBody()->getContents(),
+                    'status_code' => $e->getResponse()->getStatusCode()
+                ]);
+                return redirect()->route('social.status', [
+                    'status' => 'error',
+                    'message' => 'OAuth provider error. Please try again later.',
+                    'provider' => ucfirst($provider)
+                ]);
+            } catch (\Exception $e) {
+                Log::error('Socialite General Exception', [
+                    'provider' => $provider,
+                    'error' => $e->getMessage(),
+                    'trace' => $e->getTraceAsString()
+                ]);
+                return redirect()->route('social.status', [
+                    'status' => 'error',
+                    'message' => 'OAuth authentication failed. Please try again.',
+                    'provider' => ucfirst($provider)
+                ]);
+            }
 
-            Log::info('Google OAuth callback initiated', [
+            Log::info('OAuth callback initiated', [
                 'provider' => $provider,
                 'social_email' => $socialUser->getEmail(),
                 'social_id' => $socialUser->getId(),
