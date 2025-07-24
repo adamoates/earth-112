@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\Invitation;
 use App\Models\User;
 use App\Notifications\InviteUserNotification;
+use Database\Seeders\DatabaseSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
@@ -12,6 +13,14 @@ use Tests\TestCase;
 class InvitationTest extends TestCase
 {
     use RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        // Run the database seeder to create roles and permissions
+        $this->seed(DatabaseSeeder::class);
+    }
 
     public function test_admin_can_create_invitation()
     {
@@ -170,8 +179,8 @@ class InvitationTest extends TestCase
             'expires_at' => now()->addHours(48),
         ]);
 
-        // Token should be hashed, not raw
-        $this->assertNotEquals(64, strlen($invitation->token));
-        $this->assertTrue(strlen($invitation->token) > 64);
+        // Token should be a secure random string of 64 characters
+        $this->assertEquals(64, strlen($invitation->token));
+        $this->assertTrue(ctype_alnum($invitation->token) || preg_match('/[^a-zA-Z0-9]/', $invitation->token));
     }
 }

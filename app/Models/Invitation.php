@@ -31,7 +31,7 @@ class Invitation extends Model
      */
     public static function generateToken(): string
     {
-        return Hash::make(Str::random(64));
+        return Str::random(64);
     }
 
     /**
@@ -44,6 +44,14 @@ class Invitation extends Model
             'role' => 'viewer',
             'expires_at' => now()->addHours(48),
         ], $data));
+    }
+
+    /**
+     * Find invitation by token.
+     */
+    public static function findByToken(string $token): ?self
+    {
+        return static::where('token', $token)->first();
     }
 
     /**

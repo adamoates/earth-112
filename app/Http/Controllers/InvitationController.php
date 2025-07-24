@@ -149,7 +149,7 @@ class InvitationController extends Controller
      */
     public function accept(string $token): Response
     {
-        $invitation = Invitation::where('token', $token)->first();
+        $invitation = Invitation::findByToken($token);
 
         if (!$invitation || !$invitation->isValid()) {
             abort(404, 'Invalid or expired invitation.');
@@ -176,7 +176,7 @@ class InvitationController extends Controller
             'token' => 'required|string',
         ]);
 
-        $invitation = Invitation::where('token', $request->token)->first();
+        $invitation = Invitation::findByToken($request->token);
 
         if (!$invitation || !$invitation->isValid()) {
             abort(404, 'Invalid or expired invitation.');
