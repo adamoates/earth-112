@@ -7,72 +7,52 @@ use Illuminate\Console\Command;
 
 class CreateInvitation extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'invitation:create 
-                            {--email= : Email address for the invitation}
-                            {--name= : Name for the invitation}
-                            {--role=user : Role (user or admin)}
-                            {--expires= : Expiration date (YYYY-MM-DD HH:MM:SS)}';
+    protected $signature = 'invitation:create {email} {--role=viewer} {--expires=7}';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Create a new invitation code';
+    protected $description = 'Create an invitation for a specific email address';
 
-    /**
-     * Execute the console command.
-     */
     public function handle()
     {
-        $email = $this->option('email');
-        $name = $this->option('name');
+        $email = $this->argument('email');
         $role = $this->option('role');
-        $expires = $this->option('expires');
+        $expiresInDays = (int) $this->option('expires');
 
-        if (!in_array($role, ['user', 'admin'])) {
-            $this->error('Role must be either "user" or "admin"');
-            return 1;
+        // Check if invitation already exists
+        $existingInvitation = Invitation::where('email', $email)->first();
+
+        if ($existingInvitation) {
+            if ($existingInvitation->isUsed()) {
+                $this->error("Invitation for {$email} has already been used.");
+                return 1;
+            }
+
+            if ($existingInvitation->isExpired()) {
+                $this->warn("Invitation for {$email} has expired. Creating a new one.");
+                $existingInvitation->delete();
+            } else {
+                $this->info("Invitation for {$email} already exists and is valid.");
+                $this->table(
+                    ['Email', 'Role', 'Expires', 'Used'],
+                    [[$existingInvitation->email, $existingInvitation->role, $existingInvitation->expires_at, $existingInvitation->used_at ? 'Yes' : 'No']]
+                );
+                return 0;
+            }
         }
 
-        $data = [
+        // Create new invitation
+        $invitation = Invitation::create([
+            'email' => $email,
+            'token' => Invitation::generateToken(),
             'role' => $role,
-        ];
+            'expires_at' => now()->addDays($expiresInDays),
+            'used_at' => null,
+        ]);
 
-        if ($email) {
-            $data['email'] = $email;
-        }
-
-        if ($name) {
-            $data['name'] = $name;
-        }
-
-        if ($expires) {
-            $data['expires_at'] = $expires;
-        }
-
-        $invitation = Invitation::createInvitation($data);
-
-        $this->info('✅ Invitation created successfully!');
-        $this->info("📧 Code: {$invitation->code}");
-        $this->info("👤 Role: {$invitation->role}");
-
-        if ($invitation->email) {
-            $this->info("📮 Email: {$invitation->email}");
-        } else {
-            $this->info("📮 Email: Open invitation");
-        }
-
-        if ($invitation->expires_at) {
-            $this->info("⏰ Expires: {$invitation->expires_at}");
-        } else {
-            $this->info("⏰ Expires: Never");
-        }
+        $this->info("Invitation created successfully for {$email}!");
+        $this->table(
+            ['Email', 'Role', 'Expires', 'Token'],
+            [[$invitation->email, $invitation->role, $invitation->expires_at, $invitation->token]]
+        );
 
         return 0;
     }
