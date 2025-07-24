@@ -31,11 +31,17 @@ interface User {
     role_display: string;
 }
 
-interface Props {
-    user: User;
+interface Role {
+    name: string;
+    display: string;
 }
 
-export default function EditUser({ user }: Props) {
+interface Props {
+    user: User;
+    roles: Role[];
+}
+
+export default function EditUser({ user, roles }: Props) {
     const { data, setData, put, processing, errors } = useForm({
         name: user.name,
         email: user.email,
@@ -91,9 +97,11 @@ export default function EditUser({ user }: Props) {
                                         <SelectValue placeholder="Select a role" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="viewer">Viewer</SelectItem>
-                                        <SelectItem value="editor">Editor</SelectItem>
-                                        <SelectItem value="admin">Administrator</SelectItem>
+                                        {roles.map((role) => (
+                                            <SelectItem key={role.name} value={role.name}>
+                                                {role.display}
+                                            </SelectItem>
+                                        ))}
                                     </SelectContent>
                                 </Select>
                                 {errors.role && <p className="text-sm text-red-600 dark:text-red-400">{errors.role}</p>}

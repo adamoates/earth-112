@@ -26,7 +26,16 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function CreateAdmin() {
+interface Role {
+    name: string;
+    display: string;
+}
+
+interface Props {
+    roles: Role[];
+}
+
+export default function CreateAdmin({ roles }: Props) {
     const { data, setData, post, processing, errors } = useForm({
         name: '',
         email: '',
@@ -132,9 +141,11 @@ export default function CreateAdmin() {
                                         <SelectValue placeholder="Select a role" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="viewer">Viewer</SelectItem>
-                                        <SelectItem value="editor">Editor</SelectItem>
-                                        <SelectItem value="admin">Administrator</SelectItem>
+                                        {roles.map((role) => (
+                                            <SelectItem key={role.name} value={role.name}>
+                                                {role.display}
+                                            </SelectItem>
+                                        ))}
                                     </SelectContent>
                                 </Select>
                                 <InputError message={errors.role} />
@@ -154,6 +165,10 @@ export default function CreateAdmin() {
                                             </li>
                                             <li>
                                                 <strong>Administrator:</strong> Full system access including user management
+                                            </li>
+                                            <li>
+                                                <strong>Owner:</strong> Full system access plus platform-level controls (auth settings, security,
+                                                features)
                                             </li>
                                         </ul>
                                     </div>

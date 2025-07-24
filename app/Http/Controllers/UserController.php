@@ -70,6 +70,14 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
+        // Get all available roles
+        $roles = \Spatie\Permission\Models\Role::all()->map(function ($role) {
+            return [
+                'name' => $role->name,
+                'display' => ucfirst($role->name),
+            ];
+        });
+
         return Inertia::render('users/edit', [
             'user' => [
                 'id' => $user->id,
@@ -78,6 +86,7 @@ class UserController extends Controller
                 'role' => $user->roles->first()?->name ?? 'viewer',
                 'role_display' => $user->roles->first()?->name ?? 'Viewer',
             ],
+            'roles' => $roles,
         ]);
     }
 
@@ -89,7 +98,7 @@ class UserController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $user->id,
-            'role' => 'required|in:admin,editor,viewer',
+            'role' => 'required|in:admin,editor,viewer,owner',
         ]);
 
         $user->update([
