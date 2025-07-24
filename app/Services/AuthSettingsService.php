@@ -31,6 +31,14 @@ class AuthSettingsService
     }
 
     /**
+     * Check if Discord auth is enabled
+     */
+    public static function isDiscordAuthEnabled(): bool
+    {
+        return self::getSettings()->discord_auth_enabled;
+    }
+
+    /**
      * Check if invite only mode is enabled
      */
     public static function isInviteOnlyMode(): bool
@@ -137,6 +145,7 @@ class AuthSettingsService
             // Authentication Providers
             'google_auth_enabled' => $settings->google_auth_enabled,
             'github_auth_enabled' => $settings->github_auth_enabled,
+            'discord_auth_enabled' => $settings->discord_auth_enabled,
             'invite_only_mode' => $settings->invite_only_mode,
             'open_registration' => $settings->open_registration,
 

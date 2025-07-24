@@ -12,6 +12,7 @@ class AuthSetting extends Model
     protected $fillable = [
         'google_auth_enabled',
         'github_auth_enabled',
+        'discord_auth_enabled',
         'invite_only_mode',
         'open_registration',
         // Security Controls
@@ -34,6 +35,7 @@ class AuthSetting extends Model
     protected $casts = [
         'google_auth_enabled' => 'boolean',
         'github_auth_enabled' => 'boolean',
+        'discord_auth_enabled' => 'boolean',
         'invite_only_mode' => 'boolean',
         'open_registration' => 'boolean',
         // Security Controls
@@ -60,6 +62,7 @@ class AuthSetting extends Model
         return static::firstOrCreate([], [
             'google_auth_enabled' => true,
             'github_auth_enabled' => false,
+            'discord_auth_enabled' => false,
             'invite_only_mode' => true,
             'open_registration' => false,
             // Security Controls - defaults
@@ -85,7 +88,7 @@ class AuthSetting extends Model
      */
     public function hasSocialAuth(): bool
     {
-        return $this->google_auth_enabled || $this->github_auth_enabled;
+        return $this->google_auth_enabled || $this->github_auth_enabled || $this->discord_auth_enabled;
     }
 
     /**
