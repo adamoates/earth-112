@@ -22,6 +22,9 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'social_provider',
+        'social_id',
+        'is_social_user',
     ];
 
     /**
@@ -44,6 +47,23 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_social_user' => 'boolean',
         ];
+    }
+
+    /**
+     * Check if user was created via social login.
+     */
+    public function isSocialUser(): bool
+    {
+        return $this->is_social_user || !empty($this->social_provider);
+    }
+
+    /**
+     * Get the social provider name.
+     */
+    public function getSocialProviderName(): ?string
+    {
+        return $this->social_provider ? ucfirst($this->social_provider) : null;
     }
 }

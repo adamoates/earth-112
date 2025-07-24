@@ -60,13 +60,26 @@ class SocialiteController extends Controller
                     'email' => $socialUser->getEmail(),
                     'email_verified_at' => now(), // Google emails are verified
                     'password' => Hash::make(Str::random(64)), // Random password since they use OAuth
+                    'social_provider' => $provider,
+                    'social_id' => $socialUser->getId(),
+                    'is_social_user' => true,
                 ]);
 
                 Log::info('New user created via Google OAuth', [
                     'user_id' => $user->id,
                     'email' => $user->email,
-                    'invitation_id' => $invitation->id
+                    'invitation_id' => $invitation->id,
+                    'provider' => $provider
                 ]);
+            } else {
+                // Update existing user with social info if not already set
+                if (!$user->isSocialUser()) {
+                    $user->update([
+                        'social_provider' => $provider,
+                        'social_id' => $socialUser->getId(),
+                        'is_social_user' => true,
+                    ]);
+                }
             }
 
             // Assign role from invitation
@@ -85,7 +98,8 @@ class SocialiteController extends Controller
             Log::info('User logged in via Google OAuth', [
                 'user_id' => $user->id,
                 'email' => $user->email,
-                'role' => $invitation->role
+                'role' => $invitation->role,
+                'provider' => $provider
             ]);
 
             // Show success status page briefly before redirecting

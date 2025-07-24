@@ -131,10 +131,13 @@ class SocialiteTest extends TestCase
         $response->assertStatus(302);
         $response->assertRedirectContains('/social-status');
 
-        // Check that user was created
+        // Check that user was created with social fields
         $this->assertDatabaseHas('users', [
             'name' => 'John Doe',
             'email' => 'john@example.com',
+            'social_provider' => 'google',
+            'social_id' => '12345',
+            'is_social_user' => true,
         ]);
 
         // Check that invitation was marked as used
@@ -146,6 +149,7 @@ class SocialiteTest extends TestCase
         // Check that user has the correct role
         $user = User::where('email', 'john@example.com')->first();
         $this->assertTrue($user->hasRole('viewer'));
+        $this->assertTrue($user->isSocialUser());
     }
 
     public function test_google_callback_logs_in_existing_user()
@@ -181,6 +185,14 @@ class SocialiteTest extends TestCase
         $response->assertStatus(302);
         $response->assertRedirectContains('/social-status');
 
+        // Check that user was updated with social fields
+        $this->assertDatabaseHas('users', [
+            'id' => $user->id,
+            'social_provider' => 'google',
+            'social_id' => '12345',
+            'is_social_user' => true,
+        ]);
+
         // Check that invitation was marked as used
         $this->assertDatabaseHas('invitations', [
             'id' => $invitation->id,
@@ -189,6 +201,7 @@ class SocialiteTest extends TestCase
 
         // Check that user has the correct role
         $this->assertTrue($user->fresh()->hasRole('editor'));
+        $this->assertTrue($user->fresh()->isSocialUser());
     }
 
     public function test_google_callback_rejects_expired_invitation()
