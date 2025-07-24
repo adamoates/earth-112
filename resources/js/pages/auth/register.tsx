@@ -62,7 +62,37 @@ export default function Register({ invitation }: Props) {
                         </div>
                     )}
 
-                    <form className="space-y-4" onSubmit={submit}>
+                    {/* Social Login Options */}
+                    <div className="mb-6">
+                        <div className="relative">
+                            <div className="absolute inset-0 flex items-center">
+                                <span className="w-full border-t" />
+                            </div>
+                            <div className="relative flex justify-center text-xs uppercase">
+                                <span className="bg-white px-2 text-gray-500 dark:bg-gray-900">Quick Sign Up</span>
+                            </div>
+                        </div>
+
+                        <div className="mt-4 space-y-3">
+                            <a
+                                href={route('social.login', 'google')}
+                                className="inline-flex w-full items-center justify-center rounded bg-red-600 px-4 py-2 text-white hover:bg-red-700"
+                            >
+                                Sign up with Google
+                            </a>
+                        </div>
+                    </div>
+
+                    <div className="relative">
+                        <div className="absolute inset-0 flex items-center">
+                            <span className="w-full border-t" />
+                        </div>
+                        <div className="relative flex justify-center text-xs uppercase">
+                            <span className="bg-white px-2 text-gray-500 dark:bg-gray-900">Or create with email</span>
+                        </div>
+                    </div>
+
+                    <form className="mt-6 space-y-4" onSubmit={submit}>
                         <div>
                             <Label htmlFor="name" className="text-gray-900 dark:text-white">
                                 Full Name

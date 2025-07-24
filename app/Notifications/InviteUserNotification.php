@@ -42,6 +42,7 @@ class InviteUserNotification extends Notification
             ->line('You have been invited to join Earth-112.')
             ->line('Click the button below to accept your invitation and create your account.')
             ->action('Accept Invitation', $url)
+            ->line('You can create your account using your email and password, or sign up quickly with Google.')
             ->line('This invitation will expire on ' . $this->invitation->expires_at->format('F j, Y \a\t g:i A') . '.')
             ->line('If you did not expect this invitation, you can safely ignore this email.')
             ->salutation('Best regards, The Earth-112 Team');
