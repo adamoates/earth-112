@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Services\AuthSettingsService;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -14,17 +15,28 @@ class RegisteredUserController extends Controller
      */
     public function create(): Response
     {
-        // Redirect to home page since registration is invitation-only
-        return Inertia::render('welcome');
+        // Check if registration is allowed
+        if (!AuthSettingsService::isRegistrationAllowed()) {
+            // Redirect to home page since registration is not allowed
+            return Inertia::render('welcome');
+        }
+
+        return Inertia::render('auth/register', [
+            'authSettings' => AuthSettingsService::getSettingsArray(),
+        ]);
     }
 
     /**
      * Handle an incoming registration request.
-     * This should not be used since registration is invitation-only.
      */
     public function store(): RedirectResponse
     {
-        // Redirect to home page since registration is invitation-only
+        // Check if registration is allowed
+        if (!AuthSettingsService::isRegistrationAllowed()) {
+            return redirect()->route('home');
+        }
+
+        // Registration logic would go here
         return redirect()->route('home');
     }
 }

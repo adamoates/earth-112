@@ -97,6 +97,10 @@ Route::middleware('auth')->group(function () {
             return Inertia::render('settings/index');
         })->name('settings');
 
+        // Auth Settings Management (Owner only)
+        Route::get('auth-settings', [App\Http\Controllers\Admin\AuthSettingsController::class, 'index'])->name('auth-settings.index');
+        Route::patch('auth-settings', [App\Http\Controllers\Admin\AuthSettingsController::class, 'update'])->name('auth-settings.update');
+
         // Admin creation routes
         Route::get('admin/create', [AdminController::class, 'createAdmin'])->name('admin.create');
         Route::post('admin/create', [AdminController::class, 'storeAdmin'])->name('admin.store');

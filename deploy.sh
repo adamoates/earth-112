@@ -1,83 +1,83 @@
 #!/bin/bash
 
-# Exit on any error
+# Production Deployment Script for Earth-112
+# Usage: ./deploy.sh
+
 set -e
 
-echo "Starting deployment..."
+echo "🚀 Starting production deployment..."
 
-# Reset any local changes and clean untracked files to handle git conflicts
-echo "Resetting git state..."
-git reset --hard HEAD
-git clean -fd
-
-# Handle divergent branches with multiple strategies
-echo "Handling divergent branches..."
-
-# Strategy 1: Try to fetch and reset to remote
-echo "Attempting git fetch and reset..."
-git fetch origin main
-git reset --hard origin/main
-
-# If that fails, try Strategy 2: Force pull with rebase
-if [ $? -ne 0 ]; then
-    echo "Reset failed, trying git pull with rebase..."
-    git pull --rebase origin main
+# Check if we're in the right directory
+if [ ! -f "artisan" ]; then
+    echo "❌ Error: artisan file not found. Make sure you're in the Laravel project root."
+    exit 1
 fi
 
-# If that fails, try Strategy 3: Force pull with merge
-if [ $? -ne 0 ]; then
-    echo "Rebase failed, trying git pull with merge..."
-    git pull --no-rebase origin main
+# Environment checks
+echo "📋 Checking environment..."
+
+# Check if .env exists
+if [ ! -f ".env" ]; then
+    echo "❌ Error: .env file not found. Please create one from .env.example"
+    exit 1
 fi
 
-# If all else fails, try Strategy 4: Force reset to remote
-if [ $? -ne 0 ]; then
-    echo "All pull strategies failed, forcing reset..."
-    git fetch origin main
-    git reset --hard origin/main || {
-        echo "ERROR: Unable to sync with remote branch"
-        exit 1
-    }
+# Check if APP_ENV is set to production
+if grep -q "APP_ENV=production" .env; then
+    echo "✅ APP_ENV is set to production"
+else
+    echo "⚠️  Warning: APP_ENV is not set to production"
+    echo "   Consider setting APP_ENV=production in your .env file"
 fi
 
-echo "Successfully synced with remote branch"
+# Check if APP_DEBUG is disabled
+if grep -q "APP_DEBUG=false" .env; then
+    echo "✅ APP_DEBUG is disabled"
+else
+    echo "⚠️  Warning: APP_DEBUG should be set to false in production"
+fi
 
-# Set defaults for Forge variables if not set
-FORGE_COMPOSER=${FORGE_COMPOSER:-composer}
-FORGE_PHP=${FORGE_PHP:-php}
-FORGE_PHP_FPM=${FORGE_PHP_FPM:-php8.2-fpm}
+# Deployment steps
+echo "🔧 Running deployment steps..."
 
-# Install PHP dependencies
-echo "Installing PHP dependencies..."
-$FORGE_COMPOSER install --no-dev --no-interaction --prefer-dist --optimize-autoloader
+# 1. Install/update dependencies
+echo "📦 Installing dependencies..."
+composer install --no-dev --optimize-autoloader
 
-# Install Node.js dependencies
-echo "Installing Node.js dependencies..."
-npm ci
+# 2. Clear all caches
+echo "🧹 Clearing caches..."
+php artisan config:clear
+php artisan cache:clear
+php artisan route:clear
+php artisan view:clear
 
-# Build assets
-echo "Building assets..."
+# 3. Run migrations
+echo "🗄️  Running database migrations..."
+php artisan migrate --force
+
+# 4. Optimize for production
+echo "⚡ Optimizing for production..."
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+
+# 5. Set proper permissions
+echo "🔐 Setting permissions..."
+chmod -R 755 storage bootstrap/cache
+chown -R www-data:www-data storage bootstrap/cache
+
+# 6. Build frontend assets
+echo "🎨 Building frontend assets..."
+npm ci --production
 npm run build
 
-# Clear Laravel caches
-echo "Clearing Laravel caches..."
-$FORGE_PHP artisan cache:clear
-$FORGE_PHP artisan config:clear
-$FORGE_PHP artisan route:clear
-$FORGE_PHP artisan view:clear
-
-# Run migrations
-echo "Running migrations..."
-$FORGE_PHP artisan migrate --force
-
-# Optimize for production
-echo "Optimizing for production..."
-$FORGE_PHP artisan optimize
-
-# Prevent concurrent php-fpm reloads
-echo "Reloading PHP FPM..."
-touch /tmp/fpmlock 2>/dev/null || true
-( flock -w 10 9 || exit 1
-    echo 'Reloading PHP FPM...'; sudo -S service $FORGE_PHP_FPM reload ) 9</tmp/fpmlock
-
-echo "Deployment completed successfully!"
+echo "✅ Deployment completed successfully!"
+echo ""
+echo "📋 Post-deployment checklist:"
+echo "   • Verify database connection"
+echo "   • Test authentication (login/logout)"
+echo "   • Check social login (Google OAuth)"
+echo "   • Verify owner access to auth settings"
+echo "   • Test maintenance mode functionality"
+echo ""
+echo "🔗 Your application should now be live!"
