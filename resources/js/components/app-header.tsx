@@ -33,13 +33,13 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
     return (
         <>
             <div className="border-b border-sidebar-border/80">
-                <div className="mx-auto flex h-16 items-center px-4 md:max-w-7xl">
+                <div className="mx-auto flex h-16 items-center px-3 sm:px-4 md:max-w-7xl">
                     {/* Mobile Menu */}
                     <div className="lg:hidden">
                         <Sheet>
                             <SheetTrigger asChild>
-                                <Button variant="ghost" size="icon" className="mr-2 h-[34px] w-[34px]">
-                                    <Menu className="h-5 w-5" />
+                                <Button variant="ghost" size="icon" className="mr-2 h-8 w-8 sm:h-[34px] sm:w-[34px]">
+                                    <Menu className="h-4 w-4 sm:h-5 sm:w-5" />
                                 </Button>
                             </SheetTrigger>
                             <SheetContent side="left" className="flex h-full w-64 flex-col items-stretch justify-between bg-sidebar">
@@ -65,11 +65,11 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
                         </Sheet>
                     </div>
 
-                    <Link href="/dashboard" prefetch className="flex items-center space-x-2">
-                        <div className="flex aspect-square size-8 items-center justify-center rounded-md bg-sidebar-primary text-sidebar-primary-foreground">
+                    <Link href="/dashboard" prefetch className="flex min-w-0 items-center space-x-2">
+                        <div className="flex aspect-square size-8 flex-shrink-0 items-center justify-center rounded-md bg-sidebar-primary text-sidebar-primary-foreground">
                             <span className="text-lg font-bold text-white dark:text-black">E</span>
                         </div>
-                        <div className="ml-1 grid flex-1 text-left text-sm">
+                        <div className="ml-1 grid min-w-0 flex-1 text-left text-sm">
                             <span className="mb-0.5 truncate leading-tight font-semibold">Earth-112</span>
                         </div>
                     </Link>
@@ -100,16 +100,16 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
                         </NavigationMenu>
                     </div>
 
-                    <div className="ml-auto flex items-center space-x-2">
+                    <div className="ml-auto flex items-center space-x-1 sm:space-x-2">
                         <div className="relative flex items-center space-x-1">
-                            <Button variant="ghost" size="icon" className="group h-9 w-9 cursor-pointer">
-                                <Search className="!size-5 opacity-80 group-hover:opacity-100" />
+                            <Button variant="ghost" size="icon" className="group h-8 w-8 cursor-pointer sm:h-9 sm:w-9">
+                                <Search className="!size-4 opacity-80 group-hover:opacity-100 sm:!size-5" />
                             </Button>
                         </div>
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                                <Button variant="ghost" className="size-10 rounded-full p-1">
-                                    <Avatar className="size-8 overflow-hidden rounded-full">
+                                <Button variant="ghost" className="size-8 rounded-full p-1 sm:size-10">
+                                    <Avatar className="size-6 overflow-hidden rounded-full sm:size-8">
                                         <AvatarImage src={auth.user.avatar} alt={auth.user.name} />
                                         <AvatarFallback className="rounded-lg bg-neutral-200 text-black dark:bg-neutral-700 dark:text-white">
                                             {getInitials(auth.user.name)}
@@ -126,7 +126,7 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
             </div>
             {breadcrumbs.length > 1 && (
                 <div className="flex w-full border-b border-sidebar-border/70">
-                    <div className="mx-auto flex h-12 w-full items-center justify-start px-4 text-neutral-500 md:max-w-7xl">
+                    <div className="mx-auto flex h-12 w-full items-center justify-start px-3 text-neutral-500 sm:px-4 md:max-w-7xl">
                         <Breadcrumbs breadcrumbs={breadcrumbs} />
                     </div>
                 </div>

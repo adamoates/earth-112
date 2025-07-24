@@ -36,9 +36,9 @@ export default function InvitationsIndex({ invitations = [] }: Props) {
             ]}
         >
             <Head title="Invitations" />
-            <div className="flex flex-1 flex-col gap-6 p-8">
-                <div className="mb-4 flex items-center justify-between">
-                    <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Invitations</h1>
+            <div className="flex flex-1 flex-col gap-4 p-4 sm:gap-6 sm:p-8">
+                <div className="mb-4 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
+                    <h1 className="text-xl font-bold text-gray-900 sm:text-2xl dark:text-white">Invitations</h1>
                     <Button asChild>
                         <Link href="/invitations/create">
                             <Plus className="mr-2 h-4 w-4" />
@@ -48,8 +48,8 @@ export default function InvitationsIndex({ invitations = [] }: Props) {
                 </div>
                 <Card>
                     <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
-                            <Mail className="h-5 w-5" />
+                        <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+                            <Mail className="h-4 w-4 sm:h-5 sm:w-5" />
                             All Invitations
                         </CardTitle>
                         <CardDescription>List of all invitations sent to users</CardDescription>
@@ -60,20 +60,24 @@ export default function InvitationsIndex({ invitations = [] }: Props) {
                         ) : (
                             <div className="space-y-3">
                                 {invitations.map((invitation) => (
-                                    <div key={invitation.id} className="flex items-center justify-between rounded-lg border p-4">
-                                        <div>
-                                            <div className="font-medium text-gray-900 dark:text-white">{invitation.email}</div>
+                                    <div
+                                        key={invitation.id}
+                                        className="flex flex-col items-start justify-between gap-3 rounded-lg border p-4 sm:flex-row sm:items-center"
+                                    >
+                                        <div className="min-w-0 flex-1">
+                                            <div className="truncate font-medium text-gray-900 dark:text-white">{invitation.email}</div>
                                             <div className="text-sm text-gray-500 dark:text-gray-400">
                                                 Role: {invitation.role} • Created: {new Date(invitation.created_at).toLocaleDateString()}
                                             </div>
                                         </div>
-                                        <div className="flex items-center gap-2">
-                                            <Button asChild size="sm" variant="outline">
+                                        <div className="flex w-full items-center gap-2 sm:w-auto">
+                                            <Button asChild size="sm" variant="outline" className="flex-1 sm:flex-none">
                                                 <Link href={`/invitations/${invitation.id}`}>View</Link>
                                             </Button>
                                             <Button
                                                 size="sm"
                                                 variant="ghost"
+                                                className="flex-1 sm:flex-none"
                                                 onClick={() => {
                                                     setResendId(invitation.id);
                                                     setResendEmail(invitation.email);
@@ -91,6 +95,7 @@ export default function InvitationsIndex({ invitations = [] }: Props) {
                                                     <Button
                                                         size="sm"
                                                         variant="destructive"
+                                                        className="flex-1 sm:flex-none"
                                                         onClick={() => {
                                                             setConfirmId(invitation.id);
                                                             setConfirmEmail(invitation.email);

@@ -158,3 +158,57 @@
         @apply bg-background text-foreground;
     }
 }
+
+/* Mobile-specific improvements */
+@layer utilities {
+    /* Ensure proper touch targets on mobile */
+    @media (max-width: 640px) {
+        .touch-target {
+            min-height: 44px;
+            min-width: 44px;
+        }
+    }
+
+    /* Improve text readability on small screens */
+    @media (max-width: 640px) {
+        .mobile-text {
+            font-size: 16px; /* Prevent zoom on iOS */
+        }
+    }
+
+    /* Better spacing for mobile cards */
+    @media (max-width: 640px) {
+        .mobile-card {
+            margin: 0.5rem;
+            padding: 1rem;
+        }
+    }
+
+    /* Ensure proper button sizing on mobile */
+    @media (max-width: 640px) {
+        .mobile-button {
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+        }
+    }
+}
+
+/* Prevent horizontal scrolling on mobile */
+@layer base {
+    html,
+    body {
+        overflow-x: hidden;
+        width: 100%;
+    }
+}
+
+/* Improve form elements on mobile */
+@layer components {
+    @media (max-width: 640px) {
+        input,
+        select,
+        textarea {
+            font-size: 16px; /* Prevent zoom on iOS */
+        }
+    }
+}

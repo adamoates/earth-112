@@ -93,22 +93,22 @@ export default function Dashboard() {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Admin Dashboard" />
-            <div className="flex h-full flex-1 flex-col gap-6 overflow-x-auto rounded-xl p-4">
+            <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4 sm:gap-6">
                 {/* Welcome Section */}
                 <div className="space-y-2">
-                    <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Admin Dashboard</h1>
-                    <p className="text-gray-600 dark:text-gray-400">System overview and management controls</p>
+                    <h1 className="text-xl font-bold text-gray-900 sm:text-2xl dark:text-white">Admin Dashboard</h1>
+                    <p className="text-sm text-gray-600 sm:text-base dark:text-gray-400">System overview and management controls</p>
                 </div>
 
                 {/* Overview Stats */}
-                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                <div className="grid gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-4">
                     <Card>
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                             <CardTitle className="text-sm font-medium">Total Users</CardTitle>
                             <Users className="h-4 w-4 text-muted-foreground" />
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold">{loading ? '...' : stats.totalUsers}</div>
+                            <div className="text-xl font-bold sm:text-2xl">{loading ? '...' : stats.totalUsers}</div>
                             <p className="text-xs text-muted-foreground">
                                 <span className="text-green-600">{stats.adminUsers} admins</span>, {stats.regularUsers} regular
                             </p>
@@ -121,7 +121,7 @@ export default function Dashboard() {
                             <Activity className="h-4 w-4 text-muted-foreground" />
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold">{loading ? '...' : stats.activeSessions}</div>
+                            <div className="text-xl font-bold sm:text-2xl">{loading ? '...' : stats.activeSessions}</div>
                             <p className="text-xs text-muted-foreground">
                                 <span className="text-green-600">Currently online</span>
                             </p>
@@ -134,7 +134,7 @@ export default function Dashboard() {
                             <Shield className="h-4 w-4 text-muted-foreground" />
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold">{loading ? '...' : stats.systemHealth}%</div>
+                            <div className="text-xl font-bold sm:text-2xl">{loading ? '...' : stats.systemHealth}%</div>
                             <p className="text-xs text-muted-foreground">
                                 <span className="text-green-600">All systems operational</span>
                             </p>
@@ -147,7 +147,7 @@ export default function Dashboard() {
                             <Clock className="h-4 w-4 text-muted-foreground" />
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold">{loading ? '...' : stats.uptime}%</div>
+                            <div className="text-xl font-bold sm:text-2xl">{loading ? '...' : stats.uptime}%</div>
                             <p className="text-xs text-muted-foreground">
                                 <span className="text-green-600">Last 30 days</span>
                             </p>
@@ -156,11 +156,11 @@ export default function Dashboard() {
                 </div>
 
                 {/* Admin Overview */}
-                <div className="grid gap-4 md:grid-cols-2">
+                <div className="grid gap-4 sm:grid-cols-2">
                     <Card>
                         <CardHeader>
-                            <CardTitle className="flex items-center gap-2">
-                                <UserCheck className="h-5 w-5" />
+                            <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+                                <UserCheck className="h-4 w-4 sm:h-5 sm:w-5" />
                                 User Management
                             </CardTitle>
                             <CardDescription>Quick access to user management and invitation creation</CardDescription>
@@ -168,15 +168,15 @@ export default function Dashboard() {
                         <CardContent className="space-y-4">
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="text-center">
-                                    <div className="text-2xl font-bold">{loading ? '...' : stats.totalUsers}</div>
+                                    <div className="text-xl font-bold sm:text-2xl">{loading ? '...' : stats.totalUsers}</div>
                                     <div className="text-sm text-muted-foreground">Total Users</div>
                                 </div>
                                 <div className="text-center">
-                                    <div className="text-2xl font-bold">{loading ? '...' : stats.activeInvitations}</div>
+                                    <div className="text-xl font-bold sm:text-2xl">{loading ? '...' : stats.activeInvitations}</div>
                                     <div className="text-sm text-muted-foreground">Active Invitations</div>
                                 </div>
                             </div>
-                            <div className="flex gap-2">
+                            <div className="flex flex-col gap-2 sm:flex-row">
                                 <a href="/users" className="flex-1">
                                     <div className="rounded-lg border p-3 text-center hover:bg-gray-50 dark:hover:bg-gray-800">
                                         <Users className="mx-auto mb-1 h-4 w-4" />
@@ -195,8 +195,8 @@ export default function Dashboard() {
 
                     <Card>
                         <CardHeader>
-                            <CardTitle className="flex items-center gap-2">
-                                <TrendingUp className="h-5 w-5" />
+                            <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+                                <TrendingUp className="h-4 w-4 sm:h-5 sm:w-5" />
                                 Recent Activity
                             </CardTitle>
                             <CardDescription>Latest system activity and user registrations</CardDescription>
@@ -235,8 +235,8 @@ export default function Dashboard() {
                                                         <Shield className="h-4 w-4 text-purple-600 dark:text-purple-400" />
                                                     )}
                                                 </div>
-                                                <div className="flex-1">
-                                                    <p className="text-sm font-medium">{activity.description}</p>
+                                                <div className="min-w-0 flex-1">
+                                                    <p className="truncate text-sm font-medium">{activity.description}</p>
                                                     <p className="text-xs text-muted-foreground">{activity.time}</p>
                                                 </div>
                                             </div>

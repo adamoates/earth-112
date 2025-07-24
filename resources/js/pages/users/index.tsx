@@ -89,12 +89,12 @@ export default function UsersIndex({ users, invitations = [], stats }: Props) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="User Management" />
-            <div className="flex h-full flex-1 flex-col gap-6 overflow-x-auto rounded-xl p-4">
+            <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4 sm:gap-6">
                 {/* Header */}
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
                     <div className="space-y-1">
-                        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">User Management</h1>
-                        <p className="text-gray-600 dark:text-gray-400">Manage users, invitations, and access requests</p>
+                        <h1 className="text-xl font-bold text-gray-900 sm:text-2xl dark:text-white">User Management</h1>
+                        <p className="text-sm text-gray-600 sm:text-base dark:text-gray-400">Manage users, invitations, and access requests</p>
                     </div>
                     <div className="flex items-center gap-2">
                         <Button asChild>
@@ -107,14 +107,14 @@ export default function UsersIndex({ users, invitations = [], stats }: Props) {
                 </div>
 
                 {/* Enhanced Stats */}
-                <div className="grid gap-4 md:grid-cols-5">
+                <div className="grid gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-5">
                     <Card>
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                             <CardTitle className="text-sm font-medium">Total Users</CardTitle>
                             <Users className="h-4 w-4 text-muted-foreground" />
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold">{users.length}</div>
+                            <div className="text-xl font-bold sm:text-2xl">{users.length}</div>
                             <p className="text-xs text-muted-foreground">All users</p>
                         </CardContent>
                     </Card>
@@ -125,7 +125,7 @@ export default function UsersIndex({ users, invitations = [], stats }: Props) {
                             <Shield className="h-4 w-4 text-muted-foreground" />
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold">{adminCount}</div>
+                            <div className="text-xl font-bold sm:text-2xl">{adminCount}</div>
                             <p className="text-xs text-muted-foreground">Admin users</p>
                         </CardContent>
                     </Card>
@@ -136,7 +136,7 @@ export default function UsersIndex({ users, invitations = [], stats }: Props) {
                             <Users className="h-4 w-4 text-muted-foreground" />
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold">{userCount}</div>
+                            <div className="text-xl font-bold sm:text-2xl">{userCount}</div>
                             <p className="text-xs text-muted-foreground">Standard users</p>
                         </CardContent>
                     </Card>
@@ -147,7 +147,7 @@ export default function UsersIndex({ users, invitations = [], stats }: Props) {
                             <Mail className="h-4 w-4 text-muted-foreground" />
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold">
+                            <div className="text-xl font-bold sm:text-2xl">
                                 {invitations.filter((i) => !i.used_at && (!i.expires_at || new Date(i.expires_at) > new Date())).length}
                             </div>
                             <p className="text-xs text-muted-foreground">Available invitations</p>
@@ -160,7 +160,7 @@ export default function UsersIndex({ users, invitations = [], stats }: Props) {
                             <Clock className="h-4 w-4 text-muted-foreground" />
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold">{stats?.pending_requests || 0}</div>
+                            <div className="text-xl font-bold sm:text-2xl">{stats?.pending_requests || 0}</div>
                             <p className="text-xs text-muted-foreground">Awaiting review</p>
                         </CardContent>
                     </Card>
@@ -169,23 +169,23 @@ export default function UsersIndex({ users, invitations = [], stats }: Props) {
                 {/* Quick Actions */}
                 <Card>
                     <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
-                            <Plus className="h-5 w-5" />
+                        <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+                            <Plus className="h-4 w-4 sm:h-5 sm:w-5" />
                             Quick Actions
                         </CardTitle>
                         <CardDescription>Common user management tasks</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <div className="grid gap-4 md:grid-cols-3">
+                        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                             <div className="flex items-center gap-3 rounded-lg border p-4 transition-colors hover:bg-gray-50 dark:hover:bg-gray-800">
                                 <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900">
                                     <Clock className="h-5 w-5 text-blue-600 dark:text-blue-400" />
                                 </div>
-                                <div className="flex-1">
+                                <div className="min-w-0 flex-1">
                                     <h3 className="font-medium">Review Access Requests</h3>
                                     <p className="text-sm text-gray-600 dark:text-gray-400">Approve or reject pending requests</p>
                                 </div>
-                                <Button asChild size="sm">
+                                <Button asChild size="sm" className="flex-shrink-0">
                                     <Link href="/access-requests">Review</Link>
                                 </Button>
                             </div>
@@ -194,24 +194,24 @@ export default function UsersIndex({ users, invitations = [], stats }: Props) {
                                 <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-100 dark:bg-green-900">
                                     <UserPlus className="h-5 w-5 text-green-600 dark:text-green-400" />
                                 </div>
-                                <div className="flex-1">
+                                <div className="min-w-0 flex-1">
                                     <h3 className="font-medium">Send Invitation</h3>
                                     <p className="text-sm text-gray-600 dark:text-gray-400">Invite new users to the platform</p>
                                 </div>
-                                <Button asChild size="sm">
+                                <Button asChild size="sm" className="flex-shrink-0">
                                     <Link href="/invitations/create">Invite</Link>
                                 </Button>
                             </div>
 
-                            <div className="flex items-center gap-3 rounded-lg border p-4 transition-colors hover:bg-gray-50 dark:hover:bg-gray-800">
+                            <div className="flex items-center gap-3 rounded-lg border p-4 transition-colors hover:bg-gray-50 sm:col-span-2 lg:col-span-1 dark:hover:bg-gray-800">
                                 <div className="flex h-10 w-10 items-center justify-center rounded-full bg-purple-100 dark:bg-purple-900">
                                     <Users className="h-5 w-5 text-purple-600 dark:text-purple-400" />
                                 </div>
-                                <div className="flex-1">
+                                <div className="min-w-0 flex-1">
                                     <h3 className="font-medium">Create User</h3>
                                     <p className="text-sm text-gray-600 dark:text-gray-400">Manually create a new user account</p>
                                 </div>
-                                <Button asChild size="sm">
+                                <Button asChild size="sm" className="flex-shrink-0">
                                     <Link href="/admin/create">Create</Link>
                                 </Button>
                             </div>
@@ -223,8 +223,8 @@ export default function UsersIndex({ users, invitations = [], stats }: Props) {
                 {invitations.length > 0 && (
                     <Card>
                         <CardHeader>
-                            <CardTitle className="flex items-center gap-2">
-                                <Mail className="h-5 w-5" />
+                            <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+                                <Mail className="h-4 w-4 sm:h-5 sm:w-5" />
                                 Recent Invitations
                             </CardTitle>
                             <CardDescription>Track the status of sent invitations</CardDescription>
@@ -232,22 +232,25 @@ export default function UsersIndex({ users, invitations = [], stats }: Props) {
                         <CardContent>
                             <div className="space-y-3">
                                 {invitations.slice(0, 5).map((invitation) => (
-                                    <div key={invitation.id} className="flex items-center justify-between rounded-lg border p-4">
-                                        <div className="flex items-center gap-4">
-                                            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900">
+                                    <div
+                                        key={invitation.id}
+                                        className="flex flex-col items-start justify-between gap-3 rounded-lg border p-4 sm:flex-row sm:items-center"
+                                    >
+                                        <div className="flex min-w-0 flex-1 items-center gap-4">
+                                            <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900">
                                                 <Mail className="h-5 w-5 text-blue-600 dark:text-blue-400" />
                                             </div>
-                                            <div>
-                                                <p className="font-medium text-gray-900 dark:text-white">{invitation.email}</p>
+                                            <div className="min-w-0 flex-1">
+                                                <p className="truncate font-medium text-gray-900 dark:text-white">{invitation.email}</p>
                                                 <p className="text-sm text-gray-500 dark:text-gray-400">
                                                     Role: {getRoleDisplayName(invitation.role)} • Created:{' '}
                                                     {new Date(invitation.created_at).toLocaleDateString()}
                                                 </p>
                                             </div>
                                         </div>
-                                        <div className="flex items-center gap-2">
+                                        <div className="flex w-full items-center gap-2 sm:w-auto">
                                             {getInvitationStatusBadge(invitation)}
-                                            <Button variant="ghost" size="sm" asChild>
+                                            <Button variant="ghost" size="sm" asChild className="flex-1 sm:flex-none">
                                                 <Link href={`/invitations/${invitation.id}`}>View Details</Link>
                                             </Button>
                                         </div>
@@ -268,20 +271,20 @@ export default function UsersIndex({ users, invitations = [], stats }: Props) {
                 {/* Users List */}
                 <Card>
                     <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
-                            <Users className="h-5 w-5" />
+                        <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+                            <Users className="h-4 w-4 sm:h-5 sm:w-5" />
                             Users
                         </CardTitle>
                         <CardDescription>Manage user accounts and permissions</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <div className="mb-4 flex items-center justify-between">
-                            <div className="flex items-center gap-2">
+                        <div className="mb-4 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
+                            <div className="flex w-full items-center gap-2 sm:w-auto">
                                 <Search className="h-4 w-4 text-gray-400" />
-                                <Input placeholder="Search users..." className="w-64" />
+                                <Input placeholder="Search users..." className="w-full sm:w-64" />
                             </div>
                             <Select defaultValue="all">
-                                <SelectTrigger className="w-48">
+                                <SelectTrigger className="w-full sm:w-48">
                                     <SelectValue placeholder="Filter by role" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -295,19 +298,24 @@ export default function UsersIndex({ users, invitations = [], stats }: Props) {
 
                         <div className="space-y-3">
                             {users.map((user) => (
-                                <div key={user.id} className="flex items-center justify-between rounded-lg border p-4">
-                                    <div className="flex items-center gap-4">
-                                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800">
+                                <div
+                                    key={user.id}
+                                    className="flex flex-col items-start justify-between gap-3 rounded-lg border p-4 sm:flex-row sm:items-center"
+                                >
+                                    <div className="flex min-w-0 flex-1 items-center gap-4">
+                                        <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800">
                                             <Users className="h-5 w-5 text-gray-600 dark:text-gray-400" />
                                         </div>
-                                        <div>
-                                            <p className="font-medium text-gray-900 dark:text-white">{user.name}</p>
-                                            <p className="text-sm text-gray-500 dark:text-gray-400">{user.email}</p>
+                                        <div className="min-w-0 flex-1">
+                                            <p className="truncate font-medium text-gray-900 dark:text-white">{user.name}</p>
+                                            <p className="truncate text-sm text-gray-500 dark:text-gray-400">{user.email}</p>
                                         </div>
                                     </div>
-                                    <div className="flex items-center gap-2">
-                                        <Badge variant="outline">{user.role_display}</Badge>
-                                        <Button variant="ghost" size="sm" asChild>
+                                    <div className="flex w-full items-center gap-2 sm:w-auto">
+                                        <Badge variant="outline" className="flex-shrink-0">
+                                            {user.role_display}
+                                        </Badge>
+                                        <Button variant="ghost" size="sm" asChild className="flex-1 sm:flex-none">
                                             <Link href={`/users/${user.id}/edit`}>
                                                 <Edit className="h-4 w-4" />
                                             </Link>
