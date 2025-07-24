@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import AppLayout from '@/layouts/app-layout';
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, useForm } from '@inertiajs/react';
 import { Mail, Plus } from 'lucide-react';
 import { useState } from 'react';
 
@@ -27,6 +27,20 @@ export default function InvitationsIndex({ invitations = [] }: Props) {
     const [confirmEmail, setConfirmEmail] = useState<string | null>(null);
     const [resendId, setResendId] = useState<number | null>(null);
     const [resendEmail, setResendEmail] = useState<string | null>(null);
+
+    const { post, processing } = useForm();
+
+    const handleResend = (invitationId: number) => {
+        post(route('invitations.resend', invitationId), {
+            onSuccess: () => {
+                setResendId(null);
+                setResendEmail(null);
+            },
+            onError: () => {
+                // Keep modal open on error so user can try again
+            },
+        });
+    };
 
     return (
         <AppLayout
@@ -136,7 +150,10 @@ export default function InvitationsIndex({ invitations = [] }: Props) {
                 <Dialog
                     open={resendId !== null}
                     onOpenChange={(open) => {
-                        if (!open) setResendId(null);
+                        if (!open) {
+                            setResendId(null);
+                            setResendEmail(null);
+                        }
                     }}
                 >
                     <DialogContent>
@@ -150,13 +167,18 @@ export default function InvitationsIndex({ invitations = [] }: Props) {
                             </DialogDescription>
                         </DialogHeader>
                         <DialogFooter>
-                            <Button variant="outline" onClick={() => setResendId(null)}>
+                            <Button
+                                variant="outline"
+                                onClick={() => {
+                                    setResendId(null);
+                                    setResendEmail(null);
+                                }}
+                                disabled={processing}
+                            >
                                 Cancel
                             </Button>
-                            <Button asChild variant="default">
-                                <Link href={`/invitations/${resendId}/resend`} method="post" as="button">
-                                    Yes, resend invitation
-                                </Link>
+                            <Button variant="default" onClick={() => resendId && handleResend(resendId)} disabled={processing}>
+                                {processing ? 'Sending...' : 'Yes, resend invitation'}
                             </Button>
                         </DialogFooter>
                     </DialogContent>
