@@ -30,6 +30,13 @@ class SocialiteController extends Controller
         try {
             $socialUser = Socialite::driver($provider)->user();
 
+            Log::info('Google OAuth callback started', [
+                'provider' => $provider,
+                'email' => $socialUser->getEmail(),
+                'name' => $socialUser->getName(),
+                'id' => $socialUser->getId(),
+            ]);
+
             // Check if there's a valid, unused invitation for this email
             $invitation = Invitation::where('email', $socialUser->getEmail())
                 ->where('expires_at', '>', now())
@@ -39,7 +46,15 @@ class SocialiteController extends Controller
             if (!$invitation) {
                 Log::warning('Google OAuth login attempted without valid invitation', [
                     'email' => $socialUser->getEmail(),
-                    'provider' => $provider
+                    'provider' => $provider,
+                    'available_invitations' => Invitation::where('email', $socialUser->getEmail())->get()->map(function ($inv) {
+                        return [
+                            'id' => $inv->id,
+                            'expires_at' => $inv->expires_at,
+                            'used_at' => $inv->used_at,
+                            'role' => $inv->role,
+                        ];
+                    })
                 ]);
 
                 return redirect()->route('social.status', [
@@ -48,6 +63,12 @@ class SocialiteController extends Controller
                     'provider' => ucfirst($provider)
                 ]);
             }
+
+            Log::info('Valid invitation found', [
+                'invitation_id' => $invitation->id,
+                'role' => $invitation->role,
+                'expires_at' => $invitation->expires_at,
+            ]);
 
             // Check if user already exists
             $user = User::where('email', $socialUser->getEmail())->first();
@@ -72,6 +93,12 @@ class SocialiteController extends Controller
                     'provider' => $provider
                 ]);
             } else {
+                Log::info('Existing user found', [
+                    'user_id' => $user->id,
+                    'email' => $user->email,
+                    'is_social_user' => $user->isSocialUser(),
+                ]);
+
                 // Update existing user with social info if not already set
                 if (!$user->isSocialUser()) {
                     $user->update([
@@ -79,12 +106,14 @@ class SocialiteController extends Controller
                         'social_id' => $socialUser->getId(),
                         'is_social_user' => true,
                     ]);
+                    Log::info('Updated existing user with social info');
                 }
             }
 
             // Assign role from invitation
             if (!$user->hasRole($invitation->role)) {
                 $user->assignRole($invitation->role);
+                Log::info('Assigned role to user', ['role' => $invitation->role]);
             }
 
             // Mark invitation as used
@@ -119,7 +148,8 @@ class SocialiteController extends Controller
         } catch (\Exception $e) {
             Log::error('Google OAuth callback error', [
                 'provider' => $provider,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
             ]);
 
             return redirect()->route('social.status', [
