@@ -36,8 +36,8 @@ export default function Register({ invitation }: Props) {
         <AuthLayout title="Create Account" description="Join Earth-112 with your preferred method">
             <Head title="Create Account" />
 
-            <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
-                <div className="grid grid-cols-1 gap-6 lg:gap-8 xl:grid-cols-2">
+            <div className="mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-8">
+                <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 lg:gap-8">
                     {/* Left Side - Social Sign Up */}
                     <div className="rounded-lg border bg-card p-6 shadow-sm sm:p-8">
                         <div className="mb-6 text-center sm:mb-8">
