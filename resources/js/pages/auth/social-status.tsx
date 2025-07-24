@@ -107,14 +107,17 @@ export default function SocialStatus({ status, message, user, isNewUser, provide
                                     </div>
                                 </div>
 
-                                <div className="text-center">
+                                <div className="space-y-3 text-center">
                                     <p className="text-sm text-gray-600 dark:text-gray-400">Redirecting you to the dashboard in 3 seconds...</p>
-                                    <a
-                                        href={route('dashboard')}
-                                        className="mt-2 inline-flex items-center justify-center rounded bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700"
-                                    >
-                                        Go to Dashboard Now
-                                    </a>
+
+                                    <div className="flex flex-col gap-2">
+                                        <a
+                                            href={route('dashboard')}
+                                            className="inline-flex items-center justify-center rounded bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700"
+                                        >
+                                            Go to Dashboard Now
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         )}
