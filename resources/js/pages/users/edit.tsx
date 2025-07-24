@@ -53,10 +53,6 @@ export default function EditUser({ user, roles }: Props) {
         put(`/users/${user.id}`);
     };
 
-    // Debug: Log the roles to console
-    console.log('Available roles:', roles);
-    console.log('Current user role:', user.role);
-
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title={`Edit ${user.name}`} />
@@ -72,11 +68,6 @@ export default function EditUser({ user, roles }: Props) {
                         <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Edit User</h1>
                         <p className="text-gray-600 dark:text-gray-400">Update user information and role</p>
                     </div>
-                </div>
-
-                {/* Debug: Show roles count */}
-                <div className="text-sm text-gray-500">
-                    Available roles: {roles.length} ({roles.map((r) => r.name).join(', ')})
                 </div>
 
                 {/* Edit Form */}
