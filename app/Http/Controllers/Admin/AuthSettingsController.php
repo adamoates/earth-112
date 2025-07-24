@@ -28,6 +28,7 @@ class AuthSettingsController extends Controller
                 // Authentication Providers
                 'google_auth_enabled' => $settings->google_auth_enabled,
                 'github_auth_enabled' => $settings->github_auth_enabled,
+                'discord_auth_enabled' => $settings->discord_auth_enabled,
                 'invite_only_mode' => $settings->invite_only_mode,
                 'open_registration' => $settings->open_registration,
 
@@ -65,6 +66,7 @@ class AuthSettingsController extends Controller
             // Authentication Providers
             'google_auth_enabled' => 'boolean',
             'github_auth_enabled' => 'boolean',
+            'discord_auth_enabled' => 'boolean',
             'invite_only_mode' => 'boolean',
             'open_registration' => 'boolean',
 
@@ -91,6 +93,7 @@ class AuthSettingsController extends Controller
             // Authentication Providers
             'google_auth_enabled',
             'github_auth_enabled',
+            'discord_auth_enabled',
             'invite_only_mode',
             'open_registration',
 
