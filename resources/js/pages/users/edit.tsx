@@ -53,16 +53,6 @@ export default function EditUser({ user, roles }: Props) {
         put(`/users/${user.id}`);
     };
 
-    // Temporary debugging
-    console.log('=== EDIT USER DEBUG ===');
-    console.log('Roles received:', roles);
-    console.log('Roles count:', roles.length);
-    console.log(
-        'Roles names:',
-        roles.map((r) => r.name),
-    );
-    console.log('User role:', user.role);
-
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title={`Edit ${user.name}`} />
@@ -78,13 +68,6 @@ export default function EditUser({ user, roles }: Props) {
                         <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Edit User</h1>
                         <p className="text-gray-600 dark:text-gray-400">Update user information and role</p>
                     </div>
-                </div>
-
-                {/* Debug info */}
-                <div className="rounded-lg bg-yellow-100 p-4">
-                    <p className="font-mono text-sm">
-                        DEBUG: {roles.length} roles received: {roles.map((r) => r.name).join(', ')}
-                    </p>
                 </div>
 
                 {/* Edit Form */}
