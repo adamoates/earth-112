@@ -3,7 +3,6 @@
 namespace Database\Factories;
 
 use App\Models\Invitation;
-use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -19,12 +18,12 @@ class InvitationFactory extends Factory
     public function definition(): array
     {
         return [
-            'email' => $this->faker->unique()->safeEmail(),
+            'email' => fake()->unique()->safeEmail(),
             'token' => Invitation::generateToken(),
-            'role' => $this->faker->randomElement(['admin', 'editor', 'viewer']),
-            'expires_at' => $this->faker->dateTimeBetween('now', '+48 hours'),
+            'role' => fake()->randomElement(['viewer', 'editor', 'admin']),
+            'expires_at' => now()->addDays(fake()->numberBetween(1, 30)),
             'used_at' => null,
-            'created_by' => null, // Allow null for tests
+            'created_by' => null,
         ];
     }
 
@@ -34,7 +33,7 @@ class InvitationFactory extends Factory
     public function expired(): static
     {
         return $this->state(fn(array $attributes) => [
-            'expires_at' => $this->faker->dateTimeBetween('-48 hours', '-1 hour'),
+            'expires_at' => now()->subDays(fake()->numberBetween(1, 30)),
         ]);
     }
 
@@ -44,7 +43,7 @@ class InvitationFactory extends Factory
     public function used(): static
     {
         return $this->state(fn(array $attributes) => [
-            'used_at' => $this->faker->dateTimeBetween('-24 hours', 'now'),
+            'used_at' => now(),
         ]);
     }
 
@@ -55,16 +54,6 @@ class InvitationFactory extends Factory
     {
         return $this->state(fn(array $attributes) => [
             'role' => $role,
-        ]);
-    }
-
-    /**
-     * Set the creator of the invitation.
-     */
-    public function createdBy(User $user): static
-    {
-        return $this->state(fn(array $attributes) => [
-            'created_by' => $user->id,
         ]);
     }
 }

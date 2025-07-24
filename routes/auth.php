@@ -8,6 +8,7 @@ use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\RequestAccessController;
+use App\Http\Controllers\Auth\SocialiteController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use Illuminate\Support\Facades\Route;
 
@@ -21,6 +22,13 @@ Route::middleware('guest')->group(function () {
         ->name('login');
 
     Route::post('login', [AuthenticatedSessionController::class, 'store']);
+
+    // Socialite OAuth routes
+    Route::get('login/{provider}', [SocialiteController::class, 'redirect'])
+        ->name('social.login');
+
+    Route::get('login/{provider}/callback', [SocialiteController::class, 'callback'])
+        ->name('social.callback');
 
     Route::get('request-access', [RequestAccessController::class, 'create'])
         ->name('request-access');

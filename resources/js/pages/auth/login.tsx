@@ -1,4 +1,4 @@
-import { Head, useForm } from '@inertiajs/react';
+import { Head, Link, useForm } from '@inertiajs/react';
 import { LoaderCircle } from 'lucide-react';
 import { FormEventHandler } from 'react';
 
@@ -101,6 +101,22 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                         Log in
                     </Button>
                 </div>
+
+                <div className="relative">
+                    <div className="absolute inset-0 flex items-center">
+                        <span className="w-full border-t" />
+                    </div>
+                    <div className="relative flex justify-center text-xs uppercase">
+                        <span className="bg-white px-2 text-gray-500 dark:bg-gray-900">Or continue with</span>
+                    </div>
+                </div>
+
+                <Link
+                    href={route('social.login', 'google')}
+                    className="inline-flex w-full items-center justify-center rounded bg-red-600 px-4 py-2 text-white hover:bg-red-700"
+                >
+                    Sign in with Google
+                </Link>
 
                 <div className="text-center text-sm text-gray-600 dark:text-gray-400">
                     Need access to this platform?{' '}
