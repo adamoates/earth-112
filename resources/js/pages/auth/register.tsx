@@ -120,7 +120,7 @@ export default function Register({ invitation }: Props) {
                                     value={data.name}
                                     onChange={(e) => setData('name', e.target.value)}
                                     placeholder="Enter your full name"
-                                    className="h-12 pl-10"
+                                    className="h-10 pl-10"
                                 />
                             </div>
                             <InputError message={errors.name} />
@@ -140,7 +140,7 @@ export default function Register({ invitation }: Props) {
                                     value={data.email}
                                     onChange={(e) => setData('email', e.target.value)}
                                     placeholder="Enter your email"
-                                    className="h-12 pl-10"
+                                    className="h-10 pl-10"
                                     disabled={!!invitation}
                                 />
                             </div>
@@ -161,7 +161,7 @@ export default function Register({ invitation }: Props) {
                                     value={data.password}
                                     onChange={(e) => setData('password', e.target.value)}
                                     placeholder="Create a password"
-                                    className="h-12 pl-10"
+                                    className="h-10 pl-10"
                                 />
                             </div>
                             <InputError message={errors.password} />
@@ -181,7 +181,7 @@ export default function Register({ invitation }: Props) {
                                     value={data.password_confirmation}
                                     onChange={(e) => setData('password_confirmation', e.target.value)}
                                     placeholder="Confirm your password"
-                                    className="h-12 pl-10"
+                                    className="h-10 pl-10"
                                 />
                             </div>
                             <InputError message={errors.password_confirmation} />
@@ -189,7 +189,7 @@ export default function Register({ invitation }: Props) {
 
                         <Button
                             type="submit"
-                            className="h-12 w-full bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700"
+                            className="h-10 w-full bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700"
                             disabled={processing}
                         >
                             {processing ? (

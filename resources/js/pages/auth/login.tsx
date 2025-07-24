@@ -121,7 +121,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                                     value={data.email}
                                     onChange={(e) => setData('email', e.target.value)}
                                     placeholder="Enter your email"
-                                    className="h-12 pl-10"
+                                    className="h-10 pl-10"
                                 />
                             </div>
                             <InputError message={errors.email} />
@@ -151,7 +151,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                                     value={data.password}
                                     onChange={(e) => setData('password', e.target.value)}
                                     placeholder="Enter your password"
-                                    className="h-12 pl-10"
+                                    className="h-10 pl-10"
                                 />
                             </div>
                             <InputError message={errors.password} />
@@ -166,7 +166,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
 
                         <Button
                             type="submit"
-                            className="h-12 w-full bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700"
+                            className="h-10 w-full bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700"
                             disabled={processing}
                         >
                             {processing ? (

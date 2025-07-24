@@ -60,7 +60,7 @@ export default function RequestAccess() {
                                 onChange={(e) => setData('name', e.target.value)}
                                 disabled={processing}
                                 placeholder="John Doe"
-                                className="h-12"
+                                className="h-10"
                             />
                             <InputError message={errors.name} />
                         </div>
@@ -78,7 +78,7 @@ export default function RequestAccess() {
                                 onChange={(e) => setData('email', e.target.value)}
                                 disabled={processing}
                                 placeholder="john@example.com"
-                                className="h-12"
+                                className="h-10"
                             />
                             <InputError message={errors.email} />
                         </div>
@@ -96,7 +96,7 @@ export default function RequestAccess() {
                                 onChange={(e) => setData('company', e.target.value)}
                                 disabled={processing}
                                 placeholder="Your Company Inc."
-                                className="h-12"
+                                className="h-10"
                             />
                             <InputError message={errors.company} />
                         </div>
@@ -113,12 +113,12 @@ export default function RequestAccess() {
                                 disabled={processing}
                                 placeholder="Please explain why you need access to this platform..."
                                 rows={4}
-                                className="min-h-[120px]"
+                                className="min-h-[80px]"
                             />
                             <InputError message={errors.reason} />
                         </div>
 
-                        <Button type="submit" className="h-12 w-full" disabled={processing}>
+                        <Button type="submit" className="h-10 w-full" disabled={processing}>
                             {processing && <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />}
                             Submit Request
                         </Button>

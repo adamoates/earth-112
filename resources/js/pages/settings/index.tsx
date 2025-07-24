@@ -44,7 +44,7 @@ export default function SettingsPage() {
                         <CardContent className="space-y-4">
                             <div className="space-y-2">
                                 <Label htmlFor="app_name">Application Name</Label>
-                                <Input id="app_name" defaultValue="Earth-112" />
+                                <Input id="app_name" defaultValue="Earth-112" className="h-10" />
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="timezone">Timezone</Label>
@@ -87,11 +87,11 @@ export default function SettingsPage() {
                         <CardContent className="space-y-4">
                             <div className="space-y-2">
                                 <Label htmlFor="session_timeout">Session Timeout (minutes)</Label>
-                                <Input id="session_timeout" type="number" defaultValue="120" />
+                                <Input id="session_timeout" type="number" defaultValue="120" className="h-10" />
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="max_login_attempts">Max Login Attempts</Label>
-                                <Input id="max_login_attempts" type="number" defaultValue="5" />
+                                <Input id="max_login_attempts" type="number" defaultValue="5" className="h-10" />
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="password_policy">Password Policy</Label>
@@ -121,15 +121,15 @@ export default function SettingsPage() {
                         <CardContent className="space-y-4">
                             <div className="space-y-2">
                                 <Label htmlFor="smtp_host">SMTP Host</Label>
-                                <Input id="smtp_host" defaultValue="smtp.mailgun.org" />
+                                <Input id="smtp_host" defaultValue="smtp.mailgun.org" className="h-10" />
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="smtp_port">SMTP Port</Label>
-                                <Input id="smtp_port" defaultValue="587" />
+                                <Input id="smtp_port" defaultValue="587" className="h-10" />
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="from_email">From Email</Label>
-                                <Input id="from_email" defaultValue="aoates@earth-112.com" />
+                                <Input id="from_email" defaultValue="aoates@earth-112.com" className="h-10" />
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="email_notifications">Email Notifications</Label>
