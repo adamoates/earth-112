@@ -43,7 +43,7 @@ export default function Login({ status, canResetPassword, authSettings }: LoginP
     };
 
     // Check if any social auth is enabled
-    const hasSocialAuth = authSettings?.google_auth_enabled || authSettings?.github_auth_enabled;
+    const hasSocialAuth = authSettings?.google_auth_enabled || authSettings?.github_auth_enabled || authSettings?.discord_auth_enabled;
 
     return (
         <AuthLayout title="Welcome back" description="Sign in to your account">
