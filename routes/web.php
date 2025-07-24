@@ -90,8 +90,8 @@ Route::middleware('auth')->group(function () {
         return "Admin role assigned to: {$user->name} ({$user->email})";
     })->name('fix-admin');
 
-    // Admin-only routes
-    Route::middleware(['role:admin'])->group(function () {
+    // Admin and Owner routes
+    Route::middleware(['role:admin|owner'])->group(function () {
         Route::resource('users', UserController::class);
         Route::get('settings', function () {
             return Inertia::render('settings/index');
@@ -117,8 +117,8 @@ Route::middleware('auth')->group(function () {
         Route::get('api/admin/dashboard-stats', [AdminDashboardController::class, 'getStats']);
     });
 
-    // Editor and admin routes (access requests)
-    Route::middleware(['role:admin|editor'])->group(function () {
+    // Editor, admin, and owner routes (access requests)
+    Route::middleware(['role:admin|editor|owner'])->group(function () {
         Route::get('access-requests', [AccessRequestController::class, 'index'])->name('access-requests.index');
         Route::get('access-requests/{accessRequest}', [AccessRequestController::class, 'show'])->name('access-requests.show');
         Route::patch('access-requests/{accessRequest}/approve', [AccessRequestController::class, 'approve'])->name('access-requests.approve');
