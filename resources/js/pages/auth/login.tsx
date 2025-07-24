@@ -40,9 +40,9 @@ export default function Login({ status, canResetPassword }: LoginProps) {
             <Head title="Log in" />
 
             <div className="max-w-8xl mx-auto w-full px-4 sm:px-6 lg:px-8">
-                <div className="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-12">
+                <div className="flex flex-col gap-8 lg:flex-row lg:gap-12">
                     {/* Left Side - Social Login */}
-                    <div className="rounded-lg border bg-card p-8 shadow-sm">
+                    <div className="flex-1 rounded-lg border bg-card p-8 shadow-sm">
                         <div className="mb-8 text-center">
                             <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900/20">
                                 <Shield className="h-8 w-8 text-blue-600 dark:text-blue-400" />
@@ -96,7 +96,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                     </div>
 
                     {/* Right Side - Email/Password Form */}
-                    <div className="rounded-lg border bg-card p-8 shadow-sm">
+                    <div className="flex-1 rounded-lg border bg-card p-8 shadow-sm">
                         <div className="mb-8 text-center">
                             <h2 className="mb-2 text-xl font-semibold text-gray-900 dark:text-gray-100">Sign in with Email</h2>
                             <p className="text-sm text-gray-600 dark:text-gray-400">Use your email and password to access your account</p>
