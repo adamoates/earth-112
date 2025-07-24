@@ -26,6 +26,7 @@ interface AuthSettings {
     // Authentication Providers
     google_auth_enabled: boolean;
     github_auth_enabled: boolean;
+    discord_auth_enabled: boolean;
     invite_only_mode: boolean;
     open_registration: boolean;
 
@@ -56,6 +57,7 @@ export default function AuthSettingsPage({ settings }: Props) {
         // Authentication Providers
         google_auth_enabled: settings.google_auth_enabled,
         github_auth_enabled: settings.github_auth_enabled,
+        discord_auth_enabled: settings.discord_auth_enabled,
         invite_only_mode: settings.invite_only_mode,
         open_registration: settings.open_registration,
 
@@ -133,6 +135,21 @@ export default function AuthSettingsPage({ settings }: Props) {
                                     id="github_auth"
                                     checked={data.github_auth_enabled}
                                     onCheckedChange={(checked: boolean) => setData('github_auth_enabled', checked)}
+                                />
+                            </div>
+
+                            {/* Discord Auth */}
+                            <div className="flex items-center justify-between">
+                                <div className="space-y-1">
+                                    <Label htmlFor="discord_auth" className="text-base font-medium">
+                                        Discord Authentication
+                                    </Label>
+                                    <p className="text-sm text-gray-600 dark:text-gray-400">Allow users to sign in with their Discord accounts</p>
+                                </div>
+                                <Switch
+                                    id="discord_auth"
+                                    checked={data.discord_auth_enabled}
+                                    onCheckedChange={(checked: boolean) => setData('discord_auth_enabled', checked)}
                                 />
                             </div>
                         </CardContent>
