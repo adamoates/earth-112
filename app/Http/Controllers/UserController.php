@@ -66,6 +66,42 @@ class UserController extends Controller
     }
 
     /**
+     * Show the form for creating a new user (admin only).
+     */
+    public function create()
+    {
+        // Redirect to admin create page since that's where user creation is handled
+        return redirect()->route('admin.create');
+    }
+
+    /**
+     * Store a newly created user (admin only).
+     */
+    public function store(Request $request)
+    {
+        // Redirect to admin store since that's where user creation is handled
+        return redirect()->route('admin.store');
+    }
+
+    /**
+     * Display the specified user (admin only).
+     */
+    public function show(User $user)
+    {
+        return Inertia::render('users/show', [
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'role' => $user->roles->first()?->name ?? 'viewer',
+                'role_display' => $user->roles->first()?->name ?? 'Viewer',
+                'created_at' => $user->created_at->format('Y-m-d H:i:s'),
+                'email_verified_at' => $user->email_verified_at?->format('Y-m-d H:i:s'),
+            ],
+        ]);
+    }
+
+    /**
      * Show the form for editing a user (admin only).
      */
     public function edit(User $user)
