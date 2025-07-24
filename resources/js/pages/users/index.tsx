@@ -7,6 +7,7 @@ import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link } from '@inertiajs/react';
 import { Clock, Edit, Mail, Plus, Search, Shield, UserPlus, Users } from 'lucide-react';
+import { useMemo, useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -53,6 +54,24 @@ interface Props {
 }
 
 export default function UsersIndex({ users, invitations = [], stats }: Props) {
+    const [searchTerm, setSearchTerm] = useState('');
+    const [roleFilter, setRoleFilter] = useState('all');
+
+    // Filter users based on search term and role filter
+    const filteredUsers = useMemo(() => {
+        return users.filter((user) => {
+            const matchesSearch =
+                searchTerm === '' ||
+                user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                user.role_display.toLowerCase().includes(searchTerm.toLowerCase());
+
+            const matchesRole = roleFilter === 'all' || user.role === roleFilter;
+
+            return matchesSearch && matchesRole;
+        });
+    }, [users, searchTerm, roleFilter]);
+
     const adminCount = users.filter((user) => user.role === 'admin').length;
     const userCount = users.filter((user) => user.role === 'user').length;
 
@@ -282,24 +301,34 @@ export default function UsersIndex({ users, invitations = [], stats }: Props) {
                         <div className="mb-4 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
                             <div className="flex w-full items-center gap-2 sm:w-auto">
                                 <Search className="h-4 w-4 text-gray-400" />
-                                <Input placeholder="Search users..." className="w-full sm:w-64" />
+                                <Input
+                                    placeholder="Search users..."
+                                    className="w-full sm:w-64"
+                                    value={searchTerm}
+                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                />
                             </div>
-                            <Select defaultValue="all">
-                                <SelectTrigger className="w-full sm:w-48">
-                                    <SelectValue placeholder="Filter by role" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="all">All Users</SelectItem>
-                                    <SelectItem value="owner">Owners</SelectItem>
-                                    <SelectItem value="admin">Administrators</SelectItem>
-                                    <SelectItem value="editor">Editors</SelectItem>
-                                    <SelectItem value="viewer">Viewers</SelectItem>
-                                </SelectContent>
-                            </Select>
+                            <div className="flex items-center gap-4">
+                                <span className="text-sm text-gray-500 dark:text-gray-400">
+                                    {filteredUsers.length} of {users.length} users
+                                </span>
+                                <Select value={roleFilter} onValueChange={setRoleFilter}>
+                                    <SelectTrigger className="w-full sm:w-48">
+                                        <SelectValue placeholder="Filter by role" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="all">All Users</SelectItem>
+                                        <SelectItem value="owner">Owners</SelectItem>
+                                        <SelectItem value="admin">Administrators</SelectItem>
+                                        <SelectItem value="editor">Editors</SelectItem>
+                                        <SelectItem value="viewer">Viewers</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
                         </div>
 
                         <div className="space-y-3">
-                            {users.map((user) => (
+                            {filteredUsers.map((user) => (
                                 <div
                                     key={user.id}
                                     className="flex flex-col items-start justify-between gap-3 rounded-lg border p-4 sm:flex-row sm:items-center"
