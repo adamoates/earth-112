@@ -82,6 +82,7 @@ export default function UsersIndex({ users, invitations = [], stats }: Props) {
                 admin: 'Administrator',
                 editor: 'Editor',
                 viewer: 'Viewer',
+                owner: 'Owner',
             }[role] || role
         );
     };
@@ -289,6 +290,7 @@ export default function UsersIndex({ users, invitations = [], stats }: Props) {
                                 </SelectTrigger>
                                 <SelectContent>
                                     <SelectItem value="all">All Users</SelectItem>
+                                    <SelectItem value="owner">Owners</SelectItem>
                                     <SelectItem value="admin">Administrators</SelectItem>
                                     <SelectItem value="editor">Editors</SelectItem>
                                     <SelectItem value="viewer">Viewers</SelectItem>
