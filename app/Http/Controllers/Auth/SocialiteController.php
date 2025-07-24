@@ -42,12 +42,16 @@ class SocialiteController extends Controller
                     'provider' => $provider
                 ]);
 
-                return redirect()->route('login')
-                    ->withErrors(['email' => 'You need a valid invitation to access this application.']);
+                return redirect()->route('social.status', [
+                    'status' => 'error',
+                    'message' => 'You need a valid invitation to access this application. Please contact an administrator.',
+                    'provider' => ucfirst($provider)
+                ]);
             }
 
             // Check if user already exists
             $user = User::where('email', $socialUser->getEmail())->first();
+            $isNewUser = !$user;
 
             if (!$user) {
                 // Create new user
@@ -84,15 +88,31 @@ class SocialiteController extends Controller
                 'role' => $invitation->role
             ]);
 
-            return redirect()->intended(route('dashboard', absolute: false));
+            // Show success status page briefly before redirecting
+            return redirect()->route('social.status', [
+                'status' => 'success',
+                'message' => $isNewUser
+                    ? 'Your account has been created successfully and you are now logged in!'
+                    : 'Welcome back! You have been logged in successfully.',
+                'user' => [
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'role' => $invitation->role
+                ],
+                'isNewUser' => $isNewUser,
+                'provider' => ucfirst($provider)
+            ]);
         } catch (\Exception $e) {
             Log::error('Google OAuth callback error', [
                 'provider' => $provider,
                 'error' => $e->getMessage()
             ]);
 
-            return redirect()->route('login')
-                ->withErrors(['email' => 'An error occurred during authentication. Please try again.']);
+            return redirect()->route('social.status', [
+                'status' => 'error',
+                'message' => 'An error occurred during authentication. Please try again.',
+                'provider' => ucfirst($provider)
+            ]);
         }
     }
 }

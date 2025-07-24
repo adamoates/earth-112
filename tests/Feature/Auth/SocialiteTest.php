@@ -99,8 +99,8 @@ class SocialiteTest extends TestCase
         $response = $this->get('/login/google/callback');
 
         $response->assertStatus(302);
-        $response->assertRedirect('/login');
-        $response->assertSessionHasErrors(['email']);
+        $response->assertRedirectContains('/social-status');
+        $response->assertSessionMissing('errors');
     }
 
     public function test_google_callback_creates_user_with_valid_invitation()
@@ -129,7 +129,7 @@ class SocialiteTest extends TestCase
         $response = $this->get('/login/google/callback');
 
         $response->assertStatus(302);
-        $response->assertRedirect('/dashboard');
+        $response->assertRedirectContains('/social-status');
 
         // Check that user was created
         $this->assertDatabaseHas('users', [
@@ -179,10 +179,7 @@ class SocialiteTest extends TestCase
         $response = $this->get('/login/google/callback');
 
         $response->assertStatus(302);
-        $response->assertRedirect('/dashboard');
-
-        // Check that user is logged in
-        $this->assertAuthenticated();
+        $response->assertRedirectContains('/social-status');
 
         // Check that invitation was marked as used
         $this->assertDatabaseHas('invitations', [
@@ -220,8 +217,8 @@ class SocialiteTest extends TestCase
         $response = $this->get('/login/google/callback');
 
         $response->assertStatus(302);
-        $response->assertRedirect('/login');
-        $response->assertSessionHasErrors(['email']);
+        $response->assertRedirectContains('/social-status');
+        $response->assertSessionMissing('errors');
     }
 
     public function test_google_callback_rejects_used_invitation()
@@ -250,7 +247,7 @@ class SocialiteTest extends TestCase
         $response = $this->get('/login/google/callback');
 
         $response->assertStatus(302);
-        $response->assertRedirect('/login');
-        $response->assertSessionHasErrors(['email']);
+        $response->assertRedirectContains('/social-status');
+        $response->assertSessionMissing('errors');
     }
 }

@@ -30,6 +30,17 @@ Route::middleware('guest')->group(function () {
     Route::get('login/{provider}/callback', [SocialiteController::class, 'callback'])
         ->name('social.callback');
 
+    // Social login status page
+    Route::get('social-status', function () {
+        return inertia('auth/social-status', [
+            'status' => request('status', 'processing'),
+            'message' => request('message', 'Processing your social login...'),
+            'user' => request('user'),
+            'isNewUser' => request('isNewUser', false),
+            'provider' => request('provider', 'Google'),
+        ]);
+    })->name('social.status');
+
     Route::get('request-access', [RequestAccessController::class, 'create'])
         ->name('request-access');
 
