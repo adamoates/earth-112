@@ -70,13 +70,15 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        // Get all available roles
-        $roles = \Spatie\Permission\Models\Role::all()->map(function ($role) {
-            return [
-                'name' => $role->name,
-                'display' => ucfirst($role->name),
-            ];
-        });
+        // Get all available roles and sort alphabetically
+        $roles = \Spatie\Permission\Models\Role::all()
+            ->sortBy('name')
+            ->map(function ($role) {
+                return [
+                    'name' => $role->name,
+                    'display' => ucfirst($role->name),
+                ];
+            });
 
         return Inertia::render('users/edit', [
             'user' => [

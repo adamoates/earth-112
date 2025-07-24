@@ -11,13 +11,15 @@ class AdminController extends Controller
 {
     public function createAdmin()
     {
-        // Get all available roles
-        $roles = Role::all()->map(function ($role) {
-            return [
-                'name' => $role->name,
-                'display' => ucfirst($role->name),
-            ];
-        });
+        // Get all available roles and sort alphabetically
+        $roles = Role::all()
+            ->sortBy('name')
+            ->map(function ($role) {
+                return [
+                    'name' => $role->name,
+                    'display' => ucfirst($role->name),
+                ];
+            });
 
         return Inertia::render('admin/create-admin', [
             'roles' => $roles,
