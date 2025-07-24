@@ -31,6 +31,9 @@ class AdminUserSeeder extends Seeder
                 'name' => $adminName,
                 'password' => bcrypt($adminPassword),
                 'email_verified_at' => now(),
+                'social_provider' => null,
+                'social_id' => null,
+                'is_social_user' => false,
             ]
         );
 

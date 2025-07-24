@@ -48,6 +48,9 @@ class RoleTestUsersSeeder extends Seeder
                     'name' => $userData['name'],
                     'password' => bcrypt('password123'),
                     'email_verified_at' => now(),
+                    'social_provider' => null,
+                    'social_id' => null,
+                    'is_social_user' => false,
                 ]
             );
 

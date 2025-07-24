@@ -53,6 +53,9 @@ class TestUsersSeeder extends Seeder
                     'name' => $userData['name'],
                     'password' => Hash::make($userData['password']),
                     'email_verified_at' => $userData['email_verified_at'],
+                    'social_provider' => null,
+                    'social_id' => null,
+                    'is_social_user' => false,
                 ]
             );
 
@@ -95,6 +98,9 @@ class TestUsersSeeder extends Seeder
                     'name' => $userData['name'],
                     'password' => Hash::make($userData['password']),
                     'email_verified_at' => $userData['email_verified_at'],
+                    'social_provider' => null,
+                    'social_id' => null,
+                    'is_social_user' => false,
                 ]
             );
 
@@ -143,6 +149,9 @@ class TestUsersSeeder extends Seeder
                     'name' => $userData['name'],
                     'password' => Hash::make($userData['password']),
                     'email_verified_at' => $userData['email_verified_at'],
+                    'social_provider' => null,
+                    'social_id' => null,
+                    'is_social_user' => false,
                 ]
             );
 
@@ -188,6 +197,9 @@ class TestUsersSeeder extends Seeder
                     'name' => $userData['name'],
                     'password' => Hash::make($userData['password']),
                     'email_verified_at' => $userData['email_verified_at'],
+                    'social_provider' => null,
+                    'social_id' => null,
+                    'is_social_user' => false,
                 ]
             );
 
