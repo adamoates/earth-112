@@ -61,6 +61,14 @@ class OAuthCredential extends Model
      */
     public static function getForProvider(string $provider): ?self
     {
+        return static::where('provider', $provider)->first();
+    }
+
+    /**
+     * Get active credentials for a specific provider
+     */
+    public static function getActiveForProvider(string $provider): ?self
+    {
         return static::where('provider', $provider)
             ->where('is_active', true)
             ->first();
@@ -107,6 +115,6 @@ class OAuthCredential extends Model
      */
     public static function getDefaultRedirectUri(string $provider): string
     {
-        return route("auth.{$provider}.callback");
+        return route("social.callback", ['provider' => $provider]);
     }
 }
