@@ -6,6 +6,8 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
 use App\Models\AuthSetting;
+use App\Config\SocialAuth;
+use App\Config\AwsConfig;
 
 class DebugOAuth extends Command
 {

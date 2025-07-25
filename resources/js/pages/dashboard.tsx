@@ -35,7 +35,7 @@ interface RecentActivity {
 
 export default function Dashboard() {
     const { auth } = usePage().props as unknown as { auth: { user?: { name?: string; email?: string; roles?: Array<{ name: string }> } } };
-    const userRoles = auth.user?.roles?.map((role) => role.name) || [];
+    const userRoles = Array.isArray(auth.user?.roles) ? auth.user.roles.map((role) => role.name) : [];
     const isAdmin = userRoles.includes('admin');
 
     const [stats, setStats] = useState<DashboardStats>({

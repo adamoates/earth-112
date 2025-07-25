@@ -7,7 +7,7 @@ import { BarChart3, LayoutGrid, Settings, Shield, Users } from 'lucide-react';
 
 export function AppSidebar() {
     const { auth } = usePage().props as unknown as { auth: { user?: { roles?: Array<{ name: string }> } } };
-    const userRoles = auth.user?.roles?.map((role) => role.name) || [];
+    const userRoles = Array.isArray(auth.user?.roles) ? auth.user.roles.map((role) => role.name) : [];
     const isAdmin = userRoles.includes('admin');
     const isOwner = userRoles.includes('owner');
     const canViewUsers = isAdmin || isOwner;

@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\AuthSetting;
+use App\Config\SocialAuth;
 
 class AuthSettingsService
 {
@@ -19,7 +20,7 @@ class AuthSettingsService
      */
     public static function isGoogleAuthEnabled(): bool
     {
-        return self::getSettings()->google_auth_enabled;
+        return self::getSettings()->google_auth_enabled && SocialAuth::isProviderEnabled('google');
     }
 
     /**
@@ -27,7 +28,7 @@ class AuthSettingsService
      */
     public static function isGitHubAuthEnabled(): bool
     {
-        return self::getSettings()->github_auth_enabled;
+        return self::getSettings()->github_auth_enabled && SocialAuth::isProviderEnabled('github');
     }
 
     /**
@@ -35,7 +36,7 @@ class AuthSettingsService
      */
     public static function isDiscordAuthEnabled(): bool
     {
-        return self::getSettings()->discord_auth_enabled;
+        return self::getSettings()->discord_auth_enabled && SocialAuth::isProviderEnabled('discord');
     }
 
     /**

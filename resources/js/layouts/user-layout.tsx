@@ -3,11 +3,11 @@ import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { LayoutGrid, User, Activity, Settings, Users, Shield } from 'lucide-react';
+import { Activity, LayoutGrid, Settings, Shield, User, Users } from 'lucide-react';
 
 export function UserSidebar() {
     const { auth } = usePage().props as unknown as { auth: { user?: { roles?: Array<{ name: string }> } } };
-    const userRoles = auth.user?.roles?.map((role) => role.name) || [];
+    const userRoles = Array.isArray(auth.user?.roles) ? auth.user.roles.map((role) => role.name) : [];
     const isEditor = userRoles.includes('editor');
 
     const userNavItems: NavItem[] = [
@@ -60,9 +60,7 @@ export function UserSidebar() {
                                 </div>
                                 <div className="ml-1 grid flex-1 text-left text-sm">
                                     <span className="mb-0.5 truncate leading-tight font-semibold">Earth-112</span>
-                                    <span className="truncate text-xs text-sidebar-muted-foreground">
-                                        {userRoles.join(', ') || 'User'}
-                                    </span>
+                                    <span className="text-sidebar-muted-foreground truncate text-xs">{userRoles.join(', ') || 'User'}</span>
                                 </div>
                             </Link>
                         </SidebarMenuButton>
