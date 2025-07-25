@@ -105,9 +105,6 @@ export default function AuthSettingsPage({ settings, oauth_credentials }: Props)
                     </p>
                     <div className="flex gap-2">
                         <Button variant="outline" size="sm" asChild>
-                            <a href="/feature-settings">Feature Toggles</a>
-                        </Button>
-                        <Button variant="outline" size="sm" asChild>
                             <a href="/oauth-credentials">Manage OAuth Credentials</a>
                         </Button>
                     </div>
