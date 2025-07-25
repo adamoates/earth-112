@@ -52,23 +52,21 @@ interface Props {
 }
 
 export default function OAuthCredentialsPage({ oauth_credentials }: Props) {
-    const [activeProvider, setActiveProvider] = useState<string | null>(null);
-    const [formData, setFormData] = useState<Record<string, any>>({});
+    const [formData, setFormData] = useState<Record<string, string>>({});
+
+    const toggleForm = useForm<{ is_active: boolean }>();
+    const updateForm = useForm<{ client_id: string; client_secret: string; redirect_uri: string }>();
 
     const handleToggleProvider = (provider: string, isActive: boolean) => {
-        const { patch } = useForm();
-
-        patch(route('oauth-credentials.toggle', { provider }), {
-            data: { is_active: isActive },
-        });
+        toggleForm.setData('is_active', isActive);
+        toggleForm.patch(route('oauth-credentials.toggle', { provider }));
     };
 
-    const handleUpdateCredentials = (provider: string, data: any) => {
-        const { patch } = useForm();
-
-        patch(route('oauth-credentials.update', { provider }), {
-            data: data,
-        });
+    const handleUpdateCredentials = (provider: string, data: Record<string, string>) => {
+        updateForm.setData('client_id', data.client_id || '');
+        updateForm.setData('client_secret', data.client_secret || '');
+        updateForm.setData('redirect_uri', data.redirect_uri || '');
+        updateForm.patch(route('oauth-credentials.update', { provider }));
     };
 
     return (
