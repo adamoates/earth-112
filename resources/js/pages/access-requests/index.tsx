@@ -93,56 +93,58 @@ export default function AccessRequestsIndex({ accessRequests }: Props) {
                 </div>
 
                 <div className="grid gap-4">
-                    {accessRequests.data.map((request) => (
-                        <Card key={request.id} className="transition-shadow hover:shadow-md">
-                            <CardHeader>
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-3">
-                                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900">
-                                            <Users className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-                                        </div>
-                                        <div>
-                                            <CardTitle className="text-lg">{request.name}</CardTitle>
-                                            <CardDescription className="flex items-center gap-2">
-                                                <Mail className="h-4 w-4" />
-                                                {request.email}
-                                            </CardDescription>
-                                        </div>
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                        {getStatusBadge(request.status)}
-                                        <Button asChild size="sm" variant="outline">
-                                            <Link href={`/access-requests/${request.id}`}>View Details</Link>
-                                        </Button>
-                                    </div>
-                                </div>
-                            </CardHeader>
-                            <CardContent>
-                                <div className="grid gap-4 md:grid-cols-2">
-                                    <div>
-                                        <p className="text-sm font-medium text-gray-900 dark:text-white">Company</p>
-                                        <p className="text-sm text-gray-600 dark:text-gray-400">{request.company}</p>
-                                    </div>
-                                    <div>
-                                        <p className="text-sm font-medium text-gray-900 dark:text-white">Requested</p>
-                                        <p className="text-sm text-gray-600 dark:text-gray-400">
-                                            {new Date(request.created_at).toLocaleDateString()}
-                                        </p>
-                                    </div>
-                                </div>
-                                <div className="mt-4">
-                                    <p className="text-sm font-medium text-gray-900 dark:text-white">Reason</p>
-                                    <p className="line-clamp-2 text-sm text-gray-600 dark:text-gray-400">{request.reason}</p>
-                                </div>
-                                {request.reviewer && (
-                                    <div className="mt-4 flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-                                        <UserCheck className="h-4 w-4" />
-                                        Reviewed by {request.reviewer.name} on {new Date(request.reviewed_at!).toLocaleDateString()}
-                                    </div>
-                                )}
-                            </CardContent>
-                        </Card>
-                    ))}
+                    {Array.isArray(accessRequests.data)
+                        ? accessRequests.data.map((request) => (
+                              <Card key={request.id} className="transition-shadow hover:shadow-md">
+                                  <CardHeader>
+                                      <div className="flex items-center justify-between">
+                                          <div className="flex items-center gap-3">
+                                              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900">
+                                                  <Users className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                                              </div>
+                                              <div>
+                                                  <CardTitle className="text-lg">{request.name}</CardTitle>
+                                                  <CardDescription className="flex items-center gap-2">
+                                                      <Mail className="h-4 w-4" />
+                                                      {request.email}
+                                                  </CardDescription>
+                                              </div>
+                                          </div>
+                                          <div className="flex items-center gap-2">
+                                              {getStatusBadge(request.status)}
+                                              <Button asChild size="sm" variant="outline">
+                                                  <Link href={`/access-requests/${request.id}`}>View Details</Link>
+                                              </Button>
+                                          </div>
+                                      </div>
+                                  </CardHeader>
+                                  <CardContent>
+                                      <div className="grid gap-4 md:grid-cols-2">
+                                          <div>
+                                              <p className="text-sm font-medium text-gray-900 dark:text-white">Company</p>
+                                              <p className="text-sm text-gray-600 dark:text-gray-400">{request.company}</p>
+                                          </div>
+                                          <div>
+                                              <p className="text-sm font-medium text-gray-900 dark:text-white">Requested</p>
+                                              <p className="text-sm text-gray-600 dark:text-gray-400">
+                                                  {new Date(request.created_at).toLocaleDateString()}
+                                              </p>
+                                          </div>
+                                      </div>
+                                      <div className="mt-4">
+                                          <p className="text-sm font-medium text-gray-900 dark:text-white">Reason</p>
+                                          <p className="line-clamp-2 text-sm text-gray-600 dark:text-gray-400">{request.reason}</p>
+                                      </div>
+                                      {request.reviewer && (
+                                          <div className="mt-4 flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                                              <UserCheck className="h-4 w-4" />
+                                              Reviewed by {request.reviewer.name} on {new Date(request.reviewed_at!).toLocaleDateString()}
+                                          </div>
+                                      )}
+                                  </CardContent>
+                              </Card>
+                          ))
+                        : null}
                 </div>
 
                 {accessRequests.data.length === 0 && (

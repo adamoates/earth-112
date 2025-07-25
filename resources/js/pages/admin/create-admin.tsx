@@ -141,11 +141,13 @@ export default function CreateAdmin({ roles }: Props) {
                                         <SelectValue placeholder="Select a role" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        {roles.map((role) => (
-                                            <SelectItem key={role.name} value={role.name}>
-                                                {role.display}
-                                            </SelectItem>
-                                        ))}
+                                        {Array.isArray(roles)
+                                            ? roles.map((role) => (
+                                                  <SelectItem key={role.name} value={role.name}>
+                                                      {role.display}
+                                                  </SelectItem>
+                                              ))
+                                            : null}
                                     </SelectContent>
                                 </Select>
                                 <InputError message={errors.role} />

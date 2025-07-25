@@ -73,74 +73,76 @@ export default function InvitationsIndex({ invitations = [] }: Props) {
                             <div className="text-center text-gray-500 dark:text-gray-400">No invitations found.</div>
                         ) : (
                             <div className="space-y-3">
-                                {invitations.map((invitation) => (
-                                    <div
-                                        key={invitation.id}
-                                        className="flex flex-col items-start justify-between gap-3 rounded-lg border p-4 sm:flex-row sm:items-center"
-                                    >
-                                        <div className="min-w-0 flex-1">
-                                            <div className="truncate font-medium text-gray-900 dark:text-white">{invitation.email}</div>
-                                            <div className="text-sm text-gray-500 dark:text-gray-400">
-                                                Role: {invitation.role} • Created: {new Date(invitation.created_at).toLocaleDateString()}
-                                            </div>
-                                        </div>
-                                        <div className="flex w-full items-center gap-2 sm:w-auto">
-                                            <Button asChild size="sm" variant="outline" className="flex-1 sm:flex-none">
-                                                <Link href={`/invitations/${invitation.id}`}>View</Link>
-                                            </Button>
-                                            <Button
-                                                size="sm"
-                                                variant="ghost"
-                                                className="flex-1 sm:flex-none"
-                                                onClick={() => {
-                                                    setResendId(invitation.id);
-                                                    setResendEmail(invitation.email);
-                                                }}
-                                            >
-                                                Resend
-                                            </Button>
-                                            <Dialog
-                                                open={confirmId === invitation.id}
-                                                onOpenChange={(open) => {
-                                                    if (!open) setConfirmId(null);
-                                                }}
-                                            >
-                                                <DialogTrigger asChild>
-                                                    <Button
-                                                        size="sm"
-                                                        variant="destructive"
-                                                        className="flex-1 sm:flex-none"
-                                                        onClick={() => {
-                                                            setConfirmId(invitation.id);
-                                                            setConfirmEmail(invitation.email);
-                                                        }}
-                                                    >
-                                                        Cancel
-                                                    </Button>
-                                                </DialogTrigger>
-                                                <DialogContent>
-                                                    <DialogHeader>
-                                                        <DialogTitle>Cancel Invitation</DialogTitle>
-                                                        <DialogDescription>
-                                                            Are you sure you want to cancel the invitation for{' '}
-                                                            <span className="font-semibold">{confirmEmail}</span>? This action cannot be undone.
-                                                        </DialogDescription>
-                                                    </DialogHeader>
-                                                    <DialogFooter>
-                                                        <Button variant="outline" onClick={() => setConfirmId(null)}>
-                                                            No, keep it
-                                                        </Button>
-                                                        <Button asChild variant="destructive">
-                                                            <Link href={`/invitations/${invitation.id}`} method="delete" as="button">
-                                                                Yes, cancel invitation
-                                                            </Link>
-                                                        </Button>
-                                                    </DialogFooter>
-                                                </DialogContent>
-                                            </Dialog>
-                                        </div>
-                                    </div>
-                                ))}
+                                {Array.isArray(invitations)
+                                    ? invitations.map((invitation) => (
+                                          <div
+                                              key={invitation.id}
+                                              className="flex flex-col items-start justify-between gap-3 rounded-lg border p-4 sm:flex-row sm:items-center"
+                                          >
+                                              <div className="min-w-0 flex-1">
+                                                  <div className="truncate font-medium text-gray-900 dark:text-white">{invitation.email}</div>
+                                                  <div className="text-sm text-gray-500 dark:text-gray-400">
+                                                      Role: {invitation.role} • Created: {new Date(invitation.created_at).toLocaleDateString()}
+                                                  </div>
+                                              </div>
+                                              <div className="flex w-full items-center gap-2 sm:w-auto">
+                                                  <Button asChild size="sm" variant="outline" className="flex-1 sm:flex-none">
+                                                      <Link href={`/invitations/${invitation.id}`}>View</Link>
+                                                  </Button>
+                                                  <Button
+                                                      size="sm"
+                                                      variant="ghost"
+                                                      className="flex-1 sm:flex-none"
+                                                      onClick={() => {
+                                                          setResendId(invitation.id);
+                                                          setResendEmail(invitation.email);
+                                                      }}
+                                                  >
+                                                      Resend
+                                                  </Button>
+                                                  <Dialog
+                                                      open={confirmId === invitation.id}
+                                                      onOpenChange={(open) => {
+                                                          if (!open) setConfirmId(null);
+                                                      }}
+                                                  >
+                                                      <DialogTrigger asChild>
+                                                          <Button
+                                                              size="sm"
+                                                              variant="destructive"
+                                                              className="flex-1 sm:flex-none"
+                                                              onClick={() => {
+                                                                  setConfirmId(invitation.id);
+                                                                  setConfirmEmail(invitation.email);
+                                                              }}
+                                                          >
+                                                              Cancel
+                                                          </Button>
+                                                      </DialogTrigger>
+                                                      <DialogContent>
+                                                          <DialogHeader>
+                                                              <DialogTitle>Cancel Invitation</DialogTitle>
+                                                              <DialogDescription>
+                                                                  Are you sure you want to cancel the invitation for{' '}
+                                                                  <span className="font-semibold">{confirmEmail}</span>? This action cannot be undone.
+                                                              </DialogDescription>
+                                                          </DialogHeader>
+                                                          <DialogFooter>
+                                                              <Button variant="outline" onClick={() => setConfirmId(null)}>
+                                                                  No, keep it
+                                                              </Button>
+                                                              <Button asChild variant="destructive">
+                                                                  <Link href={`/invitations/${invitation.id}`} method="delete" as="button">
+                                                                      Yes, cancel invitation
+                                                                  </Link>
+                                                              </Button>
+                                                          </DialogFooter>
+                                                      </DialogContent>
+                                                  </Dialog>
+                                              </div>
+                                          </div>
+                                      ))
+                                    : null}
                             </div>
                         )}
                     </CardContent>

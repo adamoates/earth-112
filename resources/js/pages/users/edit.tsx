@@ -97,11 +97,13 @@ export default function EditUser({ user, roles }: Props) {
                                         <SelectValue placeholder="Select a role" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        {roles.map((role) => (
-                                            <SelectItem key={role.name} value={role.name}>
-                                                {role.display}
-                                            </SelectItem>
-                                        ))}
+                                        {Array.isArray(roles)
+                                            ? roles.map((role) => (
+                                                  <SelectItem key={role.name} value={role.name}>
+                                                      {role.display}
+                                                  </SelectItem>
+                                              ))
+                                            : null}
                                     </SelectContent>
                                 </Select>
                                 {errors.role && <p className="text-sm text-red-600 dark:text-red-400">{errors.role}</p>}
