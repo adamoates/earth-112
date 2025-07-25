@@ -42,11 +42,8 @@ interface Props {
 }
 
 export default function EditUser({ user, roles }: Props) {
-    console.log('EditUser props:', { user, roles }); // Debug logging
-
     // Convert roles to array if it's an object
     const rolesArray: Role[] = Array.isArray(roles) ? roles : (Object.values(roles || {}) as Role[]);
-    console.log('Roles array:', rolesArray);
 
     const { data, setData, put, processing, errors } = useForm({
         name: user.name,
@@ -60,7 +57,6 @@ export default function EditUser({ user, roles }: Props) {
     };
 
     const handleRoleChange = (value: string) => {
-        console.log('Role change:', value);
         setData('role', value);
     };
 
@@ -106,13 +102,6 @@ export default function EditUser({ user, roles }: Props) {
 
                             <div className="space-y-2">
                                 <Label htmlFor="role">Role</Label>
-                                <div className="mb-2 text-xs text-gray-500">
-                                    Debug: Current role: "{currentRole}", Available roles: {rolesArray.length}
-                                    <br />
-                                    User role: "{user.role}", Roles: {rolesArray.map((r: Role) => r.name).join(', ')}
-                                    <br />
-                                    Is Array: {Array.isArray(roles) ? 'Yes' : 'No'}, Type: {typeof roles}
-                                </div>
                                 <Select value={currentRole} onValueChange={handleRoleChange}>
                                     <SelectTrigger>
                                         <SelectValue placeholder="Select a role" />
