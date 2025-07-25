@@ -25,6 +25,7 @@ class User extends Authenticatable
         'social_provider',
         'social_id',
         'is_social_user',
+        'avatar',
     ];
 
     /**
