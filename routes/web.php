@@ -107,6 +107,10 @@ Route::middleware('auth')->group(function () {
         Route::patch('oauth-credentials/{provider}/toggle', [App\Http\Controllers\Admin\OAuthCredentialController::class, 'toggle'])->name('oauth-credentials.toggle');
         Route::get('oauth-credentials/{provider}/status', [App\Http\Controllers\Admin\OAuthCredentialController::class, 'status'])->name('oauth-credentials.status');
 
+        // Feature Settings Management (Owner only)
+        Route::get('feature-settings', [App\Http\Controllers\Admin\FeatureSettingsController::class, 'index'])->name('feature-settings.index');
+        Route::patch('feature-settings', [App\Http\Controllers\Admin\FeatureSettingsController::class, 'update'])->name('feature-settings.update');
+
         // Admin creation routes
         Route::get('admin/create', [AdminController::class, 'createAdmin'])->name('admin.create');
         Route::post('admin/create', [AdminController::class, 'storeAdmin'])->name('admin.store');

@@ -62,14 +62,6 @@ class AuthSettingsController extends Controller
                 'require_password_complexity' => $settings->require_password_complexity,
                 'require_password_expiration' => $settings->require_password_expiration,
                 'password_expiration_days' => $settings->password_expiration_days,
-
-                // Feature Toggles
-                'enable_beta_dashboard' => $settings->enable_beta_dashboard,
-                'enable_new_notifications' => $settings->enable_new_notifications,
-                'enable_user_impersonation' => $settings->enable_user_impersonation,
-                'enable_audit_log' => $settings->enable_audit_log,
-                'enable_maintenance_mode' => $settings->enable_maintenance_mode,
-                'maintenance_message' => $settings->maintenance_message,
             ],
             'oauth_credentials' => $oauthCredentials,
         ]);

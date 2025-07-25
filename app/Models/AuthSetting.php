@@ -23,13 +23,6 @@ class AuthSetting extends Model
         'require_password_complexity',
         'require_password_expiration',
         'password_expiration_days',
-        // Feature Toggles
-        'enable_beta_dashboard',
-        'enable_new_notifications',
-        'enable_user_impersonation',
-        'enable_audit_log',
-        'enable_maintenance_mode',
-        'maintenance_message',
     ];
 
     protected $casts = [
@@ -46,12 +39,6 @@ class AuthSetting extends Model
         'require_password_complexity' => 'boolean',
         'require_password_expiration' => 'boolean',
         'password_expiration_days' => 'integer',
-        // Feature Toggles
-        'enable_beta_dashboard' => 'boolean',
-        'enable_new_notifications' => 'boolean',
-        'enable_user_impersonation' => 'boolean',
-        'enable_audit_log' => 'boolean',
-        'enable_maintenance_mode' => 'boolean',
     ];
 
     /**
@@ -73,13 +60,6 @@ class AuthSetting extends Model
             'require_password_complexity' => false,
             'require_password_expiration' => false,
             'password_expiration_days' => 90,
-            // Feature Toggles - defaults
-            'enable_beta_dashboard' => false,
-            'enable_new_notifications' => false,
-            'enable_user_impersonation' => false,
-            'enable_audit_log' => true,
-            'enable_maintenance_mode' => false,
-            'maintenance_message' => 'We are currently performing maintenance. Please check back soon.',
         ]);
     }
 

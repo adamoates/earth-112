@@ -7,7 +7,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
-import { Textarea } from '@/components/ui/textarea';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 
@@ -59,14 +58,6 @@ interface AuthSettings {
     require_password_complexity: boolean;
     require_password_expiration: boolean;
     password_expiration_days: number;
-
-    // Feature Toggles
-    enable_beta_dashboard: boolean;
-    enable_new_notifications: boolean;
-    enable_user_impersonation: boolean;
-    enable_audit_log: boolean;
-    enable_maintenance_mode: boolean;
-    maintenance_message: string;
 }
 
 interface Props {
@@ -117,10 +108,11 @@ export default function AuthSettingsPage({ settings, oauth_credentials }: Props)
                 {/* Header */}
                 <div className="space-y-2">
                     <h1 className="text-xl font-bold text-gray-900 sm:text-2xl dark:text-white">Authentication Settings</h1>
-                    <p className="text-sm text-gray-600 sm:text-base dark:text-gray-400">
-                        Manage authentication providers, security controls, and feature toggles
-                    </p>
+                    <p className="text-sm text-gray-600 sm:text-base dark:text-gray-400">Manage authentication providers and security controls</p>
                     <div className="flex gap-2">
+                        <Button variant="outline" size="sm" asChild>
+                            <a href="/feature-settings">Feature Toggles</a>
+                        </Button>
                         <Button variant="outline" size="sm" asChild>
                             <a href="/oauth-credentials">Manage OAuth Credentials</a>
                         </Button>
@@ -555,103 +547,6 @@ export default function AuthSettingsPage({ settings, oauth_credentials }: Props)
                                     </div>
                                 )}
                             </div>
-                        </CardContent>
-                    </Card>
-
-                    {/* Feature Toggles */}
-                    <Card>
-                        <CardHeader>
-                            <CardTitle className="flex items-center gap-2">
-                                <Zap className="h-5 w-5" />
-                                Feature Toggles
-                            </CardTitle>
-                            <CardDescription>Enable or disable platform features</CardDescription>
-                        </CardHeader>
-                        <CardContent className="space-y-6">
-                            <div className="flex items-center justify-between">
-                                <div className="space-y-1">
-                                    <Label htmlFor="enable_beta_dashboard" className="text-base font-medium">
-                                        Beta Dashboard
-                                    </Label>
-                                    <p className="text-sm text-gray-600 dark:text-gray-400">Enable the new beta dashboard interface</p>
-                                </div>
-                                <Switch
-                                    id="enable_beta_dashboard"
-                                    checked={data.enable_beta_dashboard}
-                                    onCheckedChange={(checked: boolean) => setData('enable_beta_dashboard', checked)}
-                                />
-                            </div>
-
-                            <div className="flex items-center justify-between">
-                                <div className="space-y-1">
-                                    <Label htmlFor="enable_new_notifications" className="text-base font-medium">
-                                        New Notifications System
-                                    </Label>
-                                    <p className="text-sm text-gray-600 dark:text-gray-400">Enable the improved notification system</p>
-                                </div>
-                                <Switch
-                                    id="enable_new_notifications"
-                                    checked={data.enable_new_notifications}
-                                    onCheckedChange={(checked: boolean) => setData('enable_new_notifications', checked)}
-                                />
-                            </div>
-
-                            <div className="flex items-center justify-between">
-                                <div className="space-y-1">
-                                    <Label htmlFor="enable_user_impersonation" className="text-base font-medium">
-                                        User Impersonation
-                                    </Label>
-                                    <p className="text-sm text-gray-600 dark:text-gray-400">Allow admins to impersonate other users for support</p>
-                                </div>
-                                <Switch
-                                    id="enable_user_impersonation"
-                                    checked={data.enable_user_impersonation}
-                                    onCheckedChange={(checked: boolean) => setData('enable_user_impersonation', checked)}
-                                />
-                            </div>
-
-                            <div className="flex items-center justify-between">
-                                <div className="space-y-1">
-                                    <Label htmlFor="enable_audit_log" className="text-base font-medium">
-                                        Audit Log
-                                    </Label>
-                                    <p className="text-sm text-gray-600 dark:text-gray-400">Log all critical actions for security and compliance</p>
-                                </div>
-                                <Switch
-                                    id="enable_audit_log"
-                                    checked={data.enable_audit_log}
-                                    onCheckedChange={(checked: boolean) => setData('enable_audit_log', checked)}
-                                />
-                            </div>
-
-                            <div className="flex items-center justify-between">
-                                <div className="space-y-1">
-                                    <Label htmlFor="enable_maintenance_mode" className="text-base font-medium">
-                                        Maintenance Mode
-                                    </Label>
-                                    <p className="text-sm text-gray-600 dark:text-gray-400">Put the platform in maintenance mode</p>
-                                </div>
-                                <Switch
-                                    id="enable_maintenance_mode"
-                                    checked={data.enable_maintenance_mode}
-                                    onCheckedChange={(checked: boolean) => setData('enable_maintenance_mode', checked)}
-                                />
-                            </div>
-
-                            {data.enable_maintenance_mode && (
-                                <div className="space-y-2">
-                                    <Label htmlFor="maintenance_message" className="text-base font-medium">
-                                        Maintenance Message
-                                    </Label>
-                                    <Textarea
-                                        id="maintenance_message"
-                                        value={data.maintenance_message}
-                                        onChange={(e) => setData('maintenance_message', e.target.value)}
-                                        placeholder="Enter a message to display during maintenance..."
-                                        rows={3}
-                                    />
-                                </div>
-                            )}
                         </CardContent>
                     </Card>
 
