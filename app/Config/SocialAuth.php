@@ -30,6 +30,13 @@ class SocialAuth
                 'redirect_uri' => env('DISCORD_REDIRECT_URI'),
                 'scopes' => ['email', 'identify'],
             ],
+            'linkedin' => [
+                'enabled' => env('LINKEDIN_AUTH_ENABLED', false),
+                'client_id' => env('LINKEDIN_CLIENT_ID'),
+                'client_secret' => env('LINKEDIN_CLIENT_SECRET'),
+                'redirect_uri' => env('LINKEDIN_REDIRECT_URI'),
+                'scopes' => ['r_emailaddress', 'r_liteprofile'],
+            ],
         ];
     }
 

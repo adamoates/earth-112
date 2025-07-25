@@ -3,7 +3,7 @@ import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { BarChart3, LayoutGrid, Settings, Shield, Users } from 'lucide-react';
+import { BarChart3, LayoutGrid, Settings, Shield, Users, Zap } from 'lucide-react';
 
 export function AppSidebar() {
     const { auth } = usePage().props as unknown as { auth: { user?: { roles?: Array<{ name: string }> } } };
@@ -34,6 +34,11 @@ export function AppSidebar() {
                       title: 'Auth Settings',
                       href: '/auth-settings',
                       icon: Settings,
+                  },
+                  {
+                      title: 'Features',
+                      href: '/feature-settings',
+                      icon: Zap,
                   },
               ]
             : []),
