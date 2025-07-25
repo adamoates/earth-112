@@ -99,14 +99,14 @@ export default function EditUser({ user, roles }: Props) {
                                         <SelectValue placeholder="Select a role" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        {roles && roles.length > 0 ? (
+                                        {Array.isArray(roles) && roles.length > 0 ? (
                                             roles.map((role) => (
                                                 <SelectItem key={role.name} value={role.name}>
                                                     {role.display}
                                                 </SelectItem>
                                             ))
                                         ) : (
-                                            <SelectItem value="" disabled>
+                                            <SelectItem value="no-roles" disabled>
                                                 No roles available
                                             </SelectItem>
                                         )}
