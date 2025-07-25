@@ -42,6 +42,8 @@ interface Props {
 }
 
 export default function EditUser({ user, roles }: Props) {
+    console.log('EditUser props:', { user, roles }); // Debug logging
+
     const { data, setData, put, processing, errors } = useForm({
         name: user.name,
         email: user.email,
@@ -97,13 +99,17 @@ export default function EditUser({ user, roles }: Props) {
                                         <SelectValue placeholder="Select a role" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        {Array.isArray(roles)
-                                            ? roles.map((role) => (
-                                                  <SelectItem key={role.name} value={role.name}>
-                                                      {role.display}
-                                                  </SelectItem>
-                                              ))
-                                            : null}
+                                        {roles && roles.length > 0 ? (
+                                            roles.map((role) => (
+                                                <SelectItem key={role.name} value={role.name}>
+                                                    {role.display}
+                                                </SelectItem>
+                                            ))
+                                        ) : (
+                                            <SelectItem value="" disabled>
+                                                No roles available
+                                            </SelectItem>
+                                        )}
                                     </SelectContent>
                                 </Select>
                                 {errors.role && <p className="text-sm text-red-600 dark:text-red-400">{errors.role}</p>}
