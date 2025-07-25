@@ -114,7 +114,9 @@ class UserController extends Controller
                     'name' => $role->name,
                     'display' => ucfirst($role->name),
                 ];
-            });
+            })
+            ->values()
+            ->toArray();
 
         return Inertia::render('users/edit', [
             'user' => [

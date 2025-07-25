@@ -44,6 +44,10 @@ interface Props {
 export default function EditUser({ user, roles }: Props) {
     console.log('EditUser props:', { user, roles }); // Debug logging
 
+    // Convert roles to array if it's an object
+    const rolesArray: Role[] = Array.isArray(roles) ? roles : (Object.values(roles || {}) as Role[]);
+    console.log('Roles array:', rolesArray);
+
     const { data, setData, put, processing, errors } = useForm({
         name: user.name,
         email: user.email,
@@ -61,7 +65,7 @@ export default function EditUser({ user, roles }: Props) {
     };
 
     // Ensure we have a valid role value
-    const currentRole = data.role || user.role || (Array.isArray(roles) && roles.length > 0 ? roles[0].name : '');
+    const currentRole = data.role || user.role || (rolesArray.length > 0 ? rolesArray[0].name : '');
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -103,17 +107,19 @@ export default function EditUser({ user, roles }: Props) {
                             <div className="space-y-2">
                                 <Label htmlFor="role">Role</Label>
                                 <div className="mb-2 text-xs text-gray-500">
-                                    Debug: Current role: "{currentRole}", Available roles: {Array.isArray(roles) ? roles.length : 'not array'}
+                                    Debug: Current role: "{currentRole}", Available roles: {rolesArray.length}
                                     <br />
-                                    User role: "{user.role}", Roles: {Array.isArray(roles) ? roles.map((r) => r.name).join(', ') : 'none'}
+                                    User role: "{user.role}", Roles: {rolesArray.map((r: Role) => r.name).join(', ')}
+                                    <br />
+                                    Is Array: {Array.isArray(roles) ? 'Yes' : 'No'}, Type: {typeof roles}
                                 </div>
                                 <Select value={currentRole} onValueChange={handleRoleChange}>
                                     <SelectTrigger>
                                         <SelectValue placeholder="Select a role" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        {Array.isArray(roles) && roles.length > 0 ? (
-                                            roles.map((role) => (
+                                        {rolesArray.length > 0 ? (
+                                            rolesArray.map((role: Role) => (
                                                 <SelectItem key={role.name} value={role.name}>
                                                     {role.display}
                                                 </SelectItem>
