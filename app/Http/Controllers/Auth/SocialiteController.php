@@ -120,6 +120,7 @@ class SocialiteController extends Controller
                     'social_provider' => $provider,
                     'social_id' => $socialUser->getId(),
                     'is_social_user' => true,
+                    'avatar' => $socialUser->getAvatar(),
                 ]);
 
                 Log::info('New user created via Google OAuth', [
@@ -153,6 +154,7 @@ class SocialiteController extends Controller
                         'social_provider' => $provider,
                         'social_id' => $socialUser->getId(),
                         'is_social_user' => true,
+                        'avatar' => $socialUser->getAvatar(),
                     ]);
                     Log::info('Updated existing user with social info');
                 }
@@ -174,20 +176,8 @@ class SocialiteController extends Controller
                 'provider' => $provider
             ]);
 
-            // Show success status page briefly before redirecting
-            return redirect()->route('social.status', [
-                'status' => 'success',
-                'message' => $isNewUser
-                    ? 'Your account has been created successfully and you are now logged in!'
-                    : 'Welcome back! You have been logged in successfully.',
-                'user' => [
-                    'name' => $user->name,
-                    'email' => $user->email,
-                    'role' => $displayRole
-                ],
-                'isNewUser' => $isNewUser,
-                'provider' => ucfirst($provider)
-            ]);
+            // Redirect to dashboard after successful login
+            return redirect()->route('dashboard');
         } catch (\Exception $e) {
             Log::error('Google OAuth callback error', [
                 'provider' => $provider,
