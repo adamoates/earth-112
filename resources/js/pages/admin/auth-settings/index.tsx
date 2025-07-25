@@ -40,6 +40,7 @@ interface OAuthCredentials {
     google: OAuthCredential;
     github: OAuthCredential;
     discord: OAuthCredential;
+    linkedin: OAuthCredential;
 }
 
 interface AuthSettings {
@@ -67,7 +68,7 @@ interface Props {
 }
 
 export default function AuthSettingsPage({ settings, oauth_credentials }: Props) {
-    const { data, setData, patch, processing } = useForm<Record<string, boolean | number | string | OAuthCredentials>>({
+    const { data, setData, patch, processing } = useForm<Record<string, any>>({
         // Authentication Providers
         google_auth_enabled: settings.google_auth_enabled,
         github_auth_enabled: settings.github_auth_enabled,
@@ -84,9 +85,6 @@ export default function AuthSettingsPage({ settings, oauth_credentials }: Props)
         require_password_complexity: settings.require_password_complexity,
         require_password_expiration: settings.require_password_expiration,
         password_expiration_days: settings.password_expiration_days,
-
-        // OAuth Credentials
-        oauth_credentials: oauth_credentials,
     });
 
     const submit: FormEventHandler = (e) => {
@@ -123,7 +121,7 @@ export default function AuthSettingsPage({ settings, oauth_credentials }: Props)
                                 <Shield className="h-5 w-5" />
                                 Social Login Providers
                             </CardTitle>
-                            <CardDescription>Enable or disable social login options and manage credentials</CardDescription>
+                            <CardDescription>Enable or disable social login options. Credential management is handled separately.</CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-6">
                             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
