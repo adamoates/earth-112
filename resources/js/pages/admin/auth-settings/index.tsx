@@ -47,6 +47,7 @@ interface AuthSettings {
     google_auth_enabled: boolean;
     github_auth_enabled: boolean;
     discord_auth_enabled: boolean;
+    linkedin_auth_enabled: boolean;
     invite_only_mode: boolean;
     open_registration: boolean;
 
@@ -71,6 +72,7 @@ export default function AuthSettingsPage({ settings, oauth_credentials }: Props)
         google_auth_enabled: settings.google_auth_enabled,
         github_auth_enabled: settings.github_auth_enabled,
         discord_auth_enabled: settings.discord_auth_enabled,
+        linkedin_auth_enabled: settings.linkedin_auth_enabled,
         invite_only_mode: settings.invite_only_mode,
         open_registration: settings.open_registration,
 
@@ -82,14 +84,6 @@ export default function AuthSettingsPage({ settings, oauth_credentials }: Props)
         require_password_complexity: settings.require_password_complexity,
         require_password_expiration: settings.require_password_expiration,
         password_expiration_days: settings.password_expiration_days,
-
-        // Feature Toggles
-        enable_beta_dashboard: settings.enable_beta_dashboard,
-        enable_new_notifications: settings.enable_new_notifications,
-        enable_user_impersonation: settings.enable_user_impersonation,
-        enable_audit_log: settings.enable_audit_log,
-        enable_maintenance_mode: settings.enable_maintenance_mode,
-        maintenance_message: settings.maintenance_message,
 
         // OAuth Credentials
         oauth_credentials: oauth_credentials,
@@ -172,6 +166,21 @@ export default function AuthSettingsPage({ settings, oauth_credentials }: Props)
                                     id="discord_auth"
                                     checked={data.discord_auth_enabled}
                                     onCheckedChange={(checked: boolean) => setData('discord_auth_enabled', checked)}
+                                />
+                            </div>
+
+                            {/* LinkedIn Auth */}
+                            <div className="flex items-center justify-between">
+                                <div className="space-y-1">
+                                    <Label htmlFor="linkedin_auth" className="text-base font-medium">
+                                        LinkedIn Authentication
+                                    </Label>
+                                    <p className="text-sm text-gray-600 dark:text-gray-400">Allow users to sign in with their LinkedIn accounts</p>
+                                </div>
+                                <Switch
+                                    id="linkedin_auth"
+                                    checked={data.linkedin_auth_enabled}
+                                    onCheckedChange={(checked: boolean) => setData('linkedin_auth_enabled', checked)}
                                 />
                             </div>
                         </CardContent>

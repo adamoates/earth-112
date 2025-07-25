@@ -83,7 +83,7 @@ class OAuthCredentialService
      */
     public function updateConfig(): void
     {
-        $providers = ['google', 'github', 'discord'];
+        $providers = ['google', 'github', 'discord', 'linkedin'];
 
         foreach ($providers as $provider) {
             $config = $this->getConfigForProvider($provider);
@@ -109,7 +109,7 @@ class OAuthCredentialService
      */
     public function clearAllCache(): void
     {
-        $providers = ['google', 'github', 'discord'];
+        $providers = ['google', 'github', 'discord', 'linkedin'];
 
         foreach ($providers as $provider) {
             $this->clearCache($provider);
@@ -164,6 +164,12 @@ class OAuthCredentialService
                 'description' => 'Discord OAuth2',
                 'setup_url' => 'https://discord.com/developers/applications',
                 'docs_url' => 'https://discord.com/developers/docs/topics/oauth2',
+            ],
+            'linkedin' => [
+                'name' => 'LinkedIn',
+                'description' => 'LinkedIn OAuth 2.0',
+                'setup_url' => 'https://www.linkedin.com/developers/apps',
+                'docs_url' => 'https://docs.microsoft.com/en-us/linkedin/shared/authentication/authentication',
             ],
             default => [
                 'name' => ucfirst($provider),

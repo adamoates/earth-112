@@ -44,6 +44,7 @@ interface OAuthCredentials {
     google: OAuthCredential;
     github: OAuthCredential;
     discord: OAuthCredential;
+    linkedin: OAuthCredential;
 }
 
 interface Props {
@@ -333,6 +334,89 @@ export default function OAuthCredentialsPage({ oauth_credentials }: Props) {
                                         </Button>
                                         <Button variant="outline" asChild>
                                             <a href={oauth_credentials.discord.provider_info.docs_url} target="_blank" rel="noopener noreferrer">
+                                                Documentation
+                                            </a>
+                                        </Button>
+                                    </div>
+                                </div>
+                            )}
+                        </CardContent>
+                    </Card>
+
+                    {/* LinkedIn OAuth */}
+                    <Card>
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2">
+                                <Zap className="h-5 w-5" />
+                                LinkedIn OAuth
+                            </CardTitle>
+                            <CardDescription>Configure LinkedIn OAuth 2.0 credentials</CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                            <div className="flex items-center justify-between">
+                                <div className="space-y-1">
+                                    <Label className="text-base font-medium">Enable LinkedIn OAuth</Label>
+                                    <p className="text-sm text-gray-600 dark:text-gray-400">Allow users to sign in with their LinkedIn accounts</p>
+                                </div>
+                                <Switch
+                                    checked={oauth_credentials.linkedin.is_active}
+                                    onCheckedChange={(checked: boolean) => {
+                                        console.log('LinkedIn OAuth active:', checked);
+                                    }}
+                                />
+                            </div>
+
+                            {oauth_credentials.linkedin.is_active && (
+                                <div className="space-y-4 rounded-lg border p-4">
+                                    <div>
+                                        <Label htmlFor="linkedin_client_id">Client ID</Label>
+                                        <Input
+                                            id="linkedin_client_id"
+                                            placeholder="Enter your LinkedIn Client ID"
+                                            defaultValue={oauth_credentials.linkedin.client_id}
+                                            onChange={(e) => setFormData((prev) => ({ ...prev, linkedin_client_id: e.target.value }))}
+                                        />
+                                    </div>
+                                    <div>
+                                        <Label htmlFor="linkedin_client_secret">Client Secret</Label>
+                                        <Input
+                                            id="linkedin_client_secret"
+                                            type="password"
+                                            placeholder="Enter your LinkedIn Client Secret"
+                                            onChange={(e) => setFormData((prev) => ({ ...prev, linkedin_client_secret: e.target.value }))}
+                                        />
+                                    </div>
+                                    <div>
+                                        <Label htmlFor="linkedin_redirect_uri">Redirect URI</Label>
+                                        <Input
+                                            id="linkedin_redirect_uri"
+                                            placeholder="https://yourdomain.com/auth/linkedin/callback"
+                                            defaultValue={oauth_credentials.linkedin.redirect_uri}
+                                            onChange={(e) => setFormData((prev) => ({ ...prev, linkedin_redirect_uri: e.target.value }))}
+                                        />
+                                    </div>
+                                    {oauth_credentials.linkedin.has_valid_credentials && (
+                                        <div className="flex items-center gap-2 text-sm text-green-600 dark:text-green-400">
+                                            <div className="h-2 w-2 rounded-full bg-green-500"></div>
+                                            Valid credentials configured
+                                        </div>
+                                    )}
+                                    <div className="flex gap-2">
+                                        <Button
+                                            onClick={() => {
+                                                console.log('Save LinkedIn credentials');
+                                            }}
+                                        >
+                                            <Save className="mr-2 h-4 w-4" />
+                                            Save LinkedIn Credentials
+                                        </Button>
+                                        <Button variant="outline" asChild>
+                                            <a href={oauth_credentials.linkedin.provider_info.setup_url} target="_blank" rel="noopener noreferrer">
+                                                Setup Guide
+                                            </a>
+                                        </Button>
+                                        <Button variant="outline" asChild>
+                                            <a href={oauth_credentials.linkedin.provider_info.docs_url} target="_blank" rel="noopener noreferrer">
                                                 Documentation
                                             </a>
                                         </Button>

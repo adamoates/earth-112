@@ -97,6 +97,7 @@ class OAuthCredential extends Model
             'google' => ['email', 'profile'],
             'github' => ['user:email'],
             'discord' => ['email', 'identify'],
+            'linkedin' => ['r_emailaddress', 'r_liteprofile'],
             default => [],
         };
     }

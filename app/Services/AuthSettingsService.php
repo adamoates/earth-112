@@ -40,6 +40,14 @@ class AuthSettingsService
     }
 
     /**
+     * Check if LinkedIn auth is enabled
+     */
+    public static function isLinkedInAuthEnabled(): bool
+    {
+        return self::getSettings()->linkedin_auth_enabled && SocialAuth::isProviderEnabled('linkedin');
+    }
+
+    /**
      * Check if invite only mode is enabled
      */
     public static function isInviteOnlyMode(): bool
@@ -147,6 +155,7 @@ class AuthSettingsService
             'google_auth_enabled' => $settings->google_auth_enabled,
             'github_auth_enabled' => $settings->github_auth_enabled,
             'discord_auth_enabled' => $settings->discord_auth_enabled,
+            'linkedin_auth_enabled' => $settings->linkedin_auth_enabled,
             'invite_only_mode' => $settings->invite_only_mode,
             'open_registration' => $settings->open_registration,
 
@@ -158,14 +167,6 @@ class AuthSettingsService
             'require_password_complexity' => $settings->require_password_complexity,
             'require_password_expiration' => $settings->require_password_expiration,
             'password_expiration_days' => $settings->password_expiration_days,
-
-            // Feature Toggles
-            'enable_beta_dashboard' => $settings->enable_beta_dashboard,
-            'enable_new_notifications' => $settings->enable_new_notifications,
-            'enable_user_impersonation' => $settings->enable_user_impersonation,
-            'enable_audit_log' => $settings->enable_audit_log,
-            'enable_maintenance_mode' => $settings->enable_maintenance_mode,
-            'maintenance_message' => $settings->maintenance_message,
         ];
     }
 }

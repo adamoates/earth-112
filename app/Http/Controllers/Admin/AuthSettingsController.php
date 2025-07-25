@@ -28,7 +28,7 @@ class AuthSettingsController extends Controller
 
         // Get OAuth credentials for each provider
         $oauthCredentials = [];
-        $providers = ['google', 'github', 'discord'];
+        $providers = ['google', 'github', 'discord', 'linkedin'];
 
         foreach ($providers as $provider) {
             $credential = $oauthService->getCredentials($provider);
@@ -51,6 +51,7 @@ class AuthSettingsController extends Controller
                 'google_auth_enabled' => $settings->google_auth_enabled,
                 'github_auth_enabled' => $settings->github_auth_enabled,
                 'discord_auth_enabled' => $settings->discord_auth_enabled,
+                'linkedin_auth_enabled' => $settings->linkedin_auth_enabled,
                 'invite_only_mode' => $settings->invite_only_mode,
                 'open_registration' => $settings->open_registration,
 
@@ -82,6 +83,7 @@ class AuthSettingsController extends Controller
             'google_auth_enabled' => 'boolean',
             'github_auth_enabled' => 'boolean',
             'discord_auth_enabled' => 'boolean',
+            'linkedin_auth_enabled' => 'boolean',
             'invite_only_mode' => 'boolean',
             'open_registration' => 'boolean',
 
@@ -93,14 +95,6 @@ class AuthSettingsController extends Controller
             'require_password_complexity' => 'boolean',
             'require_password_expiration' => 'boolean',
             'password_expiration_days' => 'integer|min:30|max:365',
-
-            // Feature Toggles
-            'enable_beta_dashboard' => 'boolean',
-            'enable_new_notifications' => 'boolean',
-            'enable_user_impersonation' => 'boolean',
-            'enable_audit_log' => 'boolean',
-            'enable_maintenance_mode' => 'boolean',
-            'maintenance_message' => 'nullable|string|max:500',
         ]);
 
         $settings = AuthSetting::getCurrent();
@@ -109,6 +103,7 @@ class AuthSettingsController extends Controller
             'google_auth_enabled',
             'github_auth_enabled',
             'discord_auth_enabled',
+            'linkedin_auth_enabled',
             'invite_only_mode',
             'open_registration',
 
@@ -135,7 +130,7 @@ class AuthSettingsController extends Controller
             $oauthService = new OAuthCredentialService();
             $oauthData = $request->input('oauth_credentials');
 
-            foreach (['google', 'github', 'discord'] as $provider) {
+            foreach (['google', 'github', 'discord', 'linkedin'] as $provider) {
                 if (isset($oauthData[$provider])) {
                     $providerData = $oauthData[$provider];
 

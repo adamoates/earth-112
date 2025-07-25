@@ -30,7 +30,7 @@ class OAuthCredentialController extends Controller
 
         // Get OAuth credentials for each provider
         $oauthCredentials = [];
-        $providers = ['google', 'github', 'discord'];
+        $providers = ['google', 'github', 'discord', 'linkedin'];
 
         foreach ($providers as $provider) {
             $credential = $this->oauthService->getCredentials($provider);

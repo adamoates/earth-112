@@ -13,6 +13,7 @@ class AuthSetting extends Model
         'google_auth_enabled',
         'github_auth_enabled',
         'discord_auth_enabled',
+        'linkedin_auth_enabled',
         'invite_only_mode',
         'open_registration',
         // Security Controls
@@ -29,6 +30,7 @@ class AuthSetting extends Model
         'google_auth_enabled' => 'boolean',
         'github_auth_enabled' => 'boolean',
         'discord_auth_enabled' => 'boolean',
+        'linkedin_auth_enabled' => 'boolean',
         'invite_only_mode' => 'boolean',
         'open_registration' => 'boolean',
         // Security Controls
@@ -50,6 +52,7 @@ class AuthSetting extends Model
             'google_auth_enabled' => true,
             'github_auth_enabled' => false,
             'discord_auth_enabled' => false,
+            'linkedin_auth_enabled' => false,
             'invite_only_mode' => true,
             'open_registration' => false,
             // Security Controls - defaults
