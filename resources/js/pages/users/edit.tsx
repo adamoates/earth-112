@@ -7,7 +7,6 @@ import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head, useForm } from '@inertiajs/react';
 import { ArrowLeft, Save } from 'lucide-react';
-import { useEffect } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -48,26 +47,21 @@ export default function EditUser({ user, roles }: Props) {
     const { data, setData, put, processing, errors } = useForm({
         name: user.name,
         email: user.email,
-        role: user.role || (Array.isArray(roles) && roles.length > 0 ? roles[0].name : ''),
+        role: user.role || '',
     });
-
-    // Ensure role is set correctly when component mounts
-    useEffect(() => {
-        if (user.role && Array.isArray(roles) && roles.length > 0) {
-            const roleExists = roles.some((role) => role.name === user.role);
-            if (roleExists) {
-                setData('role', user.role);
-            } else {
-                // If user's role doesn't exist in available roles, set to first available
-                setData('role', roles[0].name);
-            }
-        }
-    }, [user.role, roles, setData]);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         put(`/users/${user.id}`);
     };
+
+    const handleRoleChange = (value: string) => {
+        console.log('Role change:', value);
+        setData('role', value);
+    };
+
+    // Ensure we have a valid role value
+    const currentRole = data.role || user.role || (Array.isArray(roles) && roles.length > 0 ? roles[0].name : '');
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -109,9 +103,11 @@ export default function EditUser({ user, roles }: Props) {
                             <div className="space-y-2">
                                 <Label htmlFor="role">Role</Label>
                                 <div className="mb-2 text-xs text-gray-500">
-                                    Debug: Current role: "{data.role}", Available roles: {Array.isArray(roles) ? roles.length : 'not array'}
+                                    Debug: Current role: "{currentRole}", Available roles: {Array.isArray(roles) ? roles.length : 'not array'}
+                                    <br />
+                                    User role: "{user.role}", Roles: {Array.isArray(roles) ? roles.map((r) => r.name).join(', ') : 'none'}
                                 </div>
-                                <Select value={data.role} onValueChange={(value) => setData('role', value)}>
+                                <Select value={currentRole} onValueChange={handleRoleChange}>
                                     <SelectTrigger>
                                         <SelectValue placeholder="Select a role" />
                                     </SelectTrigger>
