@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\AuthSetting;
+use App\Models\OAuthCredential;
+use App\Services\OAuthCredentialService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -22,6 +24,26 @@ class AuthSettingsController extends Controller
         }
 
         $settings = AuthSetting::getCurrent();
+        $oauthService = new OAuthCredentialService();
+
+        // Get OAuth credentials for each provider
+        $oauthCredentials = [];
+        $providers = ['google', 'github', 'discord'];
+
+        foreach ($providers as $provider) {
+            $credential = $oauthService->getCredentials($provider);
+            $providerInfo = $oauthService->getProviderInfo($provider);
+
+            $oauthCredentials[$provider] = [
+                'client_id' => $credential?->client_id ?? '',
+                'client_secret' => '', // Never expose the secret in the frontend
+                'redirect_uri' => $credential?->redirect_uri ?? $oauthService->getProviderInfo($provider)['setup_url'] ?? '',
+                'scopes' => $credential?->scopes ?? OAuthCredential::getDefaultScopes($provider),
+                'is_active' => $credential?->is_active ?? false,
+                'has_valid_credentials' => $oauthService->hasValidCredentials($provider),
+                'provider_info' => $providerInfo,
+            ];
+        }
 
         return Inertia::render('admin/auth-settings/index', [
             'settings' => [
@@ -49,6 +71,7 @@ class AuthSettingsController extends Controller
                 'enable_maintenance_mode' => $settings->enable_maintenance_mode,
                 'maintenance_message' => $settings->maintenance_message,
             ],
+            'oauth_credentials' => $oauthCredentials,
         ]);
     }
 
@@ -114,6 +137,28 @@ class AuthSettingsController extends Controller
             'enable_maintenance_mode',
             'maintenance_message',
         ]));
+
+        // Handle OAuth credentials if provided
+        if ($request->has('oauth_credentials')) {
+            $oauthService = new OAuthCredentialService();
+            $oauthData = $request->input('oauth_credentials');
+
+            foreach (['google', 'github', 'discord'] as $provider) {
+                if (isset($oauthData[$provider])) {
+                    $providerData = $oauthData[$provider];
+
+                    // Only update if client_secret is provided (to avoid overwriting with empty)
+                    if (!empty($providerData['client_secret'])) {
+                        $oauthService->updateCredentials($provider, $providerData);
+                    } elseif (isset($providerData['is_active'])) {
+                        // Update only the active status if no secret provided
+                        $oauthService->updateCredentials($provider, [
+                            'is_active' => $providerData['is_active'],
+                        ]);
+                    }
+                }
+            }
+        }
 
         return back()->with('success', 'Auth settings updated successfully!');
     }

@@ -101,6 +101,12 @@ Route::middleware('auth')->group(function () {
         Route::get('auth-settings', [App\Http\Controllers\Admin\AuthSettingsController::class, 'index'])->name('auth-settings.index');
         Route::patch('auth-settings', [App\Http\Controllers\Admin\AuthSettingsController::class, 'update'])->name('auth-settings.update');
 
+        // OAuth Credentials Management (Owner only)
+        Route::get('oauth-credentials', [App\Http\Controllers\Admin\OAuthCredentialController::class, 'index'])->name('oauth-credentials.index');
+        Route::patch('oauth-credentials/{provider}', [App\Http\Controllers\Admin\OAuthCredentialController::class, 'update'])->name('oauth-credentials.update');
+        Route::patch('oauth-credentials/{provider}/toggle', [App\Http\Controllers\Admin\OAuthCredentialController::class, 'toggle'])->name('oauth-credentials.toggle');
+        Route::get('oauth-credentials/{provider}/status', [App\Http\Controllers\Admin\OAuthCredentialController::class, 'status'])->name('oauth-credentials.status');
+
         // Admin creation routes
         Route::get('admin/create', [AdminController::class, 'createAdmin'])->name('admin.create');
         Route::post('admin/create', [AdminController::class, 'storeAdmin'])->name('admin.store');

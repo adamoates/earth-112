@@ -22,6 +22,27 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
+interface OAuthCredential {
+    client_id: string;
+    client_secret: string;
+    redirect_uri: string;
+    scopes: string[];
+    is_active: boolean;
+    has_valid_credentials: boolean;
+    provider_info: {
+        name: string;
+        description: string;
+        setup_url: string;
+        docs_url: string;
+    };
+}
+
+interface OAuthCredentials {
+    google: OAuthCredential;
+    github: OAuthCredential;
+    discord: OAuthCredential;
+}
+
 interface AuthSettings {
     // Authentication Providers
     google_auth_enabled: boolean;
@@ -50,10 +71,11 @@ interface AuthSettings {
 
 interface Props {
     settings: AuthSettings;
+    oauth_credentials: OAuthCredentials;
 }
 
-export default function AuthSettingsPage({ settings }: Props) {
-    const { data, setData, patch, processing } = useForm<Record<string, boolean | number | string>>({
+export default function AuthSettingsPage({ settings, oauth_credentials }: Props) {
+    const { data, setData, patch, processing } = useForm<Record<string, boolean | number | string | OAuthCredentials>>({
         // Authentication Providers
         google_auth_enabled: settings.google_auth_enabled,
         github_auth_enabled: settings.github_auth_enabled,
@@ -77,6 +99,9 @@ export default function AuthSettingsPage({ settings }: Props) {
         enable_audit_log: settings.enable_audit_log,
         enable_maintenance_mode: settings.enable_maintenance_mode,
         maintenance_message: settings.maintenance_message,
+
+        // OAuth Credentials
+        oauth_credentials: oauth_credentials,
     });
 
     const submit: FormEventHandler = (e) => {
@@ -95,6 +120,11 @@ export default function AuthSettingsPage({ settings }: Props) {
                     <p className="text-sm text-gray-600 sm:text-base dark:text-gray-400">
                         Manage authentication providers, security controls, and feature toggles
                     </p>
+                    <div className="flex gap-2">
+                        <Button variant="outline" size="sm" asChild>
+                            <a href="/oauth-credentials">Manage OAuth Credentials</a>
+                        </Button>
+                    </div>
                 </div>
 
                 <form onSubmit={submit} className="space-y-6">
@@ -151,6 +181,196 @@ export default function AuthSettingsPage({ settings }: Props) {
                                     checked={data.discord_auth_enabled}
                                     onCheckedChange={(checked: boolean) => setData('discord_auth_enabled', checked)}
                                 />
+                            </div>
+                        </CardContent>
+                    </Card>
+
+                    {/* OAuth Credentials */}
+                    <Card>
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2">
+                                <Zap className="h-5 w-5" />
+                                OAuth Credentials
+                            </CardTitle>
+                            <CardDescription>Manage your OAuth application credentials for social login providers</CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-6">
+                            {/* Google OAuth */}
+                            <div className="space-y-4 rounded-lg border p-4">
+                                <div className="flex items-center justify-between">
+                                    <div className="space-y-1">
+                                        <Label className="text-base font-medium">Google OAuth</Label>
+                                        <p className="text-sm text-gray-600 dark:text-gray-400">Configure Google OAuth 2.0 credentials</p>
+                                    </div>
+                                    <Switch
+                                        checked={oauth_credentials.google.is_active}
+                                        onCheckedChange={(checked: boolean) => {
+                                            // This would need to be handled in a separate form
+                                            console.log('Google OAuth active:', checked);
+                                        }}
+                                    />
+                                </div>
+
+                                {oauth_credentials.google.is_active && (
+                                    <div className="space-y-3">
+                                        <div>
+                                            <Label htmlFor="google_client_id">Client ID</Label>
+                                            <Input
+                                                id="google_client_id"
+                                                placeholder="Enter your Google Client ID"
+                                                defaultValue={oauth_credentials.google.client_id}
+                                            />
+                                        </div>
+                                        <div>
+                                            <Label htmlFor="google_client_secret">Client Secret</Label>
+                                            <Input id="google_client_secret" type="password" placeholder="Enter your Google Client Secret" />
+                                        </div>
+                                        <div>
+                                            <Label htmlFor="google_redirect_uri">Redirect URI</Label>
+                                            <Input
+                                                id="google_redirect_uri"
+                                                placeholder="https://yourdomain.com/auth/google/callback"
+                                                defaultValue={oauth_credentials.google.redirect_uri}
+                                            />
+                                        </div>
+                                        {oauth_credentials.google.has_valid_credentials && (
+                                            <div className="flex items-center gap-2 text-sm text-green-600 dark:text-green-400">
+                                                <div className="h-2 w-2 rounded-full bg-green-500"></div>
+                                                Valid credentials configured
+                                            </div>
+                                        )}
+                                        <div className="flex gap-2">
+                                            <Button variant="outline" size="sm" asChild>
+                                                <a href={oauth_credentials.google.provider_info.setup_url} target="_blank" rel="noopener noreferrer">
+                                                    Setup Guide
+                                                </a>
+                                            </Button>
+                                            <Button variant="outline" size="sm" asChild>
+                                                <a href={oauth_credentials.google.provider_info.docs_url} target="_blank" rel="noopener noreferrer">
+                                                    Documentation
+                                                </a>
+                                            </Button>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* GitHub OAuth */}
+                            <div className="space-y-4 rounded-lg border p-4">
+                                <div className="flex items-center justify-between">
+                                    <div className="space-y-1">
+                                        <Label className="text-base font-medium">GitHub OAuth</Label>
+                                        <p className="text-sm text-gray-600 dark:text-gray-400">Configure GitHub OAuth App credentials</p>
+                                    </div>
+                                    <Switch
+                                        checked={oauth_credentials.github.is_active}
+                                        onCheckedChange={(checked: boolean) => {
+                                            console.log('GitHub OAuth active:', checked);
+                                        }}
+                                    />
+                                </div>
+
+                                {oauth_credentials.github.is_active && (
+                                    <div className="space-y-3">
+                                        <div>
+                                            <Label htmlFor="github_client_id">Client ID</Label>
+                                            <Input
+                                                id="github_client_id"
+                                                placeholder="Enter your GitHub Client ID"
+                                                defaultValue={oauth_credentials.github.client_id}
+                                            />
+                                        </div>
+                                        <div>
+                                            <Label htmlFor="github_client_secret">Client Secret</Label>
+                                            <Input id="github_client_secret" type="password" placeholder="Enter your GitHub Client Secret" />
+                                        </div>
+                                        <div>
+                                            <Label htmlFor="github_redirect_uri">Redirect URI</Label>
+                                            <Input
+                                                id="github_redirect_uri"
+                                                placeholder="https://yourdomain.com/auth/github/callback"
+                                                defaultValue={oauth_credentials.github.redirect_uri}
+                                            />
+                                        </div>
+                                        {oauth_credentials.github.has_valid_credentials && (
+                                            <div className="flex items-center gap-2 text-sm text-green-600 dark:text-green-400">
+                                                <div className="h-2 w-2 rounded-full bg-green-500"></div>
+                                                Valid credentials configured
+                                            </div>
+                                        )}
+                                        <div className="flex gap-2">
+                                            <Button variant="outline" size="sm" asChild>
+                                                <a href={oauth_credentials.github.provider_info.setup_url} target="_blank" rel="noopener noreferrer">
+                                                    Setup Guide
+                                                </a>
+                                            </Button>
+                                            <Button variant="outline" size="sm" asChild>
+                                                <a href={oauth_credentials.github.provider_info.docs_url} target="_blank" rel="noopener noreferrer">
+                                                    Documentation
+                                                </a>
+                                            </Button>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Discord OAuth */}
+                            <div className="space-y-4 rounded-lg border p-4">
+                                <div className="flex items-center justify-between">
+                                    <div className="space-y-1">
+                                        <Label className="text-base font-medium">Discord OAuth</Label>
+                                        <p className="text-sm text-gray-600 dark:text-gray-400">Configure Discord OAuth2 credentials</p>
+                                    </div>
+                                    <Switch
+                                        checked={oauth_credentials.discord.is_active}
+                                        onCheckedChange={(checked: boolean) => {
+                                            console.log('Discord OAuth active:', checked);
+                                        }}
+                                    />
+                                </div>
+
+                                {oauth_credentials.discord.is_active && (
+                                    <div className="space-y-3">
+                                        <div>
+                                            <Label htmlFor="discord_client_id">Client ID</Label>
+                                            <Input
+                                                id="discord_client_id"
+                                                placeholder="Enter your Discord Client ID"
+                                                defaultValue={oauth_credentials.discord.client_id}
+                                            />
+                                        </div>
+                                        <div>
+                                            <Label htmlFor="discord_client_secret">Client Secret</Label>
+                                            <Input id="discord_client_secret" type="password" placeholder="Enter your Discord Client Secret" />
+                                        </div>
+                                        <div>
+                                            <Label htmlFor="discord_redirect_uri">Redirect URI</Label>
+                                            <Input
+                                                id="discord_redirect_uri"
+                                                placeholder="https://yourdomain.com/auth/discord/callback"
+                                                defaultValue={oauth_credentials.discord.redirect_uri}
+                                            />
+                                        </div>
+                                        {oauth_credentials.discord.has_valid_credentials && (
+                                            <div className="flex items-center gap-2 text-sm text-green-600 dark:text-green-400">
+                                                <div className="h-2 w-2 rounded-full bg-green-500"></div>
+                                                Valid credentials configured
+                                            </div>
+                                        )}
+                                        <div className="flex gap-2">
+                                            <Button variant="outline" size="sm" asChild>
+                                                <a href={oauth_credentials.discord.provider_info.setup_url} target="_blank" rel="noopener noreferrer">
+                                                    Setup Guide
+                                                </a>
+                                            </Button>
+                                            <Button variant="outline" size="sm" asChild>
+                                                <a href={oauth_credentials.discord.provider_info.docs_url} target="_blank" rel="noopener noreferrer">
+                                                    Documentation
+                                                </a>
+                                            </Button>
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         </CardContent>
                     </Card>
